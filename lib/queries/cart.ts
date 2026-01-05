@@ -309,3 +309,66 @@ export const REMOVE_FROM_CART = `
   }
 `;
 
+export const UPDATE_CART_BUYER_IDENTITY = `
+  mutation updateCartBuyerIdentity($cartId: ID!, $buyerIdentity: CartBuyerIdentityInput!) {
+    cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) {
+      cart {
+        id
+        checkoutUrl
+        totalQuantity
+        cost {
+          totalAmount {
+            amount
+            currencyCode
+          }
+          subtotalAmount {
+            amount
+            currencyCode
+          }
+          totalTaxAmount {
+            amount
+            currencyCode
+          }
+        }
+        lines(first: 100) {
+          edges {
+            node {
+              id
+              quantity
+              cost {
+                totalAmount {
+                  amount
+                  currencyCode
+                }
+              }
+              merchandise {
+                ... on ProductVariant {
+                  id
+                  title
+                  priceV2 {
+                    amount
+                    currencyCode
+                  }
+                  product {
+                    id
+                    title
+                    handle
+                    featuredImage {
+                      url
+                      altText
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      userErrors {
+        field
+        message
+      }
+    }
+  }
+`;
+

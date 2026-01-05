@@ -2,13 +2,15 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { shopifyFetch } from '@/lib/shopify'
-import { CREATE_CART, GET_CART, ADD_TO_CART, REMOVE_FROM_CART, UPDATE_CART_LINES } from '@/lib/queries/cart'
+import { getCustomerToken } from '@/lib/auth'
+import { CREATE_CART, GET_CART, ADD_TO_CART, REMOVE_FROM_CART, UPDATE_CART_LINES, UPDATE_CART_BUYER_IDENTITY } from '@/lib/queries/cart'
 import type {
   Cart,
   CartCreateResponse,
   CartLinesAddResponse,
   CartLinesRemoveResponse,
   CartLinesUpdateResponse,
+  CartBuyerIdentityUpdateResponse,
   GetCartResponse,
   CartLineInput,
   CartLineUpdateInput,
@@ -72,6 +74,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
         if (data.cart) {
           setCart(data.cart)
+          // Associate cart with customer if logged in
+          await associateCartWithCustomer(data.cart.id)
         } else {
           // Cart not found, create new one
           clearCartId()
@@ -90,6 +94,30 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  // Associate cart with customer
+  const associateCartWithCustomer = async (cartId: string) => {
+    const customerToken = getCustomerToken()
+    if (!customerToken) return
+
+    try {
+      const data = await shopifyFetch<CartBuyerIdentityUpdateResponse>({
+        query: UPDATE_CART_BUYER_IDENTITY,
+        variables: {
+          cartId,
+          buyerIdentity: {
+            customerAccessToken: customerToken,
+          },
+        },
+      })
+
+      if (data.cartBuyerIdentityUpdate.cart) {
+        setCart(data.cartBuyerIdentityUpdate.cart)
+      }
+    } catch (error) {
+      console.error('Error associating cart with customer:', error)
+    }
+  }
+
   // Create new cart
   const createNewCart = async () => {
     try {
@@ -105,6 +133,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       if (data.cartCreate.cart) {
         setCart(data.cartCreate.cart)
         saveCartId(data.cartCreate.cart.id)
+        // Associate cart with customer if logged in
+        await associateCartWithCustomer(data.cartCreate.cart.id)
       }
     } catch (error) {
       console.error('Error creating cart:', error)
@@ -115,6 +145,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     initializeCart()
   }, [])
+
+  // Associate cart with customer when cart changes (if customer is logged in)
+  useEffect(() => {
+    if (cart?.id) {
+      const customerToken = getCustomerToken()
+      if (customerToken) {
+        associateCartWithCustomer(cart.id)
+      }
+    }
+  }, [cart?.id])
 
   // Add item to cart
   const addToCart = async (merchandiseId: string, quantity: number) => {
@@ -152,6 +192,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       if (data.cartLinesAdd.cart) {
         setCart(data.cartLinesAdd.cart)
+        // Associate cart with customer if logged in
+        await associateCartWithCustomer(data.cartLinesAdd.cart.id)
         setIsOpen(true) // Open cart drawer after adding item
       }
     } catch (error) {

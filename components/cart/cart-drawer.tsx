@@ -1,6 +1,8 @@
 "use client"
 
 import { useCart } from "@/components/providers/cart-provider"
+import { useAuth } from "@/components/providers/auth-provider"
+import { getCustomerToken } from "@/lib/auth"
 import {
   Drawer,
   DrawerClose,
@@ -20,7 +22,23 @@ import { useState } from "react"
 
 export function CartDrawer() {
   const { cart, isLoading, isOpen, closeCart, removeFromCart, updateCartLine } = useCart()
+  const { isAuthenticated } = useAuth()
   const [updatingLines, setUpdatingLines] = useState<Set<string>>(new Set())
+
+  // Get checkout URL with customer token if logged in
+  const getCheckoutUrl = () => {
+    if (!cart?.checkoutUrl) return "#"
+    
+    const customerToken = getCustomerToken()
+    if (customerToken && isAuthenticated) {
+      // Append customer access token to checkout URL
+      const url = new URL(cart.checkoutUrl)
+      url.searchParams.set("customer_access_token", customerToken)
+      return url.toString()
+    }
+    
+    return cart.checkoutUrl
+  }
 
   const handleUpdateQuantity = async (lineId: string, newQuantity: number) => {
     setUpdatingLines((prev) => new Set(prev).add(lineId))
@@ -237,7 +255,7 @@ export function CartDrawer() {
                   size="lg"
                   asChild
                 >
-                  <a href={cart.checkoutUrl} target="_blank" rel="noopener noreferrer">
+                  <a href={getCheckoutUrl()} target="_blank" rel="noopener noreferrer">
                     Proceed to Checkout
                   </a>
                 </Button>

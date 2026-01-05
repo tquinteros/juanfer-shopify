@@ -122,6 +122,15 @@ export const CartLinesRemoveResponseSchema = z.object({
 
 export type CartLinesRemoveResponse = z.infer<typeof CartLinesRemoveResponseSchema>;
 
+export const CartBuyerIdentityUpdateResponseSchema = z.object({
+  cartBuyerIdentityUpdate: z.object({
+    cart: CartSchema.nullable(),
+    userErrors: z.array(UserErrorSchema),
+  }),
+});
+
+export type CartBuyerIdentityUpdateResponse = z.infer<typeof CartBuyerIdentityUpdateResponseSchema>;
+
 // Query Response
 export const GetCartResponseSchema = z.object({
   cart: CartSchema.nullable(),
