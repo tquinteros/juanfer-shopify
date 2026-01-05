@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
 import { shopifyFetch } from '@/lib/shopify'
 import { getCustomerToken } from '@/lib/auth'
 import { CREATE_CART, GET_CART, ADD_TO_CART, REMOVE_FROM_CART, UPDATE_CART_LINES, UPDATE_CART_BUYER_IDENTITY } from '@/lib/queries/cart'
@@ -59,8 +59,55 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  // Associate cart with customer
+  const associateCartWithCustomer = useCallback(async (cartId: string) => {
+    const customerToken = getCustomerToken()
+    if (!customerToken) return
+
+    try {
+      const data = await shopifyFetch<CartBuyerIdentityUpdateResponse>({
+        query: UPDATE_CART_BUYER_IDENTITY,
+        variables: {
+          cartId,
+          buyerIdentity: {
+            customerAccessToken: customerToken,
+          },
+        },
+      })
+
+      if (data.cartBuyerIdentityUpdate.cart) {
+        setCart(data.cartBuyerIdentityUpdate.cart)
+      }
+    } catch (error) {
+      console.error('Error associating cart with customer:', error)
+    }
+  }, [])
+
+  // Create new cart
+  const createNewCart = useCallback(async () => {
+    try {
+      const data = await shopifyFetch<CartCreateResponse>({
+        query: CREATE_CART,
+        variables: {
+          input: {
+            lines: [],
+          },
+        },
+      })
+
+      if (data.cartCreate.cart) {
+        setCart(data.cartCreate.cart)
+        saveCartId(data.cartCreate.cart.id)
+        // Associate cart with customer if logged in
+        await associateCartWithCustomer(data.cartCreate.cart.id)
+      }
+    } catch (error) {
+      console.error('Error creating cart:', error)
+    }
+  }, [associateCartWithCustomer])
+
   // Fetch existing cart or create new one
-  const initializeCart = async () => {
+  const initializeCart = useCallback(async () => {
     setIsLoading(true)
     try {
       const existingCartId = getCartId()
@@ -92,59 +139,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false)
     }
-  }
-
-  // Associate cart with customer
-  const associateCartWithCustomer = async (cartId: string) => {
-    const customerToken = getCustomerToken()
-    if (!customerToken) return
-
-    try {
-      const data = await shopifyFetch<CartBuyerIdentityUpdateResponse>({
-        query: UPDATE_CART_BUYER_IDENTITY,
-        variables: {
-          cartId,
-          buyerIdentity: {
-            customerAccessToken: customerToken,
-          },
-        },
-      })
-
-      if (data.cartBuyerIdentityUpdate.cart) {
-        setCart(data.cartBuyerIdentityUpdate.cart)
-      }
-    } catch (error) {
-      console.error('Error associating cart with customer:', error)
-    }
-  }
-
-  // Create new cart
-  const createNewCart = async () => {
-    try {
-      const data = await shopifyFetch<CartCreateResponse>({
-        query: CREATE_CART,
-        variables: {
-          input: {
-            lines: [],
-          },
-        },
-      })
-
-      if (data.cartCreate.cart) {
-        setCart(data.cartCreate.cart)
-        saveCartId(data.cartCreate.cart.id)
-        // Associate cart with customer if logged in
-        await associateCartWithCustomer(data.cartCreate.cart.id)
-      }
-    } catch (error) {
-      console.error('Error creating cart:', error)
-    }
-  }
+  }, [associateCartWithCustomer, createNewCart])
 
   // Initialize cart on mount
   useEffect(() => {
     initializeCart()
-  }, [])
+  }, [initializeCart])
 
   // Associate cart with customer when cart changes (if customer is logged in)
   useEffect(() => {
@@ -154,17 +154,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
         associateCartWithCustomer(cart.id)
       }
     }
-  }, [cart?.id])
+  }, [cart?.id, associateCartWithCustomer])
 
   // Add item to cart
   const addToCart = async (merchandiseId: string, quantity: number) => {
     try {
-      let currentCartId = cart?.id
+      let currentCartId: string | undefined = cart?.id
 
       // Create cart if it doesn't exist
       if (!currentCartId) {
         await createNewCart()
-        currentCartId = getCartId()
+        const cartId = getCartId()
+        currentCartId = cartId || undefined
       }
 
       if (!currentCartId) {
