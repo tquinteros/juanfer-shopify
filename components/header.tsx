@@ -5,6 +5,8 @@ import { User, Heart, ShoppingCart, ChevronDown, Phone, Mail } from "lucide-reac
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
+import { useCart } from "@/components/providers/cart-provider"
+import { CartDrawer } from "@/components/cart/cart-drawer"
 import Link from "next/link"
 
 const languages = [
@@ -15,8 +17,11 @@ const languages = [
 
 export function Header() {
     const [selectedLanguage, setSelectedLanguage] = useState(languages[0].label)
+    const { cart, openCart } = useCart()
+    const cartQuantity = cart?.totalQuantity || 0
 
     return (
+        <>
         <header className="w-full">
             <div className="bg-white border-b border-border">
                 <div className="container mx-auto px-4 py-4">
@@ -59,9 +64,11 @@ export function Header() {
                                 </DropdownMenuContent>
                             </DropdownMenu>
 
-                            <Button variant="ghost" size="icon" className="relative">
-                                <User className="h-5 w-5" />
-                            </Button>
+                            <Link href="/account">
+                                <Button variant="ghost" size="icon" className="relative">
+                                    <User className="h-5 w-5" />
+                                </Button>
+                            </Link>
 
                             <Button variant="ghost" size="icon" className="relative">
                                 <Heart className="h-5 w-5" />
@@ -69,12 +76,19 @@ export function Header() {
                                     0
                                 </span>
                             </Button>
-                            <Button variant="ghost" size="icon" className="relative">
-                                <ShoppingCart className="h-5 w-5" />
-                                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-black text-xs text-white">
-                                    0
-                                </span>
-                            </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="relative"
+                    onClick={openCart}
+                  >
+                    <ShoppingCart className="h-5 w-5" />
+                    {cartQuantity > 0 && (
+                      <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-black text-xs text-white">
+                        {cartQuantity}
+                      </span>
+                    )}
+                  </Button>
                         </div>
                     </div>
                 </div>
@@ -87,7 +101,7 @@ export function Header() {
                             <Link href="/products" className="hover:text-gray-300 transition-colors">
                                 Shop
                             </Link>
-                            <Link href="/microcement-kits" className="hover:text-gray-300 transition-colors">
+                            <Link aria-disabled={true} href="/microcement-kits" className="hover:text-gray-300 transition-colors">
                                 Microcement Kits
                             </Link>
                             <Link href="/samples" className="hover:text-gray-300 transition-colors">
@@ -130,6 +144,8 @@ export function Header() {
                 </div>
             </div>
         </header>
+        <CartDrawer />
+        </>
     )
 }
 

@@ -1,6 +1,7 @@
 "use client"
 
 import { useProductById } from "@/components/hooks/useProducts"
+import { useCart } from "@/components/providers/cart-provider"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -13,6 +14,7 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel"
+import { ShoppingCart, Check } from "lucide-react"
 import Image from "next/image"
 import { useState, use, useEffect } from "react"
 
@@ -31,11 +33,26 @@ export default function ProductPage({ params }: ProductPageProps) {
         : `gid://shopify/Product/${id}`
 
     const { data, isLoading, error } = useProductById({ id: productId })
+    const { addToCart } = useCart()
     const [api, setApi] = useState<CarouselApi>()
     const [current, setCurrent] = useState(0)
+    const [selectedVariant, setSelectedVariant] = useState<string | null>(null)
+    const [quantity, setQuantity] = useState(1)
+    const [isAddingToCart, setIsAddingToCart] = useState(false)
+    const [addedToCart, setAddedToCart] = useState(false)
 
     const images = data?.product?.images.edges.map((edge) => edge.node) || []
+    const product = data?.product
 
+    // Get first available variant or selected variant
+    const firstAvailableVariant = product?.variants?.edges.find(
+        (edge) => edge.node.availableForSale
+    )?.node
+    const currentVariant = selectedVariant
+        ? product?.variants?.edges.find((edge) => edge.node.id === selectedVariant)?.node
+        : firstAvailableVariant
+
+    // Carousel effect
     useEffect(() => {
         if (!api) {
             return
@@ -53,8 +70,32 @@ export default function ProductPage({ params }: ProductPageProps) {
         }
     }, [api])
 
+    // Set initial variant
+    useEffect(() => {
+        if (!selectedVariant && firstAvailableVariant) {
+            setSelectedVariant(firstAvailableVariant.id)
+        }
+    }, [firstAvailableVariant, selectedVariant])
+
     const scrollTo = (index: number) => {
         api?.scrollTo(index)
+    }
+
+    const handleAddToCart = async () => {
+        if (!currentVariant) return
+
+        setIsAddingToCart(true)
+        setAddedToCart(false)
+
+        try {
+            await addToCart(currentVariant.id, quantity)
+            setAddedToCart(true)
+            setTimeout(() => setAddedToCart(false), 2000)
+        } catch (error) {
+            console.error("Failed to add to cart:", error)
+        } finally {
+            setIsAddingToCart(false)
+        }
     }
 
     if (error) {
@@ -91,8 +132,6 @@ export default function ProductPage({ params }: ProductPageProps) {
             </div>
         )
     }
-
-    const product = data?.product
 
     if (!product) {
         return (
@@ -213,32 +252,40 @@ export default function ProductPage({ params }: ProductPageProps) {
                         </Card>
                     )}
 
-                    {product.variants && product.variants.edges.length > 0 && (
-                        <div>
-                            <h3 className="text-lg font-semibold mb-3">Variants</h3>
-                            <div className="space-y-2">
-                                {product.variants.edges.map(({ node: variant }) => (
-                                    <div
-                                        key={variant.id}
-                                        className="flex items-center justify-between p-3 border rounded-lg"
-                                    >
-                                        <span>{variant.title}</span>
-                                        <div className="flex items-center gap-4">
-                                            <span className="font-medium">
-                                                ${parseFloat(variant.price.amount).toFixed(2)}{" "}
-                                                {variant.price.currencyCode}
-                                            </span>
-                                            {variant.availableForSale ? (
-                                                <span className="text-sm text-green-600">Available</span>
-                                            ) : (
-                                                <span className="text-sm text-red-600">Unavailable</span>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
+                        {product.variants && product.variants.edges.length > 1 && (
+                            <div>
+                                <h3 className="text-lg font-semibold mb-3">Select Variant</h3>
+                                <div className="grid grid-cols-1 gap-2">
+                                    {product.variants.edges.map(({ node: variant }) => (
+                                        <button
+                                            key={variant.id}
+                                            onClick={() => setSelectedVariant(variant.id)}
+                                            disabled={!variant.availableForSale}
+                                            className={`flex items-center justify-between p-3 border rounded-lg transition-colors ${
+                                                selectedVariant === variant.id
+                                                    ? "border-gray-900 bg-gray-50"
+                                                    : "border-gray-200 hover:border-gray-300"
+                                            } ${
+                                                !variant.availableForSale
+                                                    ? "opacity-50 cursor-not-allowed"
+                                                    : "cursor-pointer"
+                                            }`}
+                                        >
+                                            <span className="font-medium">{variant.title}</span>
+                                            <div className="flex items-center gap-3">
+                                                <span className="font-bold">
+                                                    ${parseFloat(variant.price.amount).toFixed(2)}{" "}
+                                                    {variant.price.currencyCode}
+                                                </span>
+                                                {!variant.availableForSale && (
+                                                    <span className="text-sm text-red-600">Unavailable</span>
+                                                )}
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
                     {product.tags && product.tags.length > 0 && (
                         <div>
                             <h3 className="text-lg font-semibold mb-3">Tags</h3>
@@ -255,15 +302,58 @@ export default function ProductPage({ params }: ProductPageProps) {
                         </div>
                     )}
 
-                    <div className="pt-4">
-                        <Button
-                            size="lg"
-                            className="w-full bg-gray-800 hover:bg-gray-700 text-white"
-                            disabled={!product.availableForSale}
-                        >
-                            {product.availableForSale ? "Add to Cart" : "Out of Stock"}
-                        </Button>
-                    </div>
+                        {/* Quantity Selector */}
+                        <div>
+                            <label className="text-sm font-medium mb-2 block">Quantity</label>
+                            <div className="flex items-center gap-3">
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                                    disabled={quantity <= 1}
+                                >
+                                    -
+                                </Button>
+                                <span className="text-lg font-medium w-12 text-center">{quantity}</span>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => setQuantity(quantity + 1)}
+                                >
+                                    +
+                                </Button>
+                            </div>
+                        </div>
+
+                        {/* Add to Cart Button */}
+                        <div className="pt-4 space-y-2">
+                            <Button
+                                size="lg"
+                                className="w-full bg-gray-800 hover:bg-gray-700 text-white"
+                                disabled={!currentVariant?.availableForSale || isAddingToCart}
+                                onClick={handleAddToCart}
+                            >
+                                {isAddingToCart ? (
+                                    "Adding..."
+                                ) : addedToCart ? (
+                                    <>
+                                        <Check className="h-5 w-5 mr-2" />
+                                        Added to Cart
+                                    </>
+                                ) : (
+                                    <>
+                                        <ShoppingCart className="h-5 w-5 mr-2" />
+                                        {currentVariant?.availableForSale ? "Add to Cart" : "Out of Stock"}
+                                    </>
+                                )}
+                            </Button>
+                            {currentVariant && (
+                                <p className="text-sm text-center text-muted-foreground">
+                                    ${(parseFloat(currentVariant.price.amount) * quantity).toFixed(2)}{" "}
+                                    {currentVariant.price.currencyCode} total
+                                </p>
+                            )}
+                        </div>
                 </div>
             </div>
         </div>
