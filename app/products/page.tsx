@@ -8,8 +8,9 @@ import { useProducts } from '@/components/hooks/useProducts';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
-export default function ProductsPage() {
+function ProductsContent() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('name');
   
@@ -128,5 +129,34 @@ export default function ProductsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+function ProductsLoadingFallback() {
+  return (
+    <div className=" p-6">
+      <h1 className="text-4xl font-bold mb-8">Products</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <Card key={i}>
+            <CardHeader>
+              <Skeleton className="h-48 w-full" />
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-4 w-3/4 mb-2" />
+              <Skeleton className="h-4 w-1/2" />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<ProductsLoadingFallback />}>
+      <ProductsContent />
+    </Suspense>
   );
 }
