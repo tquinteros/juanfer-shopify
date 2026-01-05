@@ -7,20 +7,21 @@ import { GET_PRODUCTS_QUERY, GET_PRODUCT_BY_HANDLE_QUERY, GET_PRODUCT_BY_ID_QUER
 interface UseProductsOptions {
     first?: number;
     after?: string | null;
+    query?: string | null;
 }
 
 export function useProducts(
     options: UseProductsOptions = {},
     queryOptions?: Omit<UseQueryOptions<ProductsQuery>, 'queryKey' | 'queryFn'>
 ) {
-    const { first = 10, after = null } = options;
+    const { first = 10, after = null, query = null } = options;
 
     return useQuery({
-        queryKey: ['products', first, after],
+        queryKey: ['products', first, after, query],
         queryFn: async () => {
             const data = await shopifyFetch<ProductsQuery>({
                 query: GET_PRODUCTS_QUERY,
-                variables: { first, after },
+                variables: { first, after, query },
             });
 
             const validated = ProductsQuerySchema.parse(data);

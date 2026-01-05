@@ -7,9 +7,21 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useProducts } from '@/components/hooks/useProducts';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 export default function ProductsPage() {
-  const { data, isLoading, error } = useProducts({ first: 12 });
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('name');
+  
+  // Build Shopify search query
+  const shopifyQuery = searchQuery 
+    ? `title:*${searchQuery}* OR description:*${searchQuery}*`
+    : null;
+
+  const { data, isLoading, error } = useProducts({ 
+    first: 12,
+    query: shopifyQuery,
+  });
 
   console.log(data, "products")
 
@@ -27,7 +39,9 @@ export default function ProductsPage() {
 
   return (
     <div className=" p-6">
-      <h1 className="text-4xl font-bold mb-8">Products</h1>
+      <h1 className="text-4xl font-bold mb-8">
+        {searchQuery ? `Search Results for "${searchQuery}"` : 'Products'}
+      </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {isLoading ? (
