@@ -1,9 +1,8 @@
-// src/hooks/useProducts.ts
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
-import { ProductsQuery, ProductsQuerySchema } from '@/lib/types/shopify';
+import { ProductsQuery, ProductsQuerySchema, ProductByIdQuery } from '@/lib/types/shopify';
 import { shopifyFetch } from '@/lib/shopify';
-import { GET_PRODUCTS_QUERY, GET_PRODUCT_BY_HANDLE_QUERY } from '@/lib/queries';
+import { GET_PRODUCTS_QUERY, GET_PRODUCT_BY_HANDLE_QUERY, GET_PRODUCT_BY_ID_QUERY } from '@/lib/queries';
 
 interface UseProductsOptions {
     first?: number;
@@ -24,11 +23,10 @@ export function useProducts(
                 variables: { first, after },
             });
 
-            // Validar con Zod
             const validated = ProductsQuerySchema.parse(data);
             return validated;
         },
-        staleTime: 1000 * 60 * 5, // 5 minutos
+        staleTime: 1000 * 60 * 5, 
         ...queryOptions,
     });
 }
@@ -52,6 +50,30 @@ export function useProductByHandle(
             return data;
         },
         enabled: enabled && !!handle,
+        staleTime: 1000 * 60 * 5,
+        ...queryOptions,
+    });
+}
+
+interface UseProductByIdOptions {
+    id: string;
+    enabled?: boolean;
+}
+
+export function useProductById(
+    { id, enabled = true }: UseProductByIdOptions,
+    queryOptions?: Omit<UseQueryOptions<ProductByIdQuery>, 'queryKey' | 'queryFn'>
+) {
+    return useQuery({
+        queryKey: ['product', id],
+        queryFn: async () => {
+            const data = await shopifyFetch<ProductByIdQuery>({
+                query: GET_PRODUCT_BY_ID_QUERY,
+                variables: { id },
+            });
+            return data;
+        },
+        enabled: enabled && !!id,
         staleTime: 1000 * 60 * 5,
         ...queryOptions,
     });

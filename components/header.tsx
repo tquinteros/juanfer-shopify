@@ -83,9 +83,8 @@ export function Header() {
             <div className="bg-gray-800 text-white">
                 <div className="container mx-auto px-4">
                     <div className="flex items-center justify-between">
-                        {/* Navigation Links */}
                         <nav className="flex items-center gap-6 py-3">
-                            <Link href="/shop" className="hover:text-gray-300 transition-colors">
+                            <Link href="/products" className="hover:text-gray-300 transition-colors">
                                 Shop
                             </Link>
                             <Link href="/microcement-kits" className="hover:text-gray-300 transition-colors">
@@ -111,7 +110,6 @@ export function Header() {
                             </Link>
                         </nav>
 
-                        {/* Contact Information */}
                         <div className="flex items-center gap-6">
                             <a
                                 href="tel:+48537991307"

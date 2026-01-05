@@ -148,3 +148,192 @@ export const GET_PRODUCT_BY_ID_QUERY = `
     }
   }
 `;
+
+export const GET_COLLECTIONS_QUERY = `
+  query GetCollections($first: Int!, $after: String) {
+    collections(first: $first, after: $after) {
+      edges {
+        cursor
+        node {
+          id
+          title
+          description
+          handle
+          image {
+            url
+            altText
+            width
+            height
+          }
+          products(first: 4) {
+            edges {
+              node {
+                id
+                title
+                handle
+                priceRange {
+                  minVariantPrice {
+                    amount
+                    currencyCode
+                  }
+                }
+                images(first: 1) {
+                  edges {
+                    node {
+                      url
+                      altText
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+    }
+  }
+`;
+
+export const GET_COLLECTION_BY_HANDLE_QUERY = `
+  query GetCollectionByHandle($handle: String!, $first: Int, $after: String) {
+    collectionByHandle(handle: $handle) {
+      id
+      title
+      description
+      handle
+      image {
+        url
+        altText
+        width
+        height
+      }
+      products(first: $first, after: $after) {
+        edges {
+          cursor
+          node {
+            id
+            title
+            description
+            handle
+            availableForSale
+            priceRange {
+              minVariantPrice {
+                amount
+                currencyCode
+              }
+              maxVariantPrice {
+                amount
+                currencyCode
+              }
+            }
+            images(first: 5) {
+              edges {
+                node {
+                  url
+                  altText
+                  width
+                  height
+                }
+              }
+            }
+            variants(first: 10) {
+              edges {
+                node {
+                  id
+                  title
+                  price {
+                    amount
+                    currencyCode
+                  }
+                  availableForSale
+                }
+              }
+            }
+            tags
+          }
+        }
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
+      }
+    }
+  }
+`;
+
+export const GET_COLLECTION_BY_ID_QUERY = `
+  query GetCollectionById($id: ID!, $first: Int, $after: String) {
+    collection(id: $id) {
+      id
+      title
+      description
+      handle
+      image {
+        url
+        altText
+        width
+        height
+      }
+      products(first: $first, after: $after) {
+        edges {
+          cursor
+          node {
+            id
+            title
+            description
+            handle
+            availableForSale
+            priceRange {
+              minVariantPrice {
+                amount
+                currencyCode
+              }
+              maxVariantPrice {
+                amount
+                currencyCode
+              }
+            }
+            images(first: 5) {
+              edges {
+                node {
+                  url
+                  altText
+                  width
+                  height
+                }
+              }
+            }
+            variants(first: 10) {
+              edges {
+                node {
+                  id
+                  title
+                  price {
+                    amount
+                    currencyCode
+                  }
+                  availableForSale
+                }
+              }
+            }
+            tags
+          }
+        }
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
+      }
+    }
+  }
+`;

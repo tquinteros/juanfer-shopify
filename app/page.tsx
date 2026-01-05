@@ -10,21 +10,14 @@ import {
 } from "@/components/ui/carousel"
 import { Button } from "@/components/ui/button"
 import { useProducts } from "@/components/hooks/useProducts"
+import { useCollections } from "@/components/hooks/useCollections"
 import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
 import Image from "next/image"
 
-const categories = [
-  { id: 1, name: "Microcement Kits", image: "/placeholder-category.jpg" },
-  { id: 2, name: "Samples", image: "/placeholder-category.jpg" },
-  { id: 3, name: "Colors", image: "/placeholder-category.jpg" },
-  { id: 4, name: "Tools", image: "/placeholder-category.jpg" },
-  { id: 5, name: "Accessories", image: "/placeholder-category.jpg" },
-  { id: 6, name: "Finishes", image: "/placeholder-category.jpg" },
-]
-
 export default function Home() {
   const { data: productsData, isLoading: productsLoading } = useProducts({ first: 8 })
+  const { data: collectionsData, isLoading: collectionsLoading } = useCollections({ first: 10 })
 
   return (
     <div className="min-h-screen">
@@ -54,35 +47,68 @@ export default function Home() {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-8 text-center">Shop by Category</h2>
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-            }}
-            className="w-full"
-          >
-            <CarouselContent className="-ml-2 md:-ml-4">
-              {categories.map((category) => (
-                <CarouselItem
-                  key={category.id}
-                  className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
-                >
-                  <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
+          {collectionsLoading ? (
+            <div className="flex gap-4 overflow-hidden">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="min-w-[250px]">
+                  <Card>
                     <CardHeader className="p-0">
-                      <div className="w-full h-48 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                        <span className="text-gray-500 text-sm">Category Image</span>
-                      </div>
+                      <Skeleton className="h-48 w-full" />
                     </CardHeader>
                     <CardContent className="p-4">
-                      <CardTitle className="text-lg">{category.name}</CardTitle>
+                      <Skeleton className="h-4 w-3/4" />
                     </CardContent>
                   </Card>
-                </CarouselItem>
+                </div>
               ))}
-            </CarouselContent>
-            <CarouselPrevious className="left-0" />
-            <CarouselNext className="right-0" />
-          </Carousel>
+            </div>
+          ) : collectionsData?.collections.length ? (
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-2 md:-ml-4">
+                {collectionsData.collections.map((collection) => (
+                  <CarouselItem
+                    key={collection.id}
+                    className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
+                  >
+                    <Link href={`/collections/${collection.handle}`}>
+                      <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full">
+                        <CardHeader className="p-0">
+                          {collection.image ? (
+                            <Image
+                              src={collection.image.url}
+                              alt={collection.image.altText || collection.title}
+                              width={400}
+                              height={300}
+                              className="w-full h-48 object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-48 bg-linear-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                              <span className="text-gray-500 text-sm">No Image</span>
+                            </div>
+                          )}
+                        </CardHeader>
+                        <CardContent className="p-4">
+                          <CardTitle className="text-lg">{collection.title}</CardTitle>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="left-0" />
+              <CarouselNext className="right-0" />
+            </Carousel>
+          ) : (
+            <div className="text-center text-gray-500 py-8">
+              No collections available
+            </div>
+          )}
         </div>
       </section>
 
