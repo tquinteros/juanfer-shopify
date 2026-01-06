@@ -12,15 +12,11 @@ import { Skeleton } from "@/components/ui/skeleton"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-
-const languages = [
-    { code: "en", label: "GB English" },
-    { code: "es", label: "ES Español" },
-    { code: "fr", label: "FR Français" },
-]
+import { useLanguage, languages } from "@/lib/contexts/language-context"
 
 export function Header() {
-    const [selectedLanguage, setSelectedLanguage] = useState(languages[0].label)
+    const { language, setLanguage, getLanguageLabel } = useLanguage()
+    const selectedLanguageLabel = getLanguageLabel()
     const [searchQuery, setSearchQuery] = useState("")
     const [debouncedQuery, setDebouncedQuery] = useState("")
     const [showSearchResults, setShowSearchResults] = useState(false)
@@ -55,6 +51,7 @@ export function Header() {
         query: debouncedQuery,
         first: 5,
         enabled: debouncedQuery.length >= 2,
+        language,
     })
 
     const searchResults = searchData?.products.edges.slice(0, 5) || []
@@ -182,7 +179,7 @@ export function Header() {
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="ghost" className="gap-1">
-                                        {selectedLanguage}
+                                        {selectedLanguageLabel}
                                         <ChevronDown className="h-4 w-4" />
                                     </Button>
                                 </DropdownMenuTrigger>
@@ -190,7 +187,7 @@ export function Header() {
                                     {languages.map((lang) => (
                                         <DropdownMenuItem
                                             key={lang.code}
-                                            onClick={() => setSelectedLanguage(lang.label)}
+                                            onClick={() => setLanguage(lang.code)}
                                         >
                                             {lang.label}
                                         </DropdownMenuItem>

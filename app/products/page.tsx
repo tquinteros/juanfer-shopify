@@ -61,7 +61,6 @@ function ProductsContent() {
           data?.products.edges.map(({ node: product }) => {
             const firstImage = product.images.edges[0]?.node;
             const price = product.priceRange.minVariantPrice;
-            // Extract numeric ID from Shopify GID (e.g., "gid://shopify/Product/7773569843243" -> "7773569843243")
             const productId = product.id.split('/').pop() || product.id;
 
             return (
