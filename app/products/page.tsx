@@ -1,16 +1,15 @@
 // src/app/products/page.tsx
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useProducts } from '@/components/hooks/useProducts';
-import Image from 'next/image';
-import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { useLanguage } from '@/lib/contexts/language-context';
 import { translations } from '@/lib/i18n/translations';
+import { ProductCard } from '@/components/product/product-card';
 
 function ProductsContent() {
   const { language } = useLanguage();
@@ -27,7 +26,7 @@ function ProductsContent() {
     first: 12,
     query: shopifyQuery,
   });
-
+  
   console.log(data, "products")
 
   if (error) {
@@ -62,67 +61,15 @@ function ProductsContent() {
             </Card>
           ))
         ) : (
-          data?.products.edges.map(({ node: product }) => {
-            const firstImage = product.images.edges[0]?.node;
-            const price = product.priceRange.minVariantPrice;
-            const productId = product.id.split('/').pop() || product.id;
-
-            return (
-              <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <CardHeader className="p-0">
-                  <Link href={`/product/${productId}`} className="block cursor-pointer">
-                    {firstImage ? (
-                      <Image
-                        width={500}
-                        height={500}
-                        src={firstImage.url}
-                        alt={firstImage.altText || product.title}
-                        className="w-full h-64 object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
-                        {t.common.noImage}
-                      </div>
-                    )}
-                  </Link>
-                </CardHeader>
-                <CardContent className="p-4">
-                  <CardTitle className="text-lg mb-2 line-clamp-2">
-                    {product.title}
-                  </CardTitle>
-                  <CardDescription className="line-clamp-2 mb-4">
-                    {product.description}
-                  </CardDescription>
-                  <div className="flex justify-between items-center">
-                    <span className="text-2xl font-bold">
-                      ${parseFloat(price.amount).toFixed(2)} {price.currencyCode}
-                    </span>
-                    {product.availableForSale ? (
-                      <span className="text-sm text-green-600 font-medium">
-                        {t.products.available}
-                      </span>
-                    ) : (
-                      <span className="text-sm text-red-600 font-medium">
-                        {t.products.outOfStock}
-                      </span>
-                    )}
-                  </div>
-                  {product.tags && product.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-3">
-                      {product.tags.slice(0, 3).map((tag) => (
-                        <span
-                          key={tag}
-                          className="text-xs bg-gray-100 px-2 py-1 rounded"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            );
-          })
+          data?.products.edges.map(({ node: product }) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              showTags={true}
+              priceSize="2xl"
+              stockStatusKey="products"
+            />
+          ))
         )}
       </div>
 

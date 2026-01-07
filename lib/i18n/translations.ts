@@ -13,7 +13,8 @@ export type TranslationKey =
   | `auth.${string}`
   | `blogs.${string}`
   | `footer.${string}`
-  | `account.${string}`;
+  | `account.${string}`
+  | `product.${string}`;
 
 export const translations = {
   en: {
@@ -214,6 +215,24 @@ export const translations = {
         },
       },
     },
+    product: {
+      errorLoading: "Error loading product",
+      notFound: "Product not found",
+      noImage: "No Image",
+      inStock: "In Stock",
+      outOfStock: "Out of Stock",
+      description: "Description",
+      color: "Color",
+      size: "Size",
+      selectVariant: "Select Variant",
+      unavailable: "Unavailable",
+      tags: "Tags",
+      quantity: "Quantity",
+      adding: "Adding...",
+      addedToCart: "Added to Cart",
+      addToCart: "Add to Cart",
+      total: "total",
+    },
   },
   es: {
     common: {
@@ -413,6 +432,24 @@ export const translations = {
         },
       },
     },
+    product: {
+      errorLoading: "Error al cargar el producto",
+      notFound: "Producto no encontrado",
+      noImage: "Sin Imagen",
+      inStock: "Disponible",
+      outOfStock: "Agotado",
+      description: "Descripción",
+      color: "Color",
+      size: "Talla",
+      selectVariant: "Seleccionar Variante",
+      unavailable: "No Disponible",
+      tags: "Etiquetas",
+      quantity: "Cantidad",
+      adding: "Agregando...",
+      addedToCart: "Agregado al Carrito",
+      addToCart: "Agregar al Carrito",
+      total: "total",
+    },
   },
   fr: {
     common: {
@@ -611,6 +648,24 @@ export const translations = {
           unfulfilled: "NON_EXPÉDIÉ",
         },
       },
+    },
+    product: {
+      errorLoading: "Erreur lors du chargement du produit",
+      notFound: "Produit non trouvé",
+      noImage: "Pas d'image",
+      inStock: "En Stock",
+      outOfStock: "Rupture de Stock",
+      description: "Description",
+      color: "Couleur",
+      size: "Taille",
+      selectVariant: "Sélectionner la Variante",
+      unavailable: "Indisponible",
+      tags: "Mots-clés",
+      quantity: "Quantité",
+      adding: "Ajout en cours...",
+      addedToCart: "Ajouté au Panier",
+      addToCart: "Ajouter au Panier",
+      total: "total",
     },
   },
 } as const;

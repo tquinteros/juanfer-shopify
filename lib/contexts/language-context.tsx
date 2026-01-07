@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 export const languages = [
-  { code: 'en', label: 'GB English' },
+  { code: 'en', label: 'EN English' },
   { code: 'es', label: 'ES Español' },
   { code: 'fr', label: 'FR Français' },
 ] as const;

@@ -1,6 +1,6 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Carousel,
   CarouselContent,
@@ -17,6 +17,7 @@ import Image from "next/image"
 import { useLanguage } from "@/lib/contexts/language-context"
 import { translations } from "@/lib/i18n/translations"
 import { useEffect, useState, useRef } from "react"
+import { ProductCard } from "@/components/product/product-card"
 
 export default function Home() {
   const { language } = useLanguage()
@@ -163,53 +164,15 @@ export default function Home() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {productsData?.products.edges.slice(0, 4).map(({ node: product }) => {
-                const firstImage = product.images.edges[0]?.node
-                const price = product.priceRange.minVariantPrice
-
-                return (
-                  <Card
-                    key={product.id}
-                    className="overflow-hidden hover:shadow-lg transition-shadow"
-                  >
-                    <CardHeader className="p-0">
-                      {firstImage ? (
-                        <Image
-                          width={500}
-                          height={500}
-                          src={firstImage.url}
-                          alt={firstImage.altText || product.title}
-                          className="w-full h-64 object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
-                          <span className="text-gray-500 text-sm">{t.common.noImage}</span>
-                        </div>
-                      )}
-                    </CardHeader>
-                    <CardContent className="p-4">
-                      <CardTitle className="text-lg mb-2 line-clamp-2">
-                        {product.title}
-                      </CardTitle>
-                      <CardDescription className="line-clamp-2 mb-4">
-                        {product.description}
-                      </CardDescription>
-                      <div className="flex justify-between items-center">
-                        <span className="text-xl font-bold">
-                          ${parseFloat(price.amount).toFixed(2)} {price.currencyCode}
-                        </span>
-                        {product.availableForSale ? (
-                          <span className="text-sm text-green-600 font-medium">
-                            {t.home.inStock}
-                          </span>
-                        ) : (
-                          <span className="text-sm text-red-600 font-medium">{t.home.outOfStock}</span>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )
-              })}
+              {productsData?.products.edges.slice(0, 4).map(({ node: product }) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  showTags={false}
+                  priceSize="xl"
+                  stockStatusKey="home"
+                />
+              ))}
             </div>
           )}
         </div>

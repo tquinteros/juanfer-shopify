@@ -91,11 +91,11 @@ export default function AccountPage() {
 
         <Tabs defaultValue="details" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-8">
-            <TabsTrigger value="details" className="flex items-center gap-2">
+            <TabsTrigger value="details" className="flex items-center cursor-pointer gap-2">
               <User className="h-4 w-4" />
               {t.account.tabs.details}
             </TabsTrigger>
-            <TabsTrigger value="orders" className="flex items-center gap-2">
+            <TabsTrigger value="orders" className="flex items-center cursor-pointer gap-2">
               <Package className="h-4 w-4" />
               {t.account.tabs.orders}
             </TabsTrigger>
