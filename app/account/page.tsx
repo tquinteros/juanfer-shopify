@@ -10,10 +10,14 @@ import { OrdersTab } from "@/components/account/orders-tab"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { User, Package, LogOut } from "lucide-react"
+import { useLanguage } from "@/lib/contexts/language-context"
+import { translations } from "@/lib/i18n/translations"
 
 export default function AccountPage() {
   const router = useRouter()
   const { customer, isLoading, isAuthenticated, logout } = useAuth()
+  const { language } = useLanguage()
+  const t = translations[language]
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -74,14 +78,14 @@ export default function AccountPage() {
       <div className="max-w-4xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold mb-2">My Account</h1>
+            <h1 className="text-3xl font-bold mb-2">{t.account.title}</h1>
             <p className="text-muted-foreground">
-              Welcome back, {customer.firstName || customer.displayName}!
+              {t.account.welcomeBack.replace("{name}", customer.firstName || customer.displayName || "")}
             </p>
           </div>
           <Button variant="destructive" onClick={handleLogout} className="mt-4 md:mt-0">
             <LogOut className="h-4 w-4 mr-2" />
-            Logout
+            {t.account.logout}
           </Button>
         </div>
 
@@ -89,11 +93,11 @@ export default function AccountPage() {
           <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="details" className="flex items-center gap-2">
               <User className="h-4 w-4" />
-              Account Details
+              {t.account.tabs.details}
             </TabsTrigger>
             <TabsTrigger value="orders" className="flex items-center gap-2">
               <Package className="h-4 w-4" />
-              Orders
+              {t.account.tabs.orders}
             </TabsTrigger>
           </TabsList>
 

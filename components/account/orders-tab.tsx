@@ -7,9 +7,27 @@ import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import Image from "next/image"
 import { Package, Calendar, CreditCard } from "lucide-react"
+import { useLanguage } from "@/lib/contexts/language-context"
+import { translations } from "@/lib/i18n/translations"
 
 export function OrdersTab() {
   const { data, isLoading, error } = useOrders({ first: 20 })
+  const { language } = useLanguage()
+  const t = translations[language]
+
+  // Helper function to get translated status
+  const getFinancialStatus = (status: string | null) => {
+    if (!status) return ""
+    const statusKey = status.toLowerCase() as keyof typeof t.account.orders.status
+    return t.account.orders.status[statusKey] || status
+  }
+
+  // Helper function to get translated fulfillment status
+  const getFulfillmentStatus = (status: string | null) => {
+    if (!status) return ""
+    const statusKey = status.toLowerCase() as keyof typeof t.account.orders.fulfillment
+    return t.account.orders.fulfillment[statusKey] || status
+  }
 
   if (isLoading) {
     return (
@@ -33,7 +51,7 @@ export function OrdersTab() {
     return (
       <Alert variant="destructive">
         <AlertDescription>
-          Error loading orders: {error.message}
+          {t.account.orders.errorLoading}: {error.message}
         </AlertDescription>
       </Alert>
     )
@@ -46,9 +64,9 @@ export function OrdersTab() {
       <Card>
         <CardContent className="pt-12 pb-12 text-center">
           <Package className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold mb-2">No orders yet</h3>
+          <h3 className="text-lg font-semibold mb-2">{t.account.orders.noOrdersYet}</h3>
           <p className="text-muted-foreground">
-            When you place orders, they will appear here.
+            {t.account.orders.noOrdersDescription}
           </p>
         </CardContent>
       </Card>
@@ -71,7 +89,7 @@ export function OrdersTab() {
             <CardHeader className="bg-muted/50">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                  <CardTitle className="text-lg">Order {order.name}</CardTitle>
+                  <CardTitle className="text-lg">{t.account.orders.order} {order.name}</CardTitle>
                   <CardDescription className="flex items-center gap-2 mt-1">
                     <Calendar className="h-4 w-4" />
                     {orderDate}
@@ -85,13 +103,13 @@ export function OrdersTab() {
                       }
                     >
                       <CreditCard className="h-3 w-3 mr-1" />
-                      {order.financialStatus}
+                      {getFinancialStatus(order.financialStatus)}
                     </Badge>
                   )}
                   {order.fulfillmentStatus && (
                     <Badge variant="outline">
                       <Package className="h-3 w-3 mr-1" />
-                      {order.fulfillmentStatus}
+                      {getFulfillmentStatus(order.fulfillmentStatus)}
                     </Badge>
                   )}
                 </div>
@@ -123,7 +141,7 @@ export function OrdersTab() {
                         </p>
                       )}
                       <p className="text-sm text-muted-foreground mt-1">
-                        Quantity: {item.quantity}
+                        {t.account.orders.quantity}: {item.quantity}
                       </p>
                     </div>
                     <div className="text-right">
@@ -142,7 +160,7 @@ export function OrdersTab() {
               <div className="border-t pt-4 space-y-2">
                 {order.subtotalPrice && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Subtotal</span>
+                    <span className="text-muted-foreground">{t.account.orders.subtotal}</span>
                     <span>
                       ${parseFloat(order.subtotalPrice.amount).toFixed(2)}{" "}
                       {order.subtotalPrice.currencyCode}
@@ -151,7 +169,7 @@ export function OrdersTab() {
                 )}
                 {order.totalShippingPrice && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Shipping</span>
+                    <span className="text-muted-foreground">{t.account.orders.shipping}</span>
                     <span>
                       ${parseFloat(order.totalShippingPrice.amount).toFixed(2)}{" "}
                       {order.totalShippingPrice.currencyCode}
@@ -160,7 +178,7 @@ export function OrdersTab() {
                 )}
                 {order.totalTax && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Tax</span>
+                    <span className="text-muted-foreground">{t.account.orders.tax}</span>
                     <span>
                       ${parseFloat(order.totalTax.amount).toFixed(2)}{" "}
                       {order.totalTax.currencyCode}
@@ -168,7 +186,7 @@ export function OrdersTab() {
                   </div>
                 )}
                 <div className="flex justify-between text-lg font-bold pt-2 border-t">
-                  <span>Total</span>
+                  <span>{t.account.orders.total}</span>
                   <span>
                     ${totalPrice.toFixed(2)} {order.totalPrice.currencyCode}
                   </span>
@@ -178,7 +196,7 @@ export function OrdersTab() {
               {/* Shipping Address */}
               {order.shippingAddress && (
                 <div className="mt-6 pt-6 border-t">
-                  <h4 className="font-medium mb-2">Shipping Address</h4>
+                  <h4 className="font-medium mb-2">{t.account.orders.shippingAddress}</h4>
                   <div className="text-sm text-muted-foreground">
                     {order.shippingAddress.firstName} {order.shippingAddress.lastName}
                     <br />
