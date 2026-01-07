@@ -16,17 +16,41 @@ import Link from "next/link"
 import Image from "next/image"
 import { useLanguage } from "@/lib/contexts/language-context"
 import { translations } from "@/lib/i18n/translations"
+import { useEffect, useState, useRef } from "react"
 
 export default function Home() {
   const { language } = useLanguage()
   const t = translations[language]
   const { data: productsData, isLoading: productsLoading } = useProducts({ first: 8 })
   const { data: collectionsData, isLoading: collectionsLoading } = useCollections({ first: 10 })
+  const [headerHeight, setHeaderHeight] = useState(0)
+  const heroRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    const updateHeaderHeight = () => {
+      const header = document.querySelector('header')
+      if (header) {
+        setHeaderHeight(header.offsetHeight)
+      }
+    }
+
+    updateHeaderHeight()
+    window.addEventListener('resize', updateHeaderHeight)
+    
+    return () => window.removeEventListener('resize', updateHeaderHeight)
+  }, [])
 
   return (
     <div className="min-h-screen">
-      <section className="relative bg-linear-to-br from-gray-50 to-gray-100 py-20 md:py-32">
-        <div className="container mx-auto px-4">
+      <section 
+        ref={heroRef}
+        className="relative bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center"
+        style={{ 
+          height: headerHeight > 0 ? `calc(100vh - ${headerHeight}px)` : '100vh',
+          minHeight: headerHeight > 0 ? `calc(100vh - ${headerHeight}px)` : '100vh'
+        }}
+      >
+        <div className="container mx-auto px-4 w-full">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 text-gray-900">
               {t.home.heroTitle}

@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useLayoutEffect, startTransition, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 export const languages = [
   { code: 'en', label: 'GB English' },
@@ -14,6 +14,7 @@ interface LanguageContextType {
   language: LanguageCode;
   setLanguage: (language: LanguageCode) => void;
   getLanguageLabel: () => string;
+  isLoading: boolean;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -22,18 +23,25 @@ const STORAGE_KEY = 'language-storage';
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<LanguageCode>('en');
+  const [isLoading, setIsLoading] = useState(true);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const validLanguage = languages.find((lang) => lang.code === stored);
-        if (validLanguage) {
-          startTransition(() => {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          const validLanguage = languages.find((lang) => lang.code === stored);
+          if (validLanguage) {
             setLanguageState(validLanguage.code);
-          });
+          }
         }
+      } catch (error) {
+        console.error('Error reading language from localStorage:', error);
+      } finally {
+        setIsLoading(false);
       }
+    } else {
+      setIsLoading(false);
     }
   }, []);
 
@@ -54,6 +62,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
         language,
         setLanguage,
         getLanguageLabel,
+        isLoading,
       }}
     >
       {children}
