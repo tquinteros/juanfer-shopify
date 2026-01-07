@@ -1,0 +1,506 @@
+// Centralized translations for the entire application
+// Organized by feature/page for better maintainability
+
+import { LanguageCode } from '@/lib/contexts/language-context';
+
+// Type-safe translation structure
+export type TranslationKey = 
+  | `common.${string}`
+  | `home.${string}`
+  | `header.${string}`
+  | `cart.${string}`
+  | `products.${string}`
+  | `auth.${string}`
+  | `blogs.${string}`
+  | `footer.${string}`;
+
+export const translations = {
+  en: {
+    common: {
+      noImage: "No image",
+      loading: "Loading...",
+      error: "An error occurred",
+      tryAgain: "Try again",
+    },
+    home: {
+      heroTitle: "Transform Your Spaces with Premium Microcement",
+      heroDescription: "Discover our collection of high-quality microcement products designed to bring elegance and durability to any surface. Perfect for modern interiors and contemporary designs.",
+      shopNow: "Shop Now",
+      viewSamples: "View Samples",
+      shopByCategory: "Shop by Category",
+      noCollectionsAvailable: "No collections available",
+      bestsellers: "Bestsellers",
+      viewAll: "View All",
+      inStock: "In Stock",
+      outOfStock: "Out of Stock",
+    },
+    header: {
+      searchPlaceholder: "Search for products",
+      noProductsFound: "No products found for",
+      nav: {
+        shop: "Shop",
+        blogs: "Blogs",
+        microcementKits: "Microcement Kits",
+        samples: "Samples",
+        colors: "Colors",
+        inspirations: "Inspirations",
+        knowledge: "Knowledge",
+        collaboration: "Collaboration",
+        contact: "Contact",
+      },
+    },
+    cart: {
+      shoppingCart: "Shopping Cart",
+      item: "item",
+      items: "items",
+      inYourCart: "in your cart",
+      yourCartIsEmpty: "Your cart is empty",
+      startShopping: "Start shopping to add items to your cart",
+      browseProducts: "Browse Products",
+      subtotal: "Subtotal",
+      tax: "Tax",
+      total: "Total",
+      proceedToCheckout: "Proceed to Checkout",
+      continueShopping: "Continue Shopping",
+    },
+    products: {
+      title: "Products",
+      searchResults: "Search Results for",
+      noProductsFound: "No products found",
+      available: "Available",
+      outOfStock: "Out of Stock",
+      moreProductsAvailable: "More products available",
+      errorLoading: "Error loading products",
+    },
+    blogs: {
+      title: "Blog",
+      description: "Discover our latest articles, guides, and insights",
+      errorLoading: "Error loading blogs",
+      noArticlesFound: "No blog articles found",
+      moreArticlesAvailable: "More articles available",
+      backToBlogs: "Back to Blogs",
+      backToAllBlogs: "Back to All Blogs",
+      errorLoadingArticle: "Error loading article",
+      articleNotFound: "Article not found",
+      noContentAvailable: "No content available",
+      tags: "Tags",
+    },
+    auth: {
+      login: {
+        title: "Login",
+        description: "Sign in to your account",
+        email: "Email",
+        emailPlaceholder: "your@email.com",
+        password: "Password",
+        passwordPlaceholder: "••••••••",
+        signIn: "Sign In",
+        signingIn: "Signing in...",
+        loginFailed: "Login failed",
+        invalidEmail: "Invalid email address",
+        passwordMinLength: "Password must be at least 5 characters",
+        dontHaveAccount: "Don't have an account?",
+        createAccountHere: "Create one here",
+      },
+      register: {
+        title: "Create Account",
+        description: "Sign up for a new account",
+        firstName: "First Name",
+        firstNamePlaceholder: "John",
+        lastName: "Last Name",
+        lastNamePlaceholder: "Doe",
+        email: "Email",
+        emailPlaceholder: "your@email.com",
+        password: "Password",
+        passwordPlaceholder: "••••••••",
+        createAccount: "Create Account",
+        creatingAccount: "Creating account...",
+        registrationFailed: "Registration failed",
+        invalidEmail: "Invalid email address",
+        passwordMinLength: "Password must be at least 5 characters",
+        firstNameRequired: "First name is required",
+        lastNameRequired: "Last name is required",
+        alreadyHaveAccount: "Already have an account?",
+        signInHere: "Sign in here",
+      },
+    },
+    footer: {
+      newsletter: {
+        title: "SIGN UP TO OUR MAILING LIST",
+        placeholder: "Enter your email address *",
+      },
+      shop: {
+        title: "SHOP",
+        allProducts: "All Products",
+        microcementKits: "Microcement Kits",
+        samples: "Samples",
+        colors: "Colors",
+        tools: "Tools",
+      },
+      inspiration: {
+        title: "INSPIRATION AND ADVICE",
+        inspirations: "Inspirations",
+        knowledge: "Knowledge",
+        blogs: "Blogs",
+        collaboration: "Collaboration",
+      },
+      about: {
+        title: "ABOUT US",
+        ourStory: "Our Story",
+        sustainability: "Sustainability",
+        workWithUs: "Work with Us",
+        stockists: "Stockists",
+      },
+      help: {
+        title: "HELP & FAQS",
+        contact: "Get in Touch",
+        faq: "Help & FAQs",
+        shipping: "Shipping & Returns",
+        returns: "Returns",
+        terms: "Terms",
+        privacy: "Privacy",
+      },
+      copyright: "FestFloor. All rights reserved.",
+      legal: {
+        terms: "Terms",
+        privacy: "Privacy",
+        cookies: "Cookie Settings",
+      },
+    },
+  },
+  es: {
+    common: {
+      noImage: "Sin imagen",
+      loading: "Cargando...",
+      error: "Ocurrió un error",
+      tryAgain: "Intentar de nuevo",
+    },
+    home: {
+      heroTitle: "Transforma Tus Espacios con Microcemento Premium",
+      heroDescription: "Descubre nuestra colección de productos de microcemento de alta calidad diseñados para aportar elegancia y durabilidad a cualquier superficie. Perfecto para interiores modernos y diseños contemporáneos.",
+      shopNow: "Comprar Ahora",
+      viewSamples: "Ver Muestras",
+      shopByCategory: "Comprar por Categoría",
+      noCollectionsAvailable: "No hay colecciones disponibles",
+      bestsellers: "Más Vendidos",
+      viewAll: "Ver Todo",
+      inStock: "Disponible",
+      outOfStock: "Agotado",
+    },
+    header: {
+      searchPlaceholder: "Buscar productos",
+      noProductsFound: "No se encontraron productos para",
+      nav: {
+        shop: "Tienda",
+        blogs: "Blogs",
+        microcementKits: "Kits de Microcemento",
+        samples: "Muestras",
+        colors: "Colores",
+        inspirations: "Inspiraciones",
+        knowledge: "Conocimiento",
+        collaboration: "Colaboración",
+        contact: "Contacto",
+      },
+    },
+    cart: {
+      shoppingCart: "Carrito de Compras",
+      item: "artículo",
+      items: "artículos",
+      inYourCart: "en tu carrito",
+      yourCartIsEmpty: "Tu carrito está vacío",
+      startShopping: "Comienza a comprar para agregar artículos a tu carrito",
+      browseProducts: "Ver Productos",
+      subtotal: "Subtotal",
+      tax: "Impuesto",
+      total: "Total",
+      proceedToCheckout: "Proceder al Pago",
+      continueShopping: "Seguir Comprando",
+    },
+    products: {
+      title: "Productos",
+      searchResults: "Resultados de búsqueda para",
+      noProductsFound: "No se encontraron productos",
+      available: "Disponible",
+      outOfStock: "Agotado",
+      moreProductsAvailable: "Hay más productos disponibles",
+      errorLoading: "Error al cargar productos",
+    },
+    blogs: {
+      title: "Blog",
+      description: "Descubre nuestros últimos artículos, guías e ideas",
+      errorLoading: "Error al cargar blogs",
+      noArticlesFound: "No se encontraron artículos del blog",
+      moreArticlesAvailable: "Más artículos disponibles",
+      backToBlogs: "Volver a Blogs",
+      backToAllBlogs: "Volver a Todos los Blogs",
+      errorLoadingArticle: "Error al cargar el artículo",
+      articleNotFound: "Artículo no encontrado",
+      noContentAvailable: "No hay contenido disponible",
+      tags: "Etiquetas",
+    },
+    auth: {
+      login: {
+        title: "Iniciar Sesión",
+        description: "Inicia sesión en tu cuenta",
+        email: "Correo Electrónico",
+        emailPlaceholder: "tu@correo.com",
+        password: "Contraseña",
+        passwordPlaceholder: "••••••••",
+        signIn: "Iniciar Sesión",
+        signingIn: "Iniciando sesión...",
+        loginFailed: "Error al iniciar sesión",
+        invalidEmail: "Dirección de correo electrónico inválida",
+        passwordMinLength: "La contraseña debe tener al menos 5 caracteres",
+        dontHaveAccount: "¿No tienes una cuenta?",
+        createAccountHere: "Crea una aquí",
+      },
+      register: {
+        title: "Crear Cuenta",
+        description: "Regístrate para una nueva cuenta",
+        firstName: "Nombre",
+        firstNamePlaceholder: "Juan",
+        lastName: "Apellido",
+        lastNamePlaceholder: "Pérez",
+        email: "Correo Electrónico",
+        emailPlaceholder: "tu@correo.com",
+        password: "Contraseña",
+        passwordPlaceholder: "••••••••",
+        createAccount: "Crear Cuenta",
+        creatingAccount: "Creando cuenta...",
+        registrationFailed: "Error al registrar",
+        invalidEmail: "Dirección de correo electrónico inválida",
+        passwordMinLength: "La contraseña debe tener al menos 5 caracteres",
+        firstNameRequired: "El nombre es requerido",
+        lastNameRequired: "El apellido es requerido",
+        alreadyHaveAccount: "¿Ya tienes una cuenta?",
+        signInHere: "Inicia sesión aquí",
+      },
+    },
+    footer: {
+      newsletter: {
+        title: "SUSCRÍBETE A NUESTRA LISTA DE CORREO",
+        placeholder: "Ingresa tu dirección de correo *",
+      },
+      shop: {
+        title: "TIENDA",
+        allProducts: "Todos los Productos",
+        microcementKits: "Kits de Microcemento",
+        samples: "Muestras",
+        colors: "Colores",
+        tools: "Herramientas",
+      },
+      inspiration: {
+        title: "INSPIRACIÓN Y CONSEJOS",
+        inspirations: "Inspiraciones",
+        knowledge: "Conocimiento",
+        blogs: "Blogs",
+        collaboration: "Colaboración",
+      },
+      about: {
+        title: "SOBRE NOSOTROS",
+        ourStory: "Nuestra Historia",
+        sustainability: "Sostenibilidad",
+        workWithUs: "Trabaja con Nosotros",
+        stockists: "Distribuidores",
+      },
+      help: {
+        title: "AYUDA Y PREGUNTAS",
+        contact: "Contáctanos",
+        faq: "Ayuda y Preguntas",
+        shipping: "Envíos y Devoluciones",
+        returns: "Devoluciones",
+        terms: "Términos",
+        privacy: "Privacidad",
+      },
+      copyright: "FestFloor. Todos los derechos reservados.",
+      legal: {
+        terms: "Términos",
+        privacy: "Privacidad",
+        cookies: "Configuración de Cookies",
+      },
+    },
+  },
+  fr: {
+    common: {
+      noImage: "Pas d'image",
+      loading: "Chargement...",
+      error: "Une erreur s'est produite",
+      tryAgain: "Réessayer",
+    },
+    home: {
+      heroTitle: "Transformez Vos Espaces avec du Microciment Premium",
+      heroDescription: "Découvrez notre collection de produits en microciment de haute qualité conçus pour apporter élégance et durabilité à toute surface. Parfait pour les intérieurs modernes et les designs contemporains.",
+      shopNow: "Acheter Maintenant",
+      viewSamples: "Voir les Échantillons",
+      shopByCategory: "Acheter par Catégorie",
+      noCollectionsAvailable: "Aucune collection disponible",
+      bestsellers: "Meilleures Ventes",
+      viewAll: "Voir Tout",
+      inStock: "En Stock",
+      outOfStock: "Rupture de Stock",
+    },
+    header: {
+      searchPlaceholder: "Rechercher des produits",
+      noProductsFound: "Aucun produit trouvé pour",
+      nav: {
+        shop: "Boutique",
+        blogs: "Blogs",
+        microcementKits: "Kits Microciment",
+        samples: "Échantillons",
+        colors: "Couleurs",
+        inspirations: "Inspirations",
+        knowledge: "Connaissances",
+        collaboration: "Collaboration",
+        contact: "Contact",
+      },
+    },
+    cart: {
+      shoppingCart: "Panier d'Achat",
+      item: "article",
+      items: "articles",
+      inYourCart: "dans votre panier",
+      yourCartIsEmpty: "Votre panier est vide",
+      startShopping: "Commencez vos achats pour ajouter des articles à votre panier",
+      browseProducts: "Parcourir les Produits",
+      subtotal: "Sous-total",
+      tax: "Taxe",
+      total: "Total",
+      proceedToCheckout: "Passer à la Caisse",
+      continueShopping: "Continuer les Achats",
+    },
+    products: {
+      title: "Produits",
+      searchResults: "Résultats de recherche pour",
+      noProductsFound: "Aucun produit trouvé",
+      available: "En Stock",
+      outOfStock: "Rupture de Stock",
+      moreProductsAvailable: "Plus de produits disponibles",
+      errorLoading: "Erreur lors du chargement des produits",
+    },
+    blogs: {
+      title: "Blog",
+      description: "Découvrez nos derniers articles, guides et idées",
+      errorLoading: "Erreur lors du chargement des blogs",
+      noArticlesFound: "Aucun article de blog trouvé",
+      moreArticlesAvailable: "Plus d'articles disponibles",
+      backToBlogs: "Retour aux Blogs",
+      backToAllBlogs: "Retour à Tous les Blogs",
+      errorLoadingArticle: "Erreur lors du chargement de l'article",
+      articleNotFound: "Article non trouvé",
+      noContentAvailable: "Aucun contenu disponible",
+      tags: "Mots-clés",
+    },
+    auth: {
+      login: {
+        title: "Connexion",
+        description: "Connectez-vous à votre compte",
+        email: "E-mail",
+        emailPlaceholder: "votre@email.com",
+        password: "Mot de passe",
+        passwordPlaceholder: "••••••••",
+        signIn: "Se connecter",
+        signingIn: "Connexion en cours...",
+        loginFailed: "Échec de la connexion",
+        invalidEmail: "Adresse e-mail invalide",
+        passwordMinLength: "Le mot de passe doit contenir au moins 5 caractères",
+        dontHaveAccount: "Vous n'avez pas de compte ?",
+        createAccountHere: "Créez-en un ici",
+      },
+      register: {
+        title: "Créer un Compte",
+        description: "Inscrivez-vous pour un nouveau compte",
+        firstName: "Prénom",
+        firstNamePlaceholder: "Jean",
+        lastName: "Nom",
+        lastNamePlaceholder: "Dupont",
+        email: "E-mail",
+        emailPlaceholder: "votre@email.com",
+        password: "Mot de passe",
+        passwordPlaceholder: "••••••••",
+        createAccount: "Créer un Compte",
+        creatingAccount: "Création du compte...",
+        registrationFailed: "Échec de l'inscription",
+        invalidEmail: "Adresse e-mail invalide",
+        passwordMinLength: "Le mot de passe doit contenir au moins 5 caractères",
+        firstNameRequired: "Le prénom est requis",
+        lastNameRequired: "Le nom est requis",
+        alreadyHaveAccount: "Vous avez déjà un compte ?",
+        signInHere: "Connectez-vous ici",
+      },
+    },
+    footer: {
+      newsletter: {
+        title: "INSCRIVEZ-VOUS À NOTRE LISTE DE DIFFUSION",
+        placeholder: "Entrez votre adresse e-mail *",
+      },
+      shop: {
+        title: "BOUTIQUE",
+        allProducts: "Tous les Produits",
+        microcementKits: "Kits Microciment",
+        samples: "Échantillons",
+        colors: "Couleurs",
+        tools: "Outils",
+      },
+      inspiration: {
+        title: "INSPIRATION ET CONSEILS",
+        inspirations: "Inspirations",
+        knowledge: "Connaissances",
+        blogs: "Blogs",
+        collaboration: "Collaboration",
+      },
+      about: {
+        title: "À PROPOS DE NOUS",
+        ourStory: "Notre Histoire",
+        sustainability: "Durabilité",
+        workWithUs: "Travailler avec Nous",
+        stockists: "Revendeurs",
+      },
+      help: {
+        title: "AIDE & FAQ",
+        contact: "Nous Contacter",
+        faq: "Aide & FAQ",
+        shipping: "Livraison & Retours",
+        returns: "Retours",
+        terms: "Conditions",
+        privacy: "Confidentialité",
+      },
+      copyright: "FestFloor. Tous droits réservés.",
+      legal: {
+        terms: "Conditions",
+        privacy: "Confidentialité",
+        cookies: "Paramètres des Cookies",
+      },
+    },
+  },
+} as const;
+
+// Type for the translation structure
+type TranslationStructure = typeof translations.en;
+
+// Helper function to get nested translation value with type safety
+export function getTranslation(
+  language: LanguageCode,
+  key: string
+): string {
+  const keys = key.split('.');
+  let value: unknown = translations[language];
+  
+  for (const k of keys) {
+    if (value && typeof value === 'object' && k in value) {
+      value = (value as Record<string, unknown>)[k];
+    } else {
+      console.warn(`Translation missing for key: ${key} in language: ${language}`);
+      return key; // Fallback to key if translation missing
+    }
+  }
+  
+  return typeof value === 'string' ? value : key;
+}
+
+// Type-safe hook for translations
+export function useTranslations(language: LanguageCode) {
+  return {
+    t: (key: string) => getTranslation(language, key),
+    translations: translations[language] as TranslationStructure,
+  };
+}
+

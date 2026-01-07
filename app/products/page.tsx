@@ -9,8 +9,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
+import { useLanguage } from '@/lib/contexts/language-context';
+import { translations } from '@/lib/i18n/translations';
 
 function ProductsContent() {
+  const { language } = useLanguage();
+  const t = translations[language];
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('name');
   
@@ -31,7 +35,7 @@ function ProductsContent() {
       <div className=" p-6">
         <Alert variant="destructive">
           <AlertDescription>
-            Error al cargar productos: {error.message}
+            {t.products.errorLoading}: {error.message}
           </AlertDescription>
         </Alert>
       </div>
@@ -41,7 +45,7 @@ function ProductsContent() {
   return (
     <div className=" p-6">
       <h1 className="text-4xl font-bold mb-8">
-        {searchQuery ? `Search Results for "${searchQuery}"` : 'Products'}
+        {searchQuery ? `${t.products.searchResults} "${searchQuery}"` : t.products.title}
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -61,7 +65,6 @@ function ProductsContent() {
           data?.products.edges.map(({ node: product }) => {
             const firstImage = product.images.edges[0]?.node;
             const price = product.priceRange.minVariantPrice;
-            // Extract numeric ID from Shopify GID (e.g., "gid://shopify/Product/7773569843243" -> "7773569843243")
             const productId = product.id.split('/').pop() || product.id;
 
             return (
@@ -78,7 +81,7 @@ function ProductsContent() {
                       />
                     ) : (
                       <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
-                        Sin imagen
+                        {t.common.noImage}
                       </div>
                     )}
                   </Link>
@@ -96,11 +99,11 @@ function ProductsContent() {
                     </span>
                     {product.availableForSale ? (
                       <span className="text-sm text-green-600 font-medium">
-                        Disponible
+                        {t.products.available}
                       </span>
                     ) : (
                       <span className="text-sm text-red-600 font-medium">
-                        Agotado
+                        {t.products.outOfStock}
                       </span>
                     )}
                   </div>
@@ -125,17 +128,17 @@ function ProductsContent() {
 
       {data?.products.pageInfo.hasNextPage && (
         <div className="mt-8 text-center">
-          <p className="text-gray-600">Hay más productos disponibles</p>
+          <p className="text-gray-600">{t.products.moreProductsAvailable}</p>
         </div>
       )}
     </div>
   );
-}
-
-function ProductsLoadingFallback() {
+}function ProductsLoadingFallback() {
+  const { language } = useLanguage();
+  const t = translations[language];
   return (
     <div className=" p-6">
-      <h1 className="text-4xl font-bold mb-8">Products</h1>
+      <h1 className="text-4xl font-bold mb-8">{t.products.title}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {Array.from({ length: 8 }).map((_, i) => (
           <Card key={i}>
@@ -160,3 +163,4 @@ export default function ProductsPage() {
     </Suspense>
   );
 }
+

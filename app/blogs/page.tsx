@@ -7,8 +7,12 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import Image from "next/image"
 import Link from "next/link"
 import { Calendar, User } from "lucide-react"
+import { useLanguage } from "@/lib/contexts/language-context"
+import { translations } from "@/lib/i18n/translations"
 
 export default function BlogsPage() {
+  const { language } = useLanguage()
+  const t = translations[language]
   const { data, isLoading, error } = useArticles({ first: 12 })
 
   if (error) {
@@ -16,7 +20,7 @@ export default function BlogsPage() {
       <div className="container mx-auto px-4 py-8">
         <Alert variant="destructive">
           <AlertDescription>
-            Error loading blogs: {error.message}
+            {t.blogs.errorLoading}: {error.message}
           </AlertDescription>
         </Alert>
       </div>
@@ -28,9 +32,9 @@ export default function BlogsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Blog</h1>
+        <h1 className="text-4xl font-bold mb-2">{t.blogs.title}</h1>
         <p className="text-muted-foreground">
-          Discover our latest articles, guides, and insights
+          {t.blogs.description}
         </p>
       </div>
 
@@ -80,7 +84,7 @@ export default function BlogsPage() {
                       </div>
                     ) : (
                       <div className="w-full h-48 bg-linear-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                        <span className="text-gray-500 text-sm">No Image</span>
+                        <span className="text-gray-500 text-sm">{t.common.noImage}</span>
                       </div>
                     )}
                   </CardHeader>
@@ -126,7 +130,7 @@ export default function BlogsPage() {
       ) : (
         <div className="text-center py-12">
           <p className="text-muted-foreground text-lg">
-            No blog articles found
+            {t.blogs.noArticlesFound}
           </p>
         </div>
       )}
@@ -134,7 +138,7 @@ export default function BlogsPage() {
       {data?.articles.pageInfo.hasNextPage && (
         <div className="mt-8 text-center">
           <p className="text-muted-foreground">
-            More articles available
+            {t.blogs.moreArticlesAvailable}
           </p>
         </div>
       )}

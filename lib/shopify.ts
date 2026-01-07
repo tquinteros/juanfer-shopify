@@ -17,21 +17,31 @@ export interface ShopifyResponse<T> {
 export async function shopifyFetch<T>({
   query,
   variables = {},
+  language,
 }: {
   query: string;
   variables?: Record<string, unknown>;
+  language?: string;
 }): Promise<T> {
   if (!STOREFRONT_ACCESS_TOKEN) {
     throw new Error('Missing Storefront Access Token');
   }
 
   try {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': STOREFRONT_ACCESS_TOKEN,
+    };
+
+    // Add Accept-Language header if language is specified
+    // Shopify Storefront API uses this header to return localized content
+    if (language) {
+      headers['Accept-Language'] = language;
+    }
+
     const response = await fetch(SHOPIFY_GRAPHQL_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Shopify-Storefront-Access-Token': STOREFRONT_ACCESS_TOKEN,
-      },
+      headers,
       body: JSON.stringify({
         query,
         variables,

@@ -10,17 +10,19 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { login } from "@/lib/auth"
 import { useAuth } from "@/components/providers/auth-provider"
 import { useRouter } from "next/navigation"
+import { useLanguage } from "@/lib/contexts/language-context"
+import { translations } from "@/lib/i18n/translations"
 
-const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(5, "Password must be at least 5 characters"),
-})
-
-type LoginFormData = z.infer<typeof loginSchema>
+type LoginFormData = {
+  email: string
+  password: string
+}
 
 export function LoginForm() {
   const router = useRouter()
   const { refetch } = useAuth()
+  const { language } = useLanguage()
+  const t = translations[language]
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -34,12 +36,26 @@ export function LoginForm() {
     setIsLoading(true)
     setError(null)
 
+    // Validate with zod
+    const loginSchema = z.object({
+      email: z.string().email(t.auth.login.invalidEmail),
+      password: z.string().min(5, t.auth.login.passwordMinLength),
+    })
+
+    const validation = loginSchema.safeParse(data)
+    if (!validation.success) {
+      const firstError = Object.values(validation.error.flatten().fieldErrors)[0]?.[0]
+      setError(firstError || t.auth.login.loginFailed)
+      setIsLoading(false)
+      return
+    }
+
     try {
-      await login(data)
+      await login(validation.data)
       await refetch()
       router.push("/account")
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed")
+      setError(err instanceof Error ? err.message : t.auth.login.loginFailed)
     } finally {
       setIsLoading(false)
     }
@@ -48,8 +64,8 @@ export function LoginForm() {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle>Login</CardTitle>
-        <CardDescription>Sign in to your account</CardDescription>
+        <CardTitle>{t.auth.login.title}</CardTitle>
+        <CardDescription>{t.auth.login.description}</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -61,13 +77,19 @@ export function LoginForm() {
 
           <div className="space-y-2">
             <label htmlFor="email" className="text-sm font-medium">
-              Email
+              {t.auth.login.email}
             </label>
             <Input
               id="email"
               type="email"
-              placeholder="your@email.com"
-              {...register("email", { required: true })}
+              placeholder={t.auth.login.emailPlaceholder}
+              {...register("email", { 
+                required: t.auth.login.invalidEmail,
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: t.auth.login.invalidEmail,
+                },
+              })}
               disabled={isLoading}
             />
             {errors.email && (
@@ -77,13 +99,19 @@ export function LoginForm() {
 
           <div className="space-y-2">
             <label htmlFor="password" className="text-sm font-medium">
-              Password
+              {t.auth.login.password}
             </label>
             <Input
               id="password"
               type="password"
-              placeholder="••••••••"
-              {...register("password", { required: true })}
+              placeholder={t.auth.login.passwordPlaceholder}
+              {...register("password", { 
+                required: t.auth.login.passwordMinLength,
+                minLength: {
+                  value: 5,
+                  message: t.auth.login.passwordMinLength,
+                },
+              })}
               disabled={isLoading}
             />
             {errors.password && (
@@ -92,7 +120,7 @@ export function LoginForm() {
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Signing in..." : "Sign In"}
+            {isLoading ? t.auth.login.signingIn : t.auth.login.signIn}
           </Button>
         </form>
       </CardContent>
