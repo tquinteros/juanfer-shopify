@@ -19,19 +19,38 @@ export default function AccountPage() {
     if (!isLoading && !isAuthenticated) {
       router.push("/login")
     }
-  }, [isLoading, isAuthenticated, router])
+  }, [isAuthenticated, isLoading, router])
 
-  if (isLoading) {
+  // Show loading state while checking authentication or if not authenticated yet
+  if (isLoading || !isAuthenticated) {
     return (
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto min-h-screen px-4 py-8 md:py-16">
         <div className="max-w-4xl mx-auto">
-          <Skeleton className="h-12 w-64 mb-8" />
+          {/* Header skeleton matching the actual header structure */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+            <div className="mb-4 md:mb-0">
+              <Skeleton className="h-9 w-48 mb-2" />
+              <Skeleton className="h-5 w-64" />
+            </div>
+            <Skeleton className="h-10 w-24 md:w-32" />
+          </div>
+
+          {/* Tabs skeleton */}
+          <div className="mb-8">
+            <div className="grid w-full grid-cols-2 gap-2">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+          </div>
+
+          {/* Content skeleton */}
           <Card>
             <CardHeader>
               <Skeleton className="h-8 w-48" />
               <Skeleton className="h-4 w-64 mt-2" />
             </CardHeader>
             <CardContent className="space-y-4">
+              <Skeleton className="h-20 w-full" />
               <Skeleton className="h-20 w-full" />
               <Skeleton className="h-20 w-full" />
             </CardContent>
@@ -51,9 +70,8 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 md:py-16">
+    <div className="container mx-auto min-h-screen px-4 py-8 md:py-16">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold mb-2">My Account</h1>
@@ -67,7 +85,6 @@ export default function AccountPage() {
           </Button>
         </div>
 
-        {/* Tabs */}
         <Tabs defaultValue="details" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="details" className="flex items-center gap-2">

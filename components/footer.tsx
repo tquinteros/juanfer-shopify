@@ -76,7 +76,7 @@ export function Footer() {
                 <Youtube className="h-5 w-5" />
               </a>
               <a
-                href="https://twitter.com"
+                href="https://x.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-white transition-colors"

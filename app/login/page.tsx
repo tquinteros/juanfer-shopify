@@ -9,7 +9,7 @@ export default function LoginPage() {
   const { language } = useLanguage()
   const t = translations[language]
   return (
-    <div className="container mx-auto px-4 py-16">
+    <div className="container min-h-screen mx-auto px-4 py-16">
       <LoginForm />
       <p className="text-center mt-4 text-sm text-gray-600">
         {t.auth.login.dontHaveAccount} {" "}
