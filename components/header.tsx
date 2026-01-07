@@ -13,10 +13,12 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useLanguage, languages } from "@/lib/contexts/language-context"
+import { translations } from "@/lib/i18n/translations"
 
 export function Header() {
     const { language, setLanguage, getLanguageLabel } = useLanguage()
     const selectedLanguageLabel = getLanguageLabel()
+    const t = translations[language]
     const [searchQuery, setSearchQuery] = useState("")
     const [debouncedQuery, setDebouncedQuery] = useState("")
     const [showSearchResults, setShowSearchResults] = useState(false)
@@ -94,7 +96,7 @@ export function Header() {
                                 <div className="relative flex-1">
                                     <Input
                                         type="search"
-                                        placeholder="Search for products"
+                                        placeholder={t.header.searchPlaceholder}
                                         className="flex-1 rounded-full pr-10"
                                         value={searchQuery}
                                         onChange={handleSearchChange}
@@ -153,7 +155,7 @@ export function Header() {
                                                             />
                                                         ) : (
                                                             <div className="h-16 w-16 bg-gray-200 rounded flex items-center justify-center">
-                                                                <span className="text-gray-400 text-xs">No image</span>
+                                                                <span className="text-gray-400 text-xs">{t.common.noImage}</span>
                                                             </div>
                                                         )}
                                                         <div className="flex-1 min-w-0">
@@ -168,7 +170,7 @@ export function Header() {
                                         </div>
                                     ) : (
                                         <div className="p-4 text-center text-gray-500 text-sm">
-                                            No products found for &quot;{debouncedQuery}&quot;
+                                            {t.header.noProductsFound} &quot;{debouncedQuery}&quot;
                                         </div>
                                     )}
                                 </div>
@@ -230,31 +232,31 @@ export function Header() {
                     <div className="flex items-center justify-between">
                         <nav className="flex items-center gap-6 py-3">
                             <Link href="/products" className="hover:text-gray-300 transition-colors">
-                                Shop
+                                {t.header.nav.shop}
                             </Link>
                             <Link href="/blogs" className="hover:text-gray-300 transition-colors">
-                                Blogs
+                                {t.header.nav.blogs}
                             </Link>
                             <Link href="/microcement-kits" className="hover:text-gray-300 transition-colors">
-                                Microcement Kits
+                                {t.header.nav.microcementKits}
                             </Link>
                             <Link href="/samples" className="hover:text-gray-300 transition-colors">
-                                Samples
+                                {t.header.nav.samples}
                             </Link>
                             <Link href="/colors" className="hover:text-gray-300 transition-colors">
-                                Colors
+                                {t.header.nav.colors}
                             </Link>
                             <Link href="/inspirations" className="hover:text-gray-300 transition-colors">
-                                Inspirations
+                                {t.header.nav.inspirations}
                             </Link>
                             <Link href="/knowledge" className="hover:text-gray-300 transition-colors">
-                                Knowledge
+                                {t.header.nav.knowledge}
                             </Link>
                             <Link href="/collaboration" className="hover:text-gray-300 transition-colors">
-                                Collaboration
+                                {t.header.nav.collaboration}
                             </Link>
                             <Link href="/contact" className="hover:text-gray-300 transition-colors">
-                                Contact
+                                {t.header.nav.contact}
                             </Link>
                         </nav>
 

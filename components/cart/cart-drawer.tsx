@@ -19,8 +19,12 @@ import { ShoppingCart, X, Plus, Minus, Trash2 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
+import { useLanguage } from "@/lib/contexts/language-context"
+import { translations } from "@/lib/i18n/translations"
 
 export function CartDrawer() {
+  const { language } = useLanguage()
+  const t = translations[language]
   const { cart, isLoading, isOpen, closeCart, removeFromCart, updateCartLine } = useCart()
   const { isAuthenticated } = useAuth()
   const [updatingLines, setUpdatingLines] = useState<Set<string>>(new Set())
@@ -80,7 +84,7 @@ export function CartDrawer() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <ShoppingCart className="h-5 w-5" />
-              <DrawerTitle>Shopping Cart</DrawerTitle>
+              <DrawerTitle>{t.cart.shoppingCart}</DrawerTitle>
             </div>
             <DrawerClose asChild>
               <Button variant="ghost" size="icon">
@@ -90,8 +94,8 @@ export function CartDrawer() {
           </div>
           <DrawerDescription>
             {cart?.totalQuantity
-              ? `${cart.totalQuantity} ${cart.totalQuantity === 1 ? "item" : "items"} in your cart`
-              : "Your cart is empty"}
+              ? `${cart.totalQuantity} ${cart.totalQuantity === 1 ? t.cart.item : t.cart.items} ${t.cart.inYourCart}`
+              : t.cart.yourCartIsEmpty}
           </DrawerDescription>
         </DrawerHeader>
 
@@ -112,12 +116,12 @@ export function CartDrawer() {
           ) : isEmpty ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <ShoppingCart className="h-16 w-16 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Your cart is empty</h3>
+              <h3 className="text-lg font-semibold mb-2">{t.cart.yourCartIsEmpty}</h3>
               <p className="text-muted-foreground mb-6">
-                Start shopping to add items to your cart
+                {t.cart.startShopping}
               </p>
               <Button asChild onClick={closeCart}>
-                <Link href="/products">Browse Products</Link>
+                <Link href="/products">{t.cart.browseProducts}</Link>
               </Button>
             </div>
           ) : (
@@ -149,7 +153,7 @@ export function CartDrawer() {
                         />
                       ) : (
                         <div className="h-24 w-24 bg-gray-200 rounded flex items-center justify-center">
-                          <span className="text-gray-400 text-xs">No image</span>
+                          <span className="text-gray-400 text-xs">{t.common.noImage}</span>
                         </div>
                       )}
                     </Link>
@@ -224,7 +228,7 @@ export function CartDrawer() {
                 {/* Price Breakdown */}
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Subtotal</span>
+                    <span className="text-muted-foreground">{t.cart.subtotal}</span>
                     <span className="font-medium">
                       ${parseFloat(cart.cost.subtotalAmount.amount).toFixed(2)}{" "}
                       {cart.cost.subtotalAmount.currencyCode}
@@ -232,7 +236,7 @@ export function CartDrawer() {
                   </div>
                   {cart.cost.totalTaxAmount && parseFloat(cart.cost.totalTaxAmount.amount) > 0 && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Tax</span>
+                      <span className="text-muted-foreground">{t.cart.tax}</span>
                       <span className="font-medium">
                         ${parseFloat(cart.cost.totalTaxAmount.amount).toFixed(2)}{" "}
                         {cart.cost.totalTaxAmount.currencyCode}
@@ -241,7 +245,7 @@ export function CartDrawer() {
                   )}
                   <Separator />
                   <div className="flex justify-between text-lg font-bold">
-                    <span>Total</span>
+                    <span>{t.cart.total}</span>
                     <span>
                       ${parseFloat(cart.cost.totalAmount.amount).toFixed(2)}{" "}
                       {cart.cost.totalAmount.currencyCode}
@@ -256,12 +260,12 @@ export function CartDrawer() {
                   asChild
                 >
                   <a href={getCheckoutUrl()} target="_blank" rel="noopener noreferrer">
-                    Proceed to Checkout
+                    {t.cart.proceedToCheckout}
                   </a>
                 </Button>
 
                 <Button variant="outline" className="w-full" onClick={closeCart}>
-                  Continue Shopping
+                  {t.cart.continueShopping}
                 </Button>
               </div>
             </DrawerFooter>

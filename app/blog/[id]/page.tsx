@@ -9,6 +9,8 @@ import { Calendar, User, ArrowLeft } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { use } from "react"
+import { useLanguage } from "@/lib/contexts/language-context"
+import { translations } from "@/lib/i18n/translations"
 
 interface BlogPageProps {
   params: Promise<{
@@ -17,6 +19,8 @@ interface BlogPageProps {
 }
 
 export default function BlogPage({ params }: BlogPageProps) {
+  const { language } = useLanguage()
+  const t = translations[language]
   const { id } = use(params)
 
   // Convert numeric ID to Shopify GID format if needed
@@ -31,7 +35,7 @@ export default function BlogPage({ params }: BlogPageProps) {
       <div className="container mx-auto px-4 py-8">
         <Alert variant="destructive">
           <AlertDescription>
-            Error loading article: {error.message}
+            {t.blogs.errorLoadingArticle}: {error.message}
           </AlertDescription>
         </Alert>
       </div>
@@ -62,7 +66,7 @@ export default function BlogPage({ params }: BlogPageProps) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Alert>
-          <AlertDescription>Article not found</AlertDescription>
+          <AlertDescription>{t.blogs.articleNotFound}</AlertDescription>
         </Alert>
       </div>
     )
@@ -82,7 +86,7 @@ export default function BlogPage({ params }: BlogPageProps) {
         <Link href="/blogs">
           <Button variant="ghost" className="mb-6">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Blogs
+            {t.blogs.backToBlogs}
           </Button>
         </Link>
 
@@ -143,7 +147,7 @@ export default function BlogPage({ params }: BlogPageProps) {
                 {article.content}
               </div>
             ) : (
-              <p className="text-muted-foreground">No content available</p>
+              <p className="text-muted-foreground">{t.blogs.noContentAvailable}</p>
             )}
           </CardContent>
         </Card>
@@ -151,7 +155,7 @@ export default function BlogPage({ params }: BlogPageProps) {
         {/* Tags */}
         {article.tags && article.tags.length > 0 && (
           <div className="mb-8">
-            <h3 className="text-lg font-semibold mb-3">Tags</h3>
+            <h3 className="text-lg font-semibold mb-3">{t.blogs.tags}</h3>
             <div className="flex flex-wrap gap-2">
               {article.tags.map((tag) => (
                 <span
@@ -170,7 +174,7 @@ export default function BlogPage({ params }: BlogPageProps) {
           <Link href="/blogs">
             <Button variant="outline" size="lg">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to All Blogs
+              {t.blogs.backToAllBlogs}
             </Button>
           </Link>
         </div>

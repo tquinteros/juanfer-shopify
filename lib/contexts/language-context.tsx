@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useLayoutEffect, startTransition, ReactNode } from 'react';
 
 export const languages = [
   { code: 'en', label: 'GB English' },
@@ -21,19 +21,21 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 const STORAGE_KEY = 'language-storage';
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  // Initialize state from localStorage using lazy initializer
-  const [language, setLanguageState] = useState<LanguageCode>(() => {
+  const [language, setLanguageState] = useState<LanguageCode>('en');
+
+  useLayoutEffect(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const validLanguage = languages.find((lang) => lang.code === stored);
         if (validLanguage) {
-          return validLanguage.code;
+          startTransition(() => {
+            setLanguageState(validLanguage.code);
+          });
         }
       }
     }
-    return 'en';
-  });
+  }, []);
 
   const setLanguage = (newLanguage: LanguageCode) => {
     setLanguageState(newLanguage);

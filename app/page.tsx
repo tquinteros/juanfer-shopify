@@ -14,8 +14,12 @@ import { useCollections } from "@/components/hooks/useCollections"
 import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
 import Image from "next/image"
+import { useLanguage } from "@/lib/contexts/language-context"
+import { translations } from "@/lib/i18n/translations"
 
 export default function Home() {
+  const { language } = useLanguage()
+  const t = translations[language]
   const { data: productsData, isLoading: productsLoading } = useProducts({ first: 8 })
   const { data: collectionsData, isLoading: collectionsLoading } = useCollections({ first: 10 })
 
@@ -25,19 +29,17 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 text-gray-900">
-              Transform Your Spaces with Premium Microcement
+              {t.home.heroTitle}
             </h1>
             <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Discover our collection of high-quality microcement products designed to bring
-              elegance and durability to any surface. Perfect for modern interiors and
-              contemporary designs.
+              {t.home.heroDescription}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="lg" className="bg-gray-800 hover:bg-gray-700 text-white">
-                <Link href="/products">Shop Now</Link>
+                <Link href="/products">{t.home.shopNow}</Link>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link href="/samples">View Samples</Link>
+                <Link href="/samples">{t.home.viewSamples}</Link>
               </Button>
             </div>
           </div>
@@ -46,7 +48,7 @@ export default function Home() {
 
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-8 text-center">Shop by Category</h2>
+          <h2 className="text-3xl font-bold mb-8 text-center">{t.home.shopByCategory}</h2>
           {collectionsLoading ? (
             <div className="flex gap-4 overflow-hidden">
               {Array.from({ length: 4 }).map((_, i) => (
@@ -89,7 +91,7 @@ export default function Home() {
                             />
                           ) : (
                             <div className="w-full h-48 bg-linear-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                              <span className="text-gray-500 text-sm">No Image</span>
+                              <span className="text-gray-500 text-sm">{t.common.noImage}</span>
                             </div>
                           )}
                         </CardHeader>
@@ -106,7 +108,7 @@ export default function Home() {
             </Carousel>
           ) : (
             <div className="text-center text-gray-500 py-8">
-              No collections available
+              {t.home.noCollectionsAvailable}
             </div>
           )}
         </div>
@@ -115,9 +117,9 @@ export default function Home() {
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold">Bestsellers</h2>
+            <h2 className="text-3xl font-bold">{t.home.bestsellers}</h2>
             <Button asChild variant="outline">
-              <Link href="/products">View All</Link>
+              <Link href="/products">{t.home.viewAll}</Link>
             </Button>
           </div>
 
@@ -157,7 +159,7 @@ export default function Home() {
                         />
                       ) : (
                         <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
-                          <span className="text-gray-500 text-sm">No Image</span>
+                          <span className="text-gray-500 text-sm">{t.common.noImage}</span>
                         </div>
                       )}
                     </CardHeader>
@@ -174,10 +176,10 @@ export default function Home() {
                         </span>
                         {product.availableForSale ? (
                           <span className="text-sm text-green-600 font-medium">
-                            In Stock
+                            {t.home.inStock}
                           </span>
                         ) : (
-                          <span className="text-sm text-red-600 font-medium">Out of Stock</span>
+                          <span className="text-sm text-red-600 font-medium">{t.home.outOfStock}</span>
                         )}
                       </div>
                     </CardContent>
