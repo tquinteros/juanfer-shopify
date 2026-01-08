@@ -1,6 +1,6 @@
 import { useQuery, useInfiniteQuery, UseQueryOptions, UseInfiniteQueryOptions } from '@tanstack/react-query';
 
-import { ProductsQuery, ProductsQuerySchema, ProductByIdQuery } from '@/lib/types/shopify';
+import { ProductsQuery, ProductsQuerySchema, ProductByIdQuery, ProductByHandleQuery, ProductByHandleQuerySchema } from '@/lib/types/shopify';
 import { shopifyFetch } from '@/lib/shopify';
 import { GET_PRODUCTS_QUERY, GET_PRODUCTS_BY_COLLECTION_QUERY, GET_PRODUCT_BY_HANDLE_QUERY, GET_PRODUCT_BY_ID_QUERY } from '@/lib/queries';
 import { useLanguage } from '@/lib/contexts/language-context';
@@ -143,7 +143,7 @@ interface UseProductByHandleOptions {
 
 export function useProductByHandle(
     { handle, enabled = true, language: languageOverride }: UseProductByHandleOptions,
-    queryOptions?: Omit<UseQueryOptions<ProductsQuery>, 'queryKey' | 'queryFn'>
+    queryOptions?: Omit<UseQueryOptions<ProductByHandleQuery>, 'queryKey' | 'queryFn'>
 ) {
     const { language: contextLanguage } = useLanguage();
     const language = languageOverride ?? contextLanguage;
@@ -151,12 +151,13 @@ export function useProductByHandle(
     return useQuery({
         queryKey: ['product', handle, language],
         queryFn: async () => {
-            const data = await shopifyFetch<ProductsQuery>({
+            const data = await shopifyFetch<ProductByHandleQuery>({
                 query: GET_PRODUCT_BY_HANDLE_QUERY,
                 variables: { handle },
                 language,
             });
-            return data;
+            const validated = ProductByHandleQuerySchema.parse(data);
+            return validated;
         },
         enabled: enabled && !!handle,
         staleTime: 1000 * 60 * 5,

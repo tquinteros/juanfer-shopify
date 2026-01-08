@@ -1,6 +1,6 @@
 "use client"
 
-import { useProductById } from "@/components/hooks/useProducts"
+import { useProductByHandle } from "@/components/hooks/useProducts"
 import { useCart } from "@/components/providers/cart-provider"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -22,19 +22,14 @@ import { translations } from "@/lib/i18n/translations"
 
 interface ProductPageProps {
     params: Promise<{
-        id: string
+        handle: string
     }>
 }
 
 export default function ProductPage({ params }: ProductPageProps) {
-    const { id } = use(params)
+    const { handle } = use(params)
 
-    // Convert numeric ID to Shopify GID format if needed
-    const productId = id.startsWith('gid://')
-        ? id
-        : `gid://shopify/Product/${id}`
-
-    const { data, isLoading, error } = useProductById({ id: productId })
+    const { data, isLoading, error } = useProductByHandle({ handle })
     const { addToCart } = useCart()
     const { language } = useLanguage()
     const t = translations[language]
@@ -47,8 +42,8 @@ export default function ProductPage({ params }: ProductPageProps) {
     const [isAddingToCart, setIsAddingToCart] = useState(false)
     const [addedToCart, setAddedToCart] = useState(false)
 
-    const images = data?.product?.images.edges.map((edge) => edge.node) || []
-    const product = data?.product
+    const images = data?.productByHandle?.images.edges.map((edge) => edge.node) || []
+    const product = data?.productByHandle
 
     // Parse variants into colors and sizes
     const variantOptions = useMemo(() => {
@@ -227,7 +222,7 @@ export default function ProductPage({ params }: ProductPageProps) {
     const maxPrice = parseFloat(product.priceRange.maxVariantPrice.amount)
     const hasPriceRange = minPrice !== maxPrice
     const currencyCode = product.priceRange.minVariantPrice.currencyCode
-    console.log("detalle producto", product)
+    
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">

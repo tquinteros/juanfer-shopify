@@ -74,6 +74,10 @@ export const ProductByIdQuerySchema = z.object({
   product: ProductSchema.nullable(),
 });
 
+export const ProductByHandleQuerySchema = z.object({
+  productByHandle: ProductSchema.nullable(),
+});
+
 export const CollectionImageSchema = z.object({
   url: z.url(),
   altText: z.string().nullable(),
@@ -159,6 +163,7 @@ export type PageInfo = z.infer<typeof PageInfoSchema>;
 export type ProductConnection = z.infer<typeof ProductConnectionSchema>;
 export type ProductsQuery = z.infer<typeof ProductsQuerySchema>;
 export type ProductByIdQuery = z.infer<typeof ProductByIdQuerySchema>;
+export type ProductByHandleQuery = z.infer<typeof ProductByHandleQuerySchema>;
 
 export type Collection = z.infer<typeof CollectionSchema>;
 export type CollectionEdge = z.infer<typeof CollectionEdgeSchema>;

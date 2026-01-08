@@ -9,6 +9,7 @@ import { translations } from "@/lib/i18n/translations"
 interface ProductCardProps {
   product: {
     id: string
+    handle: string
     title: string
     description?: string | null
     images: {
@@ -46,7 +47,6 @@ export function ProductCard({
   
   const firstImage = product.images.edges[0]?.node
   const price = product.priceRange.minVariantPrice
-  const productId = product.id.split("/").pop() || product.id
 
   const priceSizeClasses = {
     lg: "text-lg",
@@ -65,7 +65,7 @@ export function ProductCard({
   return (
     <Card className={`overflow-hidden hover:shadow-lg transition-shadow ${className}`}>
       <CardHeader className="p-0">
-        <Link href={`/product/${productId}`} className="block cursor-pointer">
+        <Link href={`/product/${product.handle}`} className="block cursor-pointer">
           {firstImage ? (
             <Image
               width={500}
@@ -82,7 +82,7 @@ export function ProductCard({
         </Link>
       </CardHeader>
       <CardContent className="p-4">
-        <Link href={`/product/${productId}`}>
+        <Link href={`/product/${product.handle}`}>
           <CardTitle className="text-lg mb-2 line-clamp-2 hover:underline">
             {product.title}
           </CardTitle>

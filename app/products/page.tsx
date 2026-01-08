@@ -220,11 +220,11 @@ function ProductsContent() {
         </div>
       )}
 
-      {!hasNextPage && filteredProducts.length > 0 && (
+      {/* {!hasNextPage && filteredProducts.length > 0 && (
         <div className="mt-8 text-center">
           <p className="text-muted-foreground">All products loaded</p>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
