@@ -3,6 +3,8 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
 import { shopifyFetch } from '@/lib/shopify'
 import { getCustomerToken } from '@/lib/auth'
+import { useLanguage } from '@/lib/contexts/language-context'
+import { translations } from '@/lib/i18n/translations'
 import { CREATE_CART, GET_CART, ADD_TO_CART, REMOVE_FROM_CART, UPDATE_CART_LINES, UPDATE_CART_BUYER_IDENTITY } from '@/lib/queries/cart'
 import type {
   Cart,
@@ -33,6 +35,8 @@ const CartContext = createContext<CartContextType | undefined>(undefined)
 const CART_ID_KEY = 'shopify_cart_id'
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  const { language } = useLanguage()
+  const t = translations[language]
   const [cart, setCart] = useState<Cart | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isOpen, setIsOpen] = useState(false)
@@ -73,6 +77,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             customerAccessToken: customerToken,
           },
         },
+        language,
       })
 
       if (data.cartBuyerIdentityUpdate.cart) {
@@ -81,7 +86,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error('Error associating cart with customer:', error)
     }
-  }, [])
+  }, [language])
 
   // Create new cart
   const createNewCart = useCallback(async () => {
@@ -93,6 +98,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             lines: [],
           },
         },
+        language,
       })
 
       if (data.cartCreate.cart) {
@@ -102,9 +108,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
         await associateCartWithCustomer(data.cartCreate.cart.id)
       }
     } catch (error) {
-      console.error('Error creating cart:', error)
+      console.error(t.cart.errorUpdatingCart || 'Error creating cart:', error)
     }
-  }, [associateCartWithCustomer])
+  }, [associateCartWithCustomer, t, language])
 
   // Fetch existing cart or create new one
   const initializeCart = useCallback(async () => {
@@ -117,6 +123,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         const data = await shopifyFetch<GetCartResponse>({
           query: GET_CART,
           variables: { id: existingCartId },
+          language,
         })
 
         if (data.cart) {
@@ -133,18 +140,41 @@ export function CartProvider({ children }: { children: ReactNode }) {
         await createNewCart()
       }
     } catch (error) {
-      console.error('Error initializing cart:', error)
+      console.error(t.cart.errorUpdatingCart || 'Error initializing cart:', error)
       // Try to create new cart on error
       await createNewCart()
     } finally {
       setIsLoading(false)
     }
-  }, [associateCartWithCustomer, createNewCart])
+  }, [associateCartWithCustomer, createNewCart, t, language])
 
   // Initialize cart on mount
   useEffect(() => {
     initializeCart()
   }, [initializeCart])
+
+  // Refetch cart when language changes (if cart already exists)
+  useEffect(() => {
+    if (cart?.id && !isLoading) {
+      const existingCartId = getCartId()
+      if (existingCartId) {
+        shopifyFetch<GetCartResponse>({
+          query: GET_CART,
+          variables: { id: existingCartId },
+          language,
+        })
+          .then((data) => {
+            if (data.cart) {
+              setCart(data.cart)
+            }
+          })
+          .catch((error) => {
+            console.error(t.cart.errorUpdatingCart || 'Error refetching cart:', error)
+          })
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language])
 
   // Associate cart with customer when cart changes (if customer is logged in)
   useEffect(() => {
@@ -169,7 +199,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
 
       if (!currentCartId) {
-        throw new Error('Failed to create cart')
+        throw new Error(t.cart.failedToCreateCart || 'Failed to create cart')
       }
 
       const lines: CartLineInput[] = [
@@ -185,6 +215,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           cartId: currentCartId,
           lines,
         },
+        language,
       })
 
       if (data.cartLinesAdd.userErrors.length > 0) {
@@ -198,7 +229,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setIsOpen(true) // Open cart drawer after adding item
       }
     } catch (error) {
-      console.error('Error adding to cart:', error)
+      console.error(t.cart.errorAddingToCart || 'Error adding to cart:', error)
       throw error
     }
   }
@@ -214,6 +245,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           cartId: cart.id,
           lineIds: [lineId],
         },
+        language,
       })
 
       if (data.cartLinesRemove.userErrors.length > 0) {
@@ -224,7 +256,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setCart(data.cartLinesRemove.cart)
       }
     } catch (error) {
-      console.error('Error removing from cart:', error)
+      console.error(t.cart.errorRemovingFromCart || 'Error removing from cart:', error)
       throw error
     }
   }
@@ -253,6 +285,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           cartId: cart.id,
           lines,
         },
+        language,
       })
 
       if (data.cartLinesUpdate.userErrors.length > 0) {
@@ -263,7 +296,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setCart(data.cartLinesUpdate.cart)
       }
     } catch (error) {
-      console.error('Error updating cart line:', error)
+      console.error(t.cart.errorUpdatingCart || 'Error updating cart line:', error)
       throw error
     }
   }

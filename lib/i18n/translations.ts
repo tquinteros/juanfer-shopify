@@ -74,6 +74,10 @@ export const translations = {
       total: "Total",
       proceedToCheckout: "Proceed to Checkout",
       continueShopping: "Continue Shopping",
+      failedToCreateCart: "Failed to create cart",
+      errorAddingToCart: "Error adding item to cart",
+      errorRemovingFromCart: "Error removing item from cart",
+      errorUpdatingCart: "Error updating cart",
     },
     products: {
       title: "Products",
@@ -333,6 +337,10 @@ export const translations = {
       total: "Total",
       proceedToCheckout: "Proceder al Pago",
       continueShopping: "Seguir Comprando",
+      failedToCreateCart: "Error al crear el carrito",
+      errorAddingToCart: "Error al agregar artículo al carrito",
+      errorRemovingFromCart: "Error al eliminar artículo del carrito",
+      errorUpdatingCart: "Error al actualizar el carrito",
     },
     products: {
       title: "Productos",
@@ -592,6 +600,10 @@ export const translations = {
       total: "Total",
       proceedToCheckout: "Passer à la Caisse",
       continueShopping: "Continuer les Achats",
+      failedToCreateCart: "Échec de la création du panier",
+      errorAddingToCart: "Erreur lors de l'ajout d'un article au panier",
+      errorRemovingFromCart: "Erreur lors de la suppression d'un article du panier",
+      errorUpdatingCart: "Erreur lors de la mise à jour du panier",
     },
     products: {
       title: "Produits",

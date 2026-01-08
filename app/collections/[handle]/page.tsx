@@ -121,7 +121,7 @@ export default function CollectionPage({ params }: CollectionPageProps) {
                 product={product}
                 showTags={true}
                 priceSize="xl"
-                stockStatusKey="collection"
+                stockStatusKey="products"
               />
             ))}
           </div>
