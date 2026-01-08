@@ -409,3 +409,24 @@ export const GET_PAGE_BY_HANDLE_QUERY = `
     }
   }
 `;
+
+export const GET_MENU_BY_HANDLE_QUERY = `
+  query GetMenuByHandle($handle: String!) {
+    menu(handle: $handle) {
+      id
+      title
+      items {
+        id
+        title
+        url
+        type
+        items {
+          id
+          title
+          url
+          type
+        }
+      }
+    }
+  }
+`;

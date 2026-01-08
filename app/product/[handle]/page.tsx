@@ -45,7 +45,6 @@ export default function ProductPage({ params }: ProductPageProps) {
     const images = data?.productByHandle?.images.edges.map((edge) => edge.node) || []
     const product = data?.productByHandle
 
-    // Parse variants into colors and sizes
     const variantOptions = useMemo(() => {
         if (!product?.variants?.edges) return { colors: [], sizes: [], variantsByOption: {} }
 
@@ -54,7 +53,6 @@ export default function ProductPage({ params }: ProductPageProps) {
         const variantsByOption: Record<string, Record<string, typeof product.variants.edges[0]['node']>> = {}
 
         product.variants.edges.forEach(({ node: variant }) => {
-            // Parse variant title like "Gris / XL" or "Color / Size"
             const parts = variant.title.split(' / ').map(p => p.trim())
 
             if (parts.length >= 2) {
@@ -69,7 +67,6 @@ export default function ProductPage({ params }: ProductPageProps) {
                 }
                 variantsByOption[color][size] = variant
             } else {
-                // Fallback: if format doesn't match, treat as single option
                 const option = parts[0]
                 colors.add(option)
                 if (!variantsByOption[option]) {
@@ -86,7 +83,6 @@ export default function ProductPage({ params }: ProductPageProps) {
         }
     }, [product])
 
-    // Get available sizes for selected color
     const availableSizes = useMemo(() => {
         if (!selectedColor || !variantOptions.variantsByOption[selectedColor]) {
             return []
@@ -94,12 +90,10 @@ export default function ProductPage({ params }: ProductPageProps) {
         return Object.keys(variantOptions.variantsByOption[selectedColor]).sort()
     }, [selectedColor, variantOptions])
 
-    // Get first available variant or selected variant
     const firstAvailableVariant = product?.variants?.edges.find(
         (edge) => edge.node.availableForSale
     )?.node
 
-    // Update selected variant when color and size change
     useEffect(() => {
         if (selectedColor && selectedSize && variantOptions.variantsByOption[selectedColor]?.[selectedSize]) {
             const variant = variantOptions.variantsByOption[selectedColor][selectedSize]
@@ -107,7 +101,6 @@ export default function ProductPage({ params }: ProductPageProps) {
         }
     }, [selectedColor, selectedSize, variantOptions])
 
-    // Set initial color and size
     useEffect(() => {
         if (firstAvailableVariant && !selectedColor && !selectedSize) {
             const parts = firstAvailableVariant.title.split(' / ').map(p => p.trim())
@@ -127,7 +120,6 @@ export default function ProductPage({ params }: ProductPageProps) {
         ? product?.variants?.edges.find((edge) => edge.node.id === selectedVariant)?.node
         : firstAvailableVariant
 
-    // Carousel effect
     useEffect(() => {
         if (!api) {
             return
@@ -145,7 +137,6 @@ export default function ProductPage({ params }: ProductPageProps) {
         }
     }, [api])
 
-    // Set initial variant
     useEffect(() => {
         if (!selectedVariant && firstAvailableVariant) {
             setSelectedVariant(firstAvailableVariant.id)
@@ -222,7 +213,7 @@ export default function ProductPage({ params }: ProductPageProps) {
     const maxPrice = parseFloat(product.priceRange.maxVariantPrice.amount)
     const hasPriceRange = minPrice !== maxPrice
     const currencyCode = product.priceRange.minVariantPrice.currencyCode
-    
+
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
@@ -328,7 +319,6 @@ export default function ProductPage({ params }: ProductPageProps) {
 
                     {product.variants && product.variants.edges.length > 1 && (
                         <div className="space-y-4">
-                            {/* Color Selector */}
                             {variantOptions.colors.length > 0 && (
                                 <div>
                                     <label className="text-sm font-medium mb-2 block">
@@ -364,7 +354,6 @@ export default function ProductPage({ params }: ProductPageProps) {
                                 </div>
                             )}
 
-                            {/* Size Selector */}
                             {selectedColor && availableSizes.length > 0 && (
                                 <div>
                                     <label className="text-sm font-medium mb-2 block">
@@ -394,7 +383,6 @@ export default function ProductPage({ params }: ProductPageProps) {
                                 </div>
                             )}
 
-                            {/* Fallback: If variant format doesn't match expected pattern, show old selector */}
                             {variantOptions.colors.length === 0 && (
                                 <div>
                                     <h3 className="text-lg font-semibold mb-3">{t.product.selectVariant}</h3>
@@ -429,7 +417,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                             )}
                         </div>
                     )}
-                    {product.tags && product.tags.length > 0 && (
+                    {/* {product.tags && product.tags.length > 0 && (
                         <div>
                             <h3 className="text-lg font-semibold mb-3">{t.product.tags}</h3>
                             <div className="flex flex-wrap gap-2">
@@ -443,9 +431,8 @@ export default function ProductPage({ params }: ProductPageProps) {
                                 ))}
                             </div>
                         </div>
-                    )}
+                    )} */}
 
-                    {/* Quantity Selector */}
                     <div>
                         <label className="text-sm font-medium mb-2 block">{t.product.quantity}</label>
                         <div className="flex items-center gap-3">
@@ -467,8 +454,6 @@ export default function ProductPage({ params }: ProductPageProps) {
                             </Button>
                         </div>
                     </div>
-
-                    {/* Add to Cart Button */}
                     <div className="pt-4 space-y-2">
                         <Button
                             size="lg"

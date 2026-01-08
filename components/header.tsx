@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation"
 import { useLanguage, languages } from "@/lib/contexts/language-context"
 import { translations } from "@/lib/i18n/translations"
 import { ThemeToggler } from "./theme-toggler"
+import SubHeader from "./header/sub-header"
 
 export function Header() {
     const { language, setLanguage, getLanguageLabel } = useLanguage()
@@ -406,7 +407,7 @@ export function Header() {
                     <div className="container mx-auto px-4">
                         <div className="flex items-center justify-between">
                             <nav className="flex items-center gap-6 py-3">
-                                <Link href="/products" className="hover:opacity-80 transition-opacity">
+                                {/* <Link href="/products" className="hover:opacity-80 transition-opacity">
                                     {t.header.nav.shop}
                                 </Link>
                                 <Link href="/blogs" className="hover:opacity-80 transition-opacity">
@@ -432,7 +433,8 @@ export function Header() {
                                 </Link>
                                 <Link href="/contact" className="hover:opacity-80 transition-opacity">
                                     {t.header.nav.contact}
-                                </Link>
+                                </Link> */}
+                                <SubHeader />
                             </nav>
 
                             <div className="flex items-center gap-6">

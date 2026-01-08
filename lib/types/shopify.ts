@@ -187,3 +187,36 @@ export type CollectionByIdQuery = z.infer<typeof CollectionByIdQuerySchema>;
 
 export type Page = z.infer<typeof PageSchema>;
 export type PageByHandleQuery = z.infer<typeof PageByHandleQuerySchema>;
+
+// Menu types
+type MenuItemType = {
+  id: string;
+  title: string;
+  url: string;
+  type: string;
+  items?: MenuItemType[];
+};
+
+export const MenuItemSchema: z.ZodType<MenuItemType> = z.lazy(() =>
+  z.object({
+    id: z.string(),
+    title: z.string(),
+    url: z.string(),
+    type: z.string(),
+    items: z.array(MenuItemSchema).optional(),
+  })
+);
+
+export const MenuSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  items: z.array(MenuItemSchema),
+});
+
+export const MenuByHandleQuerySchema = z.object({
+  menu: MenuSchema.nullable(),
+});
+
+export type MenuItem = z.infer<typeof MenuItemSchema>;
+export type Menu = z.infer<typeof MenuSchema>;
+export type MenuByHandleQuery = z.infer<typeof MenuByHandleQuerySchema>;
