@@ -166,7 +166,7 @@ export default function ProductPage({ params }: ProductPageProps) {
 
     if (error) {
         return (
-            <div className="container mx-auto px-4 py-8">
+            <div className="container mx-auto py-8">
                 <Alert variant="destructive">
                     <AlertDescription>
                         {t.product.errorLoading}: {error.message}
@@ -178,7 +178,7 @@ export default function ProductPage({ params }: ProductPageProps) {
 
     if (isLoading) {
         return (
-            <div className="container mx-auto px-4 py-8">
+            <div className="container mx-auto py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div>
                         <Skeleton className="w-full h-[600px] rounded-lg" />
@@ -201,7 +201,7 @@ export default function ProductPage({ params }: ProductPageProps) {
 
     if (!product) {
         return (
-            <div className="container mx-auto px-4 py-8">
+            <div className="container mx-auto py-8">
                 <Alert>
                     <AlertDescription>{t.product.notFound}</AlertDescription>
                 </Alert>
@@ -215,7 +215,7 @@ export default function ProductPage({ params }: ProductPageProps) {
     const currencyCode = product.priceRange.minVariantPrice.currencyCode
 
     return (
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto py-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
                 <div>
                     {images.length > 0 ? (

@@ -32,7 +32,7 @@ export default function BlogPage({ params }: BlogPageProps) {
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto py-8">
         <Alert variant="destructive">
           <AlertDescription>
             {t.blogs.errorLoadingArticle}: {error.message}
@@ -44,7 +44,7 @@ export default function BlogPage({ params }: BlogPageProps) {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto py-8">
         <div className="max-w-4xl mx-auto">
           <Skeleton className="h-12 w-48 mb-6" />
           <Skeleton className="h-8 w-3/4 mb-4" />
@@ -64,7 +64,7 @@ export default function BlogPage({ params }: BlogPageProps) {
 
   if (!article) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto py-8">
         <Alert>
           <AlertDescription>{t.blogs.articleNotFound}</AlertDescription>
         </Alert>
@@ -80,7 +80,7 @@ export default function BlogPage({ params }: BlogPageProps) {
   })
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto py-8">
       <div className="max-w-4xl mx-auto">
         {/* Back Button */}
         <Link href="/blogs">

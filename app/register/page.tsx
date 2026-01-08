@@ -9,7 +9,7 @@ export default function RegisterPage() {
   const { language } = useLanguage()
   const t = translations[language]
   return (
-    <div className="container mx-auto px-4 py-16">
+    <div className="container mx-auto py-16">
       <RegisterForm />
       <p className="text-center mt-4 text-sm text-muted-foreground">
         {t.auth.register.alreadyHaveAccount}{" "}

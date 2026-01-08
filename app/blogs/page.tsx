@@ -17,7 +17,7 @@ export default function BlogsPage() {
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto py-8">
         <Alert variant="destructive">
           <AlertDescription>
             {t.blogs.errorLoading}: {error.message}
@@ -30,7 +30,7 @@ export default function BlogsPage() {
   const articles = data?.articles.edges.map((edge) => edge.node) || []
   console.log(articles, "articles")
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto py-8">
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2">{t.blogs.title}</h1>
         <p className="text-muted-foreground">

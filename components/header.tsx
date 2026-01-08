@@ -217,7 +217,7 @@ export function Header() {
                 )}
 
                 <div className="border-b border-border">
-                    <div className="container mx-auto px-4 py-4">
+                    <div className="container mx-auto py-4">
                         <div className="hidden md:flex items-center justify-between gap-4">
                             <Link href="/" className="flex items-center gap-2">
                                 <div className="flex items-center justify-center w-10 h-10 bg-primary text-primary-foreground rounded font-bold text-lg">
@@ -404,7 +404,7 @@ export function Header() {
 
                 {/* Desktop Navigation */}
                 <div className="hidden md:block bg-[#EEF0F2] dark:bg-[#1C1B1A]">
-                    <div className="container mx-auto px-4">
+                    <div className="container mx-auto">
                         <div className="flex items-center justify-between">
                             <nav className="flex items-center gap-6 py-3">
                                 {/* <Link href="/products" className="hover:opacity-80 transition-opacity">

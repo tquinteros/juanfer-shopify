@@ -18,6 +18,7 @@ import { useLanguage } from "@/lib/contexts/language-context"
 import { translations } from "@/lib/i18n/translations"
 import { useEffect, useState, useRef } from "react"
 import { ProductCard } from "@/components/product/product-card"
+import SpaceCollection from "@/components/collections/SpaceCollection"
 
 export default function Home() {
   const { language } = useLanguage()
@@ -37,21 +38,21 @@ export default function Home() {
 
     updateHeaderHeight()
     window.addEventListener('resize', updateHeaderHeight)
-    
+
     return () => window.removeEventListener('resize', updateHeaderHeight)
   }, [])
 
   return (
     <div className="min-h-screen">
-      <section 
+      <section
         ref={heroRef}
         className="relative flex items-center justify-center"
-        style={{ 
+        style={{
           height: headerHeight > 0 ? `calc(100vh - ${headerHeight}px)` : '100vh',
           minHeight: headerHeight > 0 ? `calc(100vh - ${headerHeight}px)` : '100vh'
         }}
       >
-        <div className="container mx-auto px-4 w-full">
+        <div className="container mx-auto w-full">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 text-foreground">
               {t.home.heroTitle}
@@ -72,7 +73,7 @@ export default function Home() {
       </section>
 
       <section className="py-16">
-        <div className="container mx-auto px-4">
+        <div className="">
           <h2 className="text-3xl font-bold mb-8 text-center">{t.home.shopByCategory}</h2>
           {collectionsLoading ? (
             <div className="flex gap-4 overflow-hidden">
@@ -137,10 +138,11 @@ export default function Home() {
             </div>
           )}
         </div>
+        <SpaceCollection />
       </section>
 
       <section className="py-16">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-3xl font-bold">{t.home.bestsellers}</h2>
             <Button asChild variant="outline">

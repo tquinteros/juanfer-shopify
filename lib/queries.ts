@@ -220,34 +220,21 @@ export const GET_COLLECTIONS_QUERY = `
           title
           description
           handle
+
+          metafields(identifiers: [
+            { namespace: "custom", key: "navigation" }
+          ]) {
+            namespace
+            key
+            value
+            type
+          }
+
           image {
             url
             altText
             width
             height
-          }
-          products(first: 4) {
-            edges {
-              node {
-                id
-                title
-                handle
-                priceRange {
-                  minVariantPrice {
-                    amount
-                    currencyCode
-                  }
-                }
-                images(first: 1) {
-                  edges {
-                    node {
-                      url
-                      altText
-                    }
-                  }
-                }
-              }
-            }
           }
         }
       }
@@ -260,6 +247,8 @@ export const GET_COLLECTIONS_QUERY = `
     }
   }
 `;
+
+
 
 export const GET_COLLECTION_BY_HANDLE_QUERY = `
   query GetCollectionByHandle($handle: String!, $first: Int, $after: String) {

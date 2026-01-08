@@ -12,7 +12,7 @@ const FaqPage = () => {
 
     if (isLoading) {
         return (
-            <div className="container mx-auto px-4 py-8">
+            <div className="container mx-auto py-8">
                 <Skeleton className="h-10 w-64 mb-6" />
                 <Skeleton className="h-4 w-full mb-4" />
                 <Skeleton className="h-4 w-full mb-4" />
@@ -23,7 +23,7 @@ const FaqPage = () => {
 
     if (error) {
         return (
-            <div className="container mx-auto px-4 py-8">
+            <div className="container mx-auto py-8">
                 <Alert variant="destructive">
                     <AlertDescription>
                         Error al cargar la página: {error.message}
@@ -35,7 +35,7 @@ const FaqPage = () => {
 
     if (!data?.page) {
         return (
-            <div className="container mx-auto px-4 py-8">
+            <div className="container mx-auto py-8">
                 <Alert>
                     <AlertDescription>
                         La página no fue encontrada.
@@ -48,7 +48,7 @@ const FaqPage = () => {
     const { title, body } = data.page;
 
     return (
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto py-8">
             <h1 className="text-4xl font-bold mb-8">{title}</h1>
             <div 
                 className="prose prose-lg max-w-none"

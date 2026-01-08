@@ -30,7 +30,7 @@ export default function CollectionPage({ params }: CollectionPageProps) {
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto py-8">
         <Alert variant="destructive">
           <AlertDescription>
             {t.common.errorLoading}: {error.message}
@@ -42,7 +42,7 @@ export default function CollectionPage({ params }: CollectionPageProps) {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto py-8">
         <div className="mb-8">
           <Skeleton className="h-12 w-48 mb-6" />
           <Skeleton className="h-8 w-3/4 mb-4" />
@@ -65,7 +65,7 @@ export default function CollectionPage({ params }: CollectionPageProps) {
 
   if (!collection) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto py-8">
         <Alert>
           <AlertDescription>{t.common.notFound}</AlertDescription>
         </Alert>
@@ -76,7 +76,7 @@ export default function CollectionPage({ params }: CollectionPageProps) {
   const products = collection.products.edges
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto py-8">
       {/* Back Button */}
       <Link href="/">
         <Button variant="ghost" className="mb-6">

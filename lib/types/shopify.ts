@@ -97,11 +97,19 @@ export const CollectionProductPreviewSchema = z.object({
   }),
 });
 
+export const MetafieldSchema = z.object({
+  namespace: z.string(),
+  key: z.string(),
+  value: z.string(),
+  type: z.string(),
+}).nullable();
+
 export const CollectionSchema = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string().nullable().optional(),
   handle: z.string(),
+  metafields: z.array(MetafieldSchema).nullable().optional(),
   image: CollectionImageSchema.nullable().optional(),
   products: z.object({
     edges: z.array(
