@@ -11,7 +11,7 @@ export default function RegisterPage() {
   return (
     <div className="container mx-auto px-4 py-16">
       <RegisterForm />
-      <p className="text-center mt-4 text-sm text-gray-600">
+      <p className="text-center mt-4 text-sm text-muted-foreground">
         {t.auth.register.alreadyHaveAccount}{" "}
         <Link href="/login" className="text-primary hover:underline font-medium">
           {t.auth.register.signInHere}

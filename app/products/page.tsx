@@ -75,7 +75,7 @@ function ProductsContent() {
 
       {data?.products.pageInfo.hasNextPage && (
         <div className="mt-8 text-center">
-          <p className="text-gray-600">{t.products.moreProductsAvailable}</p>
+          <p className="text-muted-foreground">{t.products.moreProductsAvailable}</p>
         </div>
       )}
     </div>

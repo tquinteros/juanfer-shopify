@@ -257,7 +257,7 @@ export function CartDrawer() {
 
                 {/* Checkout Button */}
                 <Button
-                  className="w-full bg-gray-800 hover:bg-gray-700 text-sm sm:text-base"
+                  className="w-full"
                   size="default"
                   asChild
                 >

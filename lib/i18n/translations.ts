@@ -4,7 +4,7 @@
 import { LanguageCode } from '@/lib/contexts/language-context';
 
 // Type-safe translation structure
-export type TranslationKey = 
+export type TranslationKey =
   | `common.${string}`
   | `home.${string}`
   | `header.${string}`
@@ -14,7 +14,8 @@ export type TranslationKey =
   | `blogs.${string}`
   | `footer.${string}`
   | `account.${string}`
-  | `product.${string}`;
+  | `product.${string}`
+  | `contact.${string}`;
 
 export const translations = {
   en: {
@@ -40,6 +41,9 @@ export const translations = {
       searchPlaceholder: "Search for products",
       noProductsFound: "No products found for",
       nav: {
+        language: "Language",
+        account: "Account",
+        wishlist: "Wishlist",
         shop: "Shop",
         blogs: "Blogs",
         microcementKits: "Microcement Kits",
@@ -233,6 +237,28 @@ export const translations = {
       addToCart: "Add to Cart",
       total: "total",
     },
+    contact: {
+      title: "Contact Us",
+      description: "Fill out the form below and we'll get back to you as soon as possible.",
+      firstName: "First Name",
+      firstNamePlaceholder: "John",
+      lastName: "Last Name",
+      lastNamePlaceholder: "Doe",
+      email: "Email",
+      emailPlaceholder: "your@email.com",
+      reason: "Reason for Contacting",
+      reasonPlaceholder: "Please tell us how we can help you...",
+      submit: "Submit",
+      submitting: "Submitting...",
+      reset: "Reset",
+      submitSuccess: "Form submitted successfully",
+      validation: {
+        firstNameMin: "First name must be at least 2 characters",
+        lastNameMin: "Last name must be at least 2 characters",
+        emailInvalid: "Please enter a valid email address",
+        reasonMin: "Please provide at least 10 characters for your message",
+      },
+    },
   },
   es: {
     common: {
@@ -257,6 +283,9 @@ export const translations = {
       searchPlaceholder: "Buscar productos",
       noProductsFound: "No se encontraron productos para",
       nav: {
+        language: "Idioma",
+        account: "Mi Cuenta",
+        wishlist: "Wishlist",
         shop: "Tienda",
         blogs: "Blogs",
         microcementKits: "Kits de Microcemento",
@@ -450,6 +479,28 @@ export const translations = {
       addToCart: "Agregar al Carrito",
       total: "total",
     },
+    contact: {
+      title: "Contáctanos",
+      description: "Completa el formulario a continuación y nos pondremos en contacto contigo lo antes posible.",
+      firstName: "Nombre",
+      firstNamePlaceholder: "Juan",
+      lastName: "Apellido",
+      lastNamePlaceholder: "Pérez",
+      email: "Correo Electrónico",
+      emailPlaceholder: "tu@correo.com",
+      reason: "Motivo de Contacto",
+      reasonPlaceholder: "Por favor, cuéntanos cómo podemos ayudarte...",
+      submit: "Enviar",
+      submitting: "Enviando...",
+      reset: "Resetear",
+      submitSuccess: "Formulario enviado exitosamente",
+      validation: {
+        firstNameMin: "El nombre debe tener al menos 2 caracteres",
+        lastNameMin: "El apellido debe tener al menos 2 caracteres",
+        emailInvalid: "Por favor ingresa una dirección de correo electrónico válida",
+        reasonMin: "Por favor proporciona al menos 10 caracteres para tu mensaje",
+      },
+    },
   },
   fr: {
     common: {
@@ -474,6 +525,9 @@ export const translations = {
       searchPlaceholder: "Rechercher des produits",
       noProductsFound: "Aucun produit trouvé pour",
       nav: {
+        language: "Langue",
+        account: "Mon Compte",
+        wishlist: "Wishlist",
         shop: "Boutique",
         blogs: "Blogs",
         microcementKits: "Kits Microciment",
@@ -667,6 +721,28 @@ export const translations = {
       addToCart: "Ajouter au Panier",
       total: "total",
     },
+    contact: {
+      title: "Contactez-nous",
+      description: "Remplissez le formulaire ci-dessous et nous vous répondrons dans les plus brefs délais.",
+      firstName: "Prénom",
+      firstNamePlaceholder: "Jean",
+      lastName: "Nom",
+      lastNamePlaceholder: "Dupont",
+      email: "E-mail",
+      emailPlaceholder: "votre@email.com",
+      reason: "Raison du Contact",
+      reasonPlaceholder: "Veuillez nous dire comment nous pouvons vous aider...",
+      submit: "Soumettre",
+      submitting: "Envoi en cours...",
+      reset: "Réinitialiser",
+      submitSuccess: "Formulaire soumis avec succès",
+      validation: {
+        firstNameMin: "Le prénom doit contenir au moins 2 caractères",
+        lastNameMin: "Le nom doit contenir au moins 2 caractères",
+        emailInvalid: "Veuillez entrer une adresse e-mail valide",
+        reasonMin: "Veuillez fournir au moins 10 caractères pour votre message",
+      },
+    },
   },
 } as const;
 
@@ -680,7 +756,7 @@ export function getTranslation(
 ): string {
   const keys = key.split('.');
   let value: unknown = translations[language];
-  
+
   for (const k of keys) {
     if (value && typeof value === 'object' && k in value) {
       value = (value as Record<string, unknown>)[k];
@@ -689,7 +765,7 @@ export function getTranslation(
       return key; // Fallback to key if translation missing
     }
   }
-  
+
   return typeof value === 'string' ? value : key;
 }
 

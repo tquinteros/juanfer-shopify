@@ -5,7 +5,7 @@ import { User, Heart, ShoppingCart, ChevronDown, Phone, Mail, Search, Menu, X } 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from "@/components/ui/drawer"
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer"
 import { useCart } from "@/components/providers/cart-provider"
 import { CartDrawer } from "@/components/cart/cart-drawer"
 import { useProductSearch } from "@/components/hooks/useProductSearch"
@@ -16,6 +16,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useLanguage, languages } from "@/lib/contexts/language-context"
 import { translations } from "@/lib/i18n/translations"
+import { ThemeToggler } from "./theme-toggler"
 
 export function Header() {
     const { language, setLanguage, getLanguageLabel } = useLanguage()
@@ -126,10 +127,9 @@ export function Header() {
 
     return (
         <>
-            <header className="w-full bg-white sticky top-0 z-50">
-                {/* Mobile Search Overlay */}
+            <header className="w-full sticky bg-white dark:bg-black top-0 z-50">
                 {mobileSearchOpen && (
-                    <div className="fixed inset-0 bg-white z-60 md:hidden">
+                    <div className="fixed inset-0 z-60 md:hidden">
                         <div className="p-4">
                             <form onSubmit={handleMobileSearchSubmit} className="flex items-center gap-2 mb-4">
                                 <Input
@@ -176,7 +176,7 @@ export function Header() {
                                                     key={product.id}
                                                     href={`/product/${productId}`}
                                                     onClick={handleMobileProductClick}
-                                                    className="flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors rounded-lg"
+                                                    className="flex items-center gap-3 p-3 hover:bg-accent transition-colors rounded-lg"
                                                 >
                                                     {firstImage ? (
                                                         <Image
@@ -187,13 +187,13 @@ export function Header() {
                                                             className="h-20 w-20 object-cover rounded"
                                                         />
                                                     ) : (
-                                                        <div className="h-20 w-20 bg-gray-200 rounded flex items-center justify-center">
-                                                            <span className="text-gray-400 text-xs">{t.common.noImage}</span>
+                                                        <div className="h-20 w-20 rounded flex items-center justify-center">
+                                                            <span className="text-muted-foreground text-xs">{t.common.noImage}</span>
                                                         </div>
                                                     )}
                                                     <div className="flex-1 min-w-0">
                                                         <h4 className="font-medium text-sm">{product.title}</h4>
-                                                        <p className="text-sm text-gray-600">
+                                                        <p className="text-sm text-muted-foreground">
                                                             ${parseFloat(price.amount).toFixed(2)} {price.currencyCode}
                                                         </p>
                                                     </div>
@@ -202,11 +202,11 @@ export function Header() {
                                         })}
                                     </div>
                                 ) : mobileDebouncedQuery.length >= 2 ? (
-                                    <div className="text-center text-gray-500 py-8">
+                                    <div className="text-center text-muted-foreground py-8">
                                         {t.header.noProductsFound} &quot;{mobileDebouncedQuery}&quot;
                                     </div>
                                 ) : (
-                                    <div className="text-center text-gray-500 py-8">
+                                    <div className="text-center text-muted-foreground py-8">
                                         {t.header.searchPlaceholder}
                                     </div>
                                 )}
@@ -215,7 +215,7 @@ export function Header() {
                     </div>
                 )}
 
-                <div className="bg-white border-b border-border">
+                <div className="border-b border-border">
                     <div className="container mx-auto px-4 py-4">
                         <div className="hidden md:flex items-center justify-between gap-4">
                             <Link href="/" className="flex items-center gap-2">
@@ -238,20 +238,20 @@ export function Header() {
                                         />
                                         {isSearching && (
                                             <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                                                <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600"></div>
+                                                <div className="h-4 w-4 animate-spin rounded-full border-2 border-border border-t-foreground"></div>
                                             </div>
                                         )}
                                     </div>
                                     <Button
                                         type="submit"
-                                        className="rounded-full bg-gray-800 hover:bg-gray-700 text-white"
+                                        className="rounded-full"
                                     >
                                         <Search className="h-4 w-4" />
                                     </Button>
                                 </form>
 
                                 {showSearchResults && debouncedQuery.length >= 2 && (
-                                    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+                                    <div className="absolute top-full left-0 right-0 mt-2 bg-background border border-border rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
                                         {isSearching ? (
                                             <div className="p-4 space-y-3">
                                                 {Array.from({ length: 3 }).map((_, i) => (
@@ -276,7 +276,7 @@ export function Header() {
                                                             key={product.id}
                                                             href={`/product/${productId}`}
                                                             onClick={handleProductClick}
-                                                            className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                                                            className="flex items-center gap-3 px-4 py-3 hover:bg-accent transition-colors"
                                                         >
                                                             {firstImage ? (
                                                                 <Image
@@ -287,13 +287,13 @@ export function Header() {
                                                                     className="h-16 w-16 object-cover rounded"
                                                                 />
                                                             ) : (
-                                                                <div className="h-16 w-16 bg-gray-200 rounded flex items-center justify-center">
-                                                                    <span className="text-gray-400 text-xs">{t.common.noImage}</span>
+                                                                <div className="h-16 w-16 rounded flex items-center justify-center">
+                                                                    <span className="text-muted-foreground text-xs">{t.common.noImage}</span>
                                                                 </div>
                                                             )}
                                                             <div className="flex-1 min-w-0">
                                                                 <h4 className="font-medium text-sm truncate">{product.title}</h4>
-                                                                <p className="text-sm text-gray-600">
+                                                                <p className="text-sm text-muted-foreground">
                                                                     ${parseFloat(price.amount).toFixed(2)} {price.currencyCode}
                                                                 </p>
                                                             </div>
@@ -302,7 +302,7 @@ export function Header() {
                                                 })}
                                             </div>
                                         ) : (
-                                            <div className="p-4 text-center text-gray-500 text-sm">
+                                            <div className="p-4 text-center text-muted-foreground text-sm">
                                                 {t.header.noProductsFound} &quot;{debouncedQuery}&quot;
                                             </div>
                                         )}
@@ -329,7 +329,7 @@ export function Header() {
                                         ))}
                                     </DropdownMenuContent>
                                 </DropdownMenu>
-
+                                <ThemeToggler />
                                 <Link href="/account">
                                     <Button variant="ghost" size="icon" className="relative">
                                         <User className="h-5 w-5" />
@@ -338,7 +338,7 @@ export function Header() {
 
                                 <Button variant="ghost" size="icon" className="relative">
                                     <Heart className="h-5 w-5" />
-                                    <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-black text-xs text-white">
+                                    <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
                                         0
                                     </span>
                                 </Button>
@@ -350,7 +350,7 @@ export function Header() {
                                 >
                                     <ShoppingCart className="h-5 w-5" />
                                     {cartQuantity > 0 && (
-                                        <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-black text-xs text-white">
+                                        <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
                                             {cartQuantity}
                                         </span>
                                     )}
@@ -383,7 +383,7 @@ export function Header() {
                                 >
                                     <ShoppingCart className="h-5 w-5" />
                                     {cartQuantity > 0 && (
-                                        <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-black text-xs text-white">
+                                        <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
                                             {cartQuantity}
                                         </span>
                                     )}
@@ -402,35 +402,35 @@ export function Header() {
                 </div>
 
                 {/* Desktop Navigation */}
-                <div className="hidden md:block bg-gray-800 text-white">
+                <div className="hidden md:block bg-[#EEF0F2] dark:bg-[#1C1B1A]">
                     <div className="container mx-auto px-4">
                         <div className="flex items-center justify-between">
                             <nav className="flex items-center gap-6 py-3">
-                                <Link href="/products" className="hover:text-gray-300 transition-colors">
+                                <Link href="/products" className="hover:opacity-80 transition-opacity">
                                     {t.header.nav.shop}
                                 </Link>
-                                <Link href="/blogs" className="hover:text-gray-300 transition-colors">
+                                <Link href="/blogs" className="hover:opacity-80 transition-opacity">
                                     {t.header.nav.blogs}
                                 </Link>
-                                <Link href="/microcement-kits" className="hover:text-gray-300 transition-colors">
+                                <Link href="/microcement-kits" className="hover:opacity-80 transition-opacity">
                                     {t.header.nav.microcementKits}
                                 </Link>
-                                <Link href="/samples" className="hover:text-gray-300 transition-colors">
+                                <Link href="/samples" className="hover:opacity-80 transition-opacity">
                                     {t.header.nav.samples}
                                 </Link>
-                                <Link href="/colors" className="hover:text-gray-300 transition-colors">
+                                <Link href="/colors" className="hover:opacity-80 transition-opacity">
                                     {t.header.nav.colors}
                                 </Link>
-                                <Link href="/inspirations" className="hover:text-gray-300 transition-colors">
+                                <Link href="/inspirations" className="hover:opacity-80 transition-opacity">
                                     {t.header.nav.inspirations}
                                 </Link>
-                                <Link href="/knowledge" className="hover:text-gray-300 transition-colors">
+                                <Link href="/knowledge" className="hover:opacity-80 transition-opacity">
                                     {t.header.nav.knowledge}
                                 </Link>
-                                <Link href="/collaboration" className="hover:text-gray-300 transition-colors">
+                                <Link href="/collaboration" className="hover:opacity-80 transition-opacity">
                                     {t.header.nav.collaboration}
                                 </Link>
-                                <Link href="/contact" className="hover:text-gray-300 transition-colors">
+                                <Link href="/contact" className="hover:opacity-80 transition-opacity">
                                     {t.header.nav.contact}
                                 </Link>
                             </nav>
@@ -438,14 +438,14 @@ export function Header() {
                             <div className="flex items-center gap-6">
                                 <a
                                     href="tel:+48537991307"
-                                    className="flex items-center gap-2 hover:text-gray-300 transition-colors underline"
+                                    className="flex items-center gap-2 hover:opacity-80 transition-opacity underline"
                                 >
                                     <Phone className="h-4 w-4" />
                                     <span>+48 537 991 307</span>
                                 </a>
                                 <a
                                     href="mailto:hello@festfloor.com"
-                                    className="flex items-center gap-2 hover:text-gray-300 transition-colors underline"
+                                    className="flex items-center gap-2 hover:opacity-80 transition-opacity underline"
                                 >
                                     <Mail className="h-4 w-4" />
                                     <span>hello@festfloor.com</span>
@@ -458,13 +458,12 @@ export function Header() {
 
             <Drawer open={mobileMenuOpen} onOpenChange={setMobileMenuOpen} direction="right">
                 <DrawerContent className="h-full max-h-full rounded-none">
-                    <DrawerHeader>
+                    <DrawerHeader hidden>
                         <DrawerTitle>{t.header.nav.shop}</DrawerTitle>
-                        <DrawerClose />
                     </DrawerHeader>
-                    <div className="px-4 pb-8 overflow-y-auto">
+                    <div className="px-4 py-8 overflow-y-auto">
                         <div className="mb-6">
-                            <p className="text-sm font-medium text-gray-500 mb-2">Language</p>
+                            {/* <p className="text-sm font-medium text-gray-500 mb-2">{t.header.nav.language}</p> */}
                             <div className="flex flex-wrap gap-2">
                                 {languages.map((lang) => (
                                     <Button
@@ -485,12 +484,12 @@ export function Header() {
                             <Link href="/account" onClick={handleNavLinkClick}>
                                 <Button variant="ghost" className="w-full justify-start gap-2">
                                     <User className="h-5 w-5" />
-                                    Account
+                                    {t.header.nav.account}
                                 </Button>
                             </Link>
                             <Button variant="ghost" className="w-full justify-start gap-2">
                                 <Heart className="h-5 w-5" />
-                                Wishlist (0)
+                                {t.header.nav.wishlist} (0)
                             </Button>
                         </div>
 
@@ -549,14 +548,14 @@ export function Header() {
                         <div className="space-y-2">
                             <a
                                 href="tel:+48537991307"
-                                className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900"
+                                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
                             >
                                 <Phone className="h-4 w-4" />
                                 <span>+48 537 991 307</span>
                             </a>
                             <a
                                 href="mailto:hello@festfloor.com"
-                                className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900"
+                                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
                             >
                                 <Mail className="h-4 w-4" />
                                 <span>hello@festfloor.com</span>

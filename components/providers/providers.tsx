@@ -8,6 +8,7 @@ import { CartProvider } from './cart-provider';
 import { LanguageProvider } from '@/lib/contexts/language-context';
 import { LoadingOverlay } from '@/components/ui/loading-overlay';
 import { useState } from 'react';
+import { ThemeProvider } from './theme-provider';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -28,7 +29,14 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <LoadingOverlay />
         <AuthProvider>
           <CartProvider>
-            {children}
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+            </ThemeProvider>
           </CartProvider>
         </AuthProvider>
       </LanguageProvider>

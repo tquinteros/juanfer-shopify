@@ -11,7 +11,7 @@ export default function LoginPage() {
   return (
     <div className="container min-h-screen mx-auto px-4 py-16">
       <LoginForm />
-      <p className="text-center mt-4 text-sm text-gray-600">
+      <p className="text-center mt-4 text-sm text-muted-foreground">
         {t.auth.login.dontHaveAccount} {" "}
         <Link href="/register" className="text-primary hover:underline font-medium">
           {t.auth.login.createAccountHere}

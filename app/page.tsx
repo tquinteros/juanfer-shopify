@@ -45,7 +45,7 @@ export default function Home() {
     <div className="min-h-screen">
       <section 
         ref={heroRef}
-        className="relative bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center"
+        className="relative flex items-center justify-center"
         style={{ 
           height: headerHeight > 0 ? `calc(100vh - ${headerHeight}px)` : '100vh',
           minHeight: headerHeight > 0 ? `calc(100vh - ${headerHeight}px)` : '100vh'
@@ -53,14 +53,14 @@ export default function Home() {
       >
         <div className="container mx-auto px-4 w-full">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-gray-900">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-foreground">
               {t.home.heroTitle}
             </h1>
-            <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
               {t.home.heroDescription}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="bg-gray-800 hover:bg-gray-700 text-white">
+              <Button asChild size="lg">
                 <Link href="/products">{t.home.shopNow}</Link>
               </Button>
               <Button asChild size="lg" variant="outline">
@@ -71,7 +71,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 bg-white">
+      <section className="py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-8 text-center">{t.home.shopByCategory}</h2>
           {collectionsLoading ? (
@@ -115,8 +115,8 @@ export default function Home() {
                               className="w-full h-48 object-cover"
                             />
                           ) : (
-                            <div className="w-full h-48 bg-linear-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                              <span className="text-gray-500 text-sm">{t.common.noImage}</span>
+                            <div className="w-full h-48 flex items-center justify-center">
+                              <span className="text-muted-foreground text-sm">{t.common.noImage}</span>
                             </div>
                           )}
                         </CardHeader>
@@ -132,14 +132,14 @@ export default function Home() {
               <CarouselNext className="right-0" />
             </Carousel>
           ) : (
-            <div className="text-center text-gray-500 py-8">
+            <div className="text-center text-muted-foreground py-8">
               {t.home.noCollectionsAvailable}
             </div>
           )}
         </div>
       </section>
 
-      <section className="py-16 bg-gray-50">
+      <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-3xl font-bold">{t.home.bestsellers}</h2>
