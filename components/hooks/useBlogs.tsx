@@ -17,24 +17,29 @@ import {
   ArticleByIdQuery,
   ArticleByIdQuerySchema,
 } from '@/lib/types/blogs';
+import { useLanguage } from '@/lib/contexts/language-context';
 
 interface UseBlogsOptions {
   first?: number;
   after?: string | null;
+  language?: string;
 }
 
 export function useBlogs(
   options: UseBlogsOptions = {},
   queryOptions?: Omit<UseQueryOptions<BlogsQuery>, 'queryKey' | 'queryFn'>
 ) {
-  const { first = 10, after = null } = options;
+  const { first = 10, after = null, language: languageOverride } = options;
+  const { language: contextLanguage } = useLanguage();
+  const language = languageOverride ?? contextLanguage;
 
   return useQuery({
-    queryKey: ['blogs', first, after],
+    queryKey: ['blogs', first, after, language],
     queryFn: async () => {
       const data = await shopifyFetch<BlogsQuery>({
         query: GET_BLOGS_QUERY,
         variables: { first, after },
+        language,
       });
 
       const validated = BlogsQuerySchema.parse(data);
@@ -50,18 +55,23 @@ interface UseBlogByHandleOptions {
   first?: number;
   after?: string | null;
   enabled?: boolean;
+  language?: string;
 }
 
 export function useBlogByHandle(
-  { handle, first = 10, after = null, enabled = true }: UseBlogByHandleOptions,
+  { handle, first = 10, after = null, enabled = true, language: languageOverride }: UseBlogByHandleOptions,
   queryOptions?: Omit<UseQueryOptions<BlogByHandleQuery>, 'queryKey' | 'queryFn'>
 ) {
+  const { language: contextLanguage } = useLanguage();
+  const language = languageOverride ?? contextLanguage;
+
   return useQuery({
-    queryKey: ['blog', handle, first, after],
+    queryKey: ['blog', handle, first, after, language],
     queryFn: async () => {
       const data = await shopifyFetch<BlogByHandleQuery>({
         query: GET_BLOG_BY_HANDLE_QUERY,
         variables: { handle, first, after },
+        language,
       });
       return data;
     },
@@ -75,20 +85,24 @@ interface UseArticlesOptions {
   first?: number;
   after?: string | null;
   query?: string | null;
+  language?: string;
 }
 
 export function useArticles(
   options: UseArticlesOptions = {},
   queryOptions?: Omit<UseQueryOptions<ArticlesQuery>, 'queryKey' | 'queryFn'>
 ) {
-  const { first = 10, after = null, query = null } = options;
+  const { first = 10, after = null, query = null, language: languageOverride } = options;
+  const { language: contextLanguage } = useLanguage();
+  const language = languageOverride ?? contextLanguage;
 
   return useQuery({
-    queryKey: ['articles', first, after, query],
+    queryKey: ['articles', first, after, query, language],
     queryFn: async () => {
       const data = await shopifyFetch<ArticlesQuery>({
         query: GET_ARTICLES_QUERY,
         variables: { first, after, query },
+        language,
       });
 
       const validated = ArticlesQuerySchema.parse(data);
@@ -103,18 +117,23 @@ interface UseArticleByHandleOptions {
   blogHandle: string;
   articleHandle: string;
   enabled?: boolean;
+  language?: string;
 }
 
 export function useArticleByHandle(
-  { blogHandle, articleHandle, enabled = true }: UseArticleByHandleOptions,
+  { blogHandle, articleHandle, enabled = true, language: languageOverride }: UseArticleByHandleOptions,
   queryOptions?: Omit<UseQueryOptions<ArticleByHandleQuery>, 'queryKey' | 'queryFn'>
 ) {
+  const { language: contextLanguage } = useLanguage();
+  const language = languageOverride ?? contextLanguage;
+
   return useQuery({
-    queryKey: ['article', blogHandle, articleHandle],
+    queryKey: ['article', blogHandle, articleHandle, language],
     queryFn: async () => {
       const data = await shopifyFetch<ArticleByHandleQuery>({
         query: GET_ARTICLE_BY_HANDLE_QUERY,
         variables: { blogHandle, articleHandle },
+        language,
       });
       return data;
     },
@@ -127,23 +146,26 @@ export function useArticleByHandle(
 interface UseArticleByIdOptions {
   id: string;
   enabled?: boolean;
+  language?: string;
 }
 
 export function useArticleById(
-  { id, enabled = true }: UseArticleByIdOptions,
+  { id, enabled = true, language: languageOverride }: UseArticleByIdOptions,
   queryOptions?: Omit<UseQueryOptions<ArticleByIdQuery>, 'queryKey' | 'queryFn'>
 ) {
   // Convert numeric ID to Shopify GID format if needed
   const articleId = id.startsWith('gid://')
     ? id
     : `gid://shopify/Article/${id}`;
-
+  const { language: contextLanguage } = useLanguage();
+  const language = languageOverride ?? contextLanguage;
   return useQuery({
-    queryKey: ['articleById', articleId],
+    queryKey: ['articleById', articleId, language],
     queryFn: async () => {
       const data = await shopifyFetch<ArticleByIdQuery>({
         query: GET_ARTICLE_BY_ID_QUERY,
         variables: { id: articleId },
+        language,
       });
 
       const validated = ArticleByIdQuerySchema.parse(data);

@@ -1,14 +1,15 @@
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery, UseQueryOptions, UseInfiniteQueryOptions } from '@tanstack/react-query';
 
 import { ProductsQuery, ProductsQuerySchema, ProductByIdQuery } from '@/lib/types/shopify';
 import { shopifyFetch } from '@/lib/shopify';
-import { GET_PRODUCTS_QUERY, GET_PRODUCT_BY_HANDLE_QUERY, GET_PRODUCT_BY_ID_QUERY } from '@/lib/queries';
+import { GET_PRODUCTS_QUERY, GET_PRODUCTS_BY_COLLECTION_QUERY, GET_PRODUCT_BY_HANDLE_QUERY, GET_PRODUCT_BY_ID_QUERY } from '@/lib/queries';
 import { useLanguage } from '@/lib/contexts/language-context';
 
 interface UseProductsOptions {
     first?: number;
     after?: string | null;
     query?: string | null;
+    collectionHandle?: string | null;
     language?: string;
 }
 
@@ -16,13 +17,39 @@ export function useProducts(
     options: UseProductsOptions = {},
     queryOptions?: Omit<UseQueryOptions<ProductsQuery>, 'queryKey' | 'queryFn'>
 ) {
-    const { first = 10, after = null, query = null, language: languageOverride } = options;
+    const { first = 10, after = null, query = null, collectionHandle = null, language: languageOverride } = options;
     const { language: contextLanguage } = useLanguage();
     const language = languageOverride ?? contextLanguage;
 
     return useQuery({
-        queryKey: ['products', first, after, query, language],
+        queryKey: ['products', first, after, query, collectionHandle, language],
         queryFn: async () => {
+            if (collectionHandle) {
+                const data = await shopifyFetch<{
+                    collectionByHandle?: {
+                        products: ProductsQuery['products'];
+                    };
+                }>({
+                    query: GET_PRODUCTS_BY_COLLECTION_QUERY,
+                    variables: { collectionHandle, first, after },
+                    language,
+                });
+
+                const transformed: ProductsQuery = {
+                    products: data.collectionByHandle?.products || {
+                        edges: [],
+                        pageInfo: {
+                            hasNextPage: false,
+                            hasPreviousPage: false,
+                            startCursor: null,
+                            endCursor: null
+                        }
+                    }
+                };
+
+                return transformed;
+            }
+
             const data = await shopifyFetch<ProductsQuery>({
                 query: GET_PRODUCTS_QUERY,
                 variables: { first, after, query },
@@ -32,7 +59,78 @@ export function useProducts(
             const validated = ProductsQuerySchema.parse(data);
             return validated;
         },
-        staleTime: 1000 * 60 * 5, 
+        staleTime: 1000 * 60 * 5,
+        ...queryOptions,
+    });
+}
+
+interface UseInfiniteProductsOptions {
+    first?: number;
+    query?: string | null;
+    collectionHandle?: string | null;
+    language?: string;
+}
+
+export function useInfiniteProducts(
+    options: UseInfiniteProductsOptions = {},
+    queryOptions?: Omit<UseInfiniteQueryOptions<ProductsQuery, Error>, 'queryKey' | 'queryFn' | 'getNextPageParam' | 'initialPageParam'>
+) {
+    const { first = 20, query = null, collectionHandle = null, language: languageOverride } = options;
+    const { language: contextLanguage } = useLanguage();
+    const language = languageOverride ?? contextLanguage;
+
+    return useInfiniteQuery({
+        queryKey: ['products-infinite', first, query, collectionHandle, language],
+        queryFn: async ({ pageParam }) => {
+            if (collectionHandle) {
+                const data = await shopifyFetch<{
+                    collectionByHandle?: {
+                        products: ProductsQuery['products'];
+                    };
+                }>({
+                    query: GET_PRODUCTS_BY_COLLECTION_QUERY,
+                    variables: { 
+                        collectionHandle, 
+                        first, 
+                        after: pageParam || null 
+                    },
+                    language,
+                });
+
+                const transformed: ProductsQuery = {
+                    products: data.collectionByHandle?.products || {
+                        edges: [],
+                        pageInfo: {
+                            hasNextPage: false,
+                            hasPreviousPage: false,
+                            startCursor: null,
+                            endCursor: null
+                        }
+                    }
+                };
+
+                return transformed;
+            }
+
+            const data = await shopifyFetch<ProductsQuery>({
+                query: GET_PRODUCTS_QUERY,
+                variables: { 
+                    first, 
+                    after: pageParam || null, 
+                    query 
+                },
+                language,
+            });
+
+            const validated = ProductsQuerySchema.parse(data);
+            return validated;
+        },
+        initialPageParam: null as string | null,
+        getNextPageParam: (lastPage) => {
+            const pageInfo = lastPage.products.pageInfo;
+            return pageInfo.hasNextPage ? pageInfo.endCursor : null;
+        },
+        staleTime: 1000 * 60 * 5,
         ...queryOptions,
     });
 }

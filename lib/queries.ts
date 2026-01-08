@@ -57,6 +57,67 @@ export const GET_PRODUCTS_QUERY = `
   }
 `;
 
+export const GET_PRODUCTS_BY_COLLECTION_QUERY = `
+  query GetProductsByCollection($collectionHandle: String!, $first: Int!, $after: String) {
+    collectionByHandle(handle: $collectionHandle) {
+      id
+      title
+      products(first: $first, after: $after) {
+        edges {
+          cursor
+          node {
+            id
+            title
+            description
+            handle
+            availableForSale
+            priceRange {
+              minVariantPrice {
+                amount
+                currencyCode
+              }
+              maxVariantPrice {
+                amount
+                currencyCode
+              }
+            }
+            images(first: 5) {
+              edges {
+                node {
+                  url
+                  altText
+                  width
+                  height
+                }
+              }
+            }
+            variants(first: 10) {
+              edges {
+                node {
+                  id
+                  title
+                  price {
+                    amount
+                    currencyCode
+                  }
+                  availableForSale
+                }
+              }
+            }
+            tags
+          }
+        }
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
+      }
+    }
+  }
+`;
+
 export const GET_PRODUCT_BY_HANDLE_QUERY = `
   query GetProductByHandle($handle: String!) {
     productByHandle(handle: $handle) {

@@ -26,7 +26,7 @@ export default function Home() {
   const { data: collectionsData, isLoading: collectionsLoading } = useCollections({ first: 10 })
   const [headerHeight, setHeaderHeight] = useState(0)
   const heroRef = useRef<HTMLElement>(null)
-
+  console.log(collectionsData, "CollectionsData")
   useEffect(() => {
     const updateHeaderHeight = () => {
       const header = document.querySelector('header')
