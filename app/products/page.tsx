@@ -71,20 +71,26 @@ function ProductsContent() {
     }
   }, [searchParams, router, pathname]);
 
+  // When filtering by collection, we can't use server-side filters for name/price
+  // So we only build the query when NOT filtering by collection
   let shopifyQuery = null;
-  const queryParts: string[] = [];
+  if (!filters.collection) {
+    const queryParts: string[] = [];
 
-  if (filters.name) {
-    queryParts.push(`title:*${filters.name}* OR description:*${filters.name}*`);
-  }
+    // Name/description search
+    if (filters.name) {
+      queryParts.push(`title:*${filters.name}* OR description:*${filters.name}*`);
+    }
 
-  const [minPrice, maxPrice] = filters.priceRange;
-  if (minPrice > 0 || maxPrice < 10000) {
-    queryParts.push(`variants.price:>=${minPrice} AND variants.price:<=${maxPrice}`);
-  }
+    // Price range filter
+    const [minPrice, maxPrice] = filters.priceRange;
+    if (minPrice > 0 || maxPrice < 10000) {
+      queryParts.push(`variants.price:>=${minPrice} AND variants.price:<=${maxPrice}`);
+    }
 
-  if (queryParts.length > 0) {
-    shopifyQuery = queryParts.join(' AND ');
+    if (queryParts.length > 0) {
+      shopifyQuery = queryParts.join(' AND ');
+    }
   }
 
   const { 
@@ -96,8 +102,8 @@ function ProductsContent() {
     isFetchingNextPage
   } = useInfiniteProducts({
     first: 12, 
-    query: filters.collection ? null : shopifyQuery, 
-    collectionHandle: filters.collection || null, 
+    query: shopifyQuery,
+    collectionHandle: filters.collection || null,
   });
 
   const { ref: loadMoreRef, inView } = useInView({
@@ -123,12 +129,16 @@ function ProductsContent() {
     return (data.pages as ProductsQuery[]).flatMap(page => page.products.edges);
   }, [data]);
 
+  // When using collection filter, apply client-side filters for name and price
   const filteredProducts = useMemo(() => {
     if (!filters.collection) {
+      // When not filtering by collection, server-side filters are applied
       return allProducts;
     }
 
+    // Apply client-side filters for collection filtering
     return allProducts.filter(({ node: product }: ProductsQuery['products']['edges'][0]) => {
+      // Name filter
       if (filters.name) {
         const searchTerm = filters.name.toLowerCase();
         const matchesName = 
@@ -137,6 +147,7 @@ function ProductsContent() {
         if (!matchesName) return false;
       }
 
+      // Price range filter
       const [minPrice, maxPrice] = filters.priceRange;
       if (minPrice > 0 || maxPrice < 10000) {
         const productMinPrice = parseFloat(product.priceRange.minVariantPrice.amount);

@@ -398,3 +398,14 @@ export const GET_COLLECTION_BY_ID_QUERY = `
     }
   }
 `;
+
+export const GET_PAGE_BY_HANDLE_QUERY = `
+  query GetPageByHandle($handle: String!) {
+    page(handle: $handle) {
+      id
+      title
+      body
+      bodySummary
+    }
+  }
+`;

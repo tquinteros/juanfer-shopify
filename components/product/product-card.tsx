@@ -72,7 +72,7 @@ export function ProductCard({
               height={500}
               src={firstImage.url}
               alt={firstImage.altText || product.title}
-              className="w-full h-64 object-cover"
+              className="w-full h-64 object-contain"
             />
           ) : (
             <div className="w-full h-64 bg-gray-200 flex items-center justify-center">

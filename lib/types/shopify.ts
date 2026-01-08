@@ -153,6 +153,18 @@ export const CollectionByIdQuerySchema = z.object({
   collection: SingleCollectionSchema.nullable(),
 });
 
+// Page types
+export const PageSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  body: z.string(),
+  bodySummary: z.string().nullable().optional(),
+});
+
+export const PageByHandleQuerySchema = z.object({
+  page: PageSchema.nullable(),
+});
+
 // Types inferidos de los schemas
 export type MoneyV2 = z.infer<typeof MoneyV2Schema>;
 export type Image = z.infer<typeof ImageSchema>;
@@ -172,3 +184,6 @@ export type CollectionsQuery = z.infer<typeof CollectionsQuerySchema>;
 export type SingleCollection = z.infer<typeof SingleCollectionSchema>;
 export type CollectionByHandleQuery = z.infer<typeof CollectionByHandleQuerySchema>;
 export type CollectionByIdQuery = z.infer<typeof CollectionByIdQuerySchema>;
+
+export type Page = z.infer<typeof PageSchema>;
+export type PageByHandleQuery = z.infer<typeof PageByHandleQuerySchema>;
