@@ -9,7 +9,6 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import { Button } from "@/components/ui/button"
-import { useProducts } from "@/components/hooks/useProducts"
 import { useCollections } from "@/components/hooks/useCollections"
 import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
@@ -17,13 +16,12 @@ import Image from "next/image"
 import { useLanguage } from "@/lib/contexts/language-context"
 import { translations } from "@/lib/i18n/translations"
 import { useEffect, useState, useRef } from "react"
-import { ProductCard } from "@/components/product/product-card"
 import SpaceCollection from "@/components/collections/SpaceCollection"
+import ProductCarousel from "@/components/products/product-carousel"
 
 export default function Home() {
   const { language } = useLanguage()
   const t = translations[language]
-  const { data: productsData, isLoading: productsLoading } = useProducts({ first: 8 })
   const { data: collectionsData, isLoading: collectionsLoading } = useCollections({ first: 10 })
   const [headerHeight, setHeaderHeight] = useState(0)
   const heroRef = useRef<HTMLElement>(null)
@@ -143,40 +141,7 @@ export default function Home() {
 
       <section className="py-16">
         <div className="container mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold">{t.home.bestsellers}</h2>
-            <Button asChild variant="outline">
-              <Link href="/products">{t.home.viewAll}</Link>
-            </Button>
-          </div>
-
-          {productsLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <Card key={i}>
-                  <CardHeader>
-                    <Skeleton className="h-48 w-full" />
-                  </CardHeader>
-                  <CardContent>
-                    <Skeleton className="h-4 w-3/4 mb-2" />
-                    <Skeleton className="h-4 w-1/2" />
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {productsData?.products.edges.slice(0, 4).map(({ node: product }) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  showTags={false}
-                  priceSize="xl"
-                  stockStatusKey="home"
-                />
-              ))}
-            </div>
-          )}
+          <ProductCarousel />
         </div>
       </section>
     </div>
