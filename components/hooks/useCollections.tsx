@@ -197,7 +197,6 @@ export function useCollectionsByMetadata(
 
       const validated = CollectionsQuerySchema.parse(data);
 
-      // Filter collections by metadata value
       const filteredCollections = validated.collections.edges
         .map(({ node }) => transformCollection(node))
         .filter((collection) => collection.metadata?.value === metadataValue);

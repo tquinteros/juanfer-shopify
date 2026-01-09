@@ -72,7 +72,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16">
+      <section className="py-16 flex flex-col gap-6">
         <div className="">
           <h2 className="text-3xl font-bold mb-8 text-center">{t.home.shopByCategory}</h2>
           {collectionsLoading ? (
