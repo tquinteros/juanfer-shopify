@@ -18,6 +18,7 @@ import { translations } from "@/lib/i18n/translations"
 import { useEffect, useState, useRef } from "react"
 import SpaceCollection from "@/components/collections/SpaceCollection"
 import ProductCarousel from "@/components/products/product-carousel"
+import ProductsCollection from "@/components/collections/ProductsCollection"
 
 export default function Home() {
   const { language } = useLanguage()
@@ -136,6 +137,7 @@ export default function Home() {
             </div>
           )}
         </div>
+        <ProductsCollection />
         <SpaceCollection />
       </section>
 

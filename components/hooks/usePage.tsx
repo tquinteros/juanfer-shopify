@@ -30,7 +30,7 @@ export function usePageByHandle(
       return validated;
     },
     enabled: enabled && !!handle,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 5, 
     ...queryOptions,
   });
 }
