@@ -123,3 +123,29 @@ export const ArticleByIdQuerySchema = z.object({
 
 export type ArticleByIdQuery = z.infer<typeof ArticleByIdQuerySchema>;
 
+// Article Tags Only Schema (minimal schema for tags query)
+export const ArticleTagsOnlySchema = z.object({
+  id: z.string(),
+  tags: z.array(z.string()),
+});
+
+export type ArticleTagsOnly = z.infer<typeof ArticleTagsOnlySchema>;
+
+// Article Tags Edge Schema
+export const ArticleTagsEdgeSchema = z.object({
+  node: ArticleTagsOnlySchema,
+  cursor: z.string(),
+});
+
+export type ArticleTagsEdge = z.infer<typeof ArticleTagsEdgeSchema>;
+
+// Articles Tags Query Response
+export const ArticlesTagsQuerySchema = z.object({
+  articles: z.object({
+    edges: z.array(ArticleTagsEdgeSchema),
+    pageInfo: PageInfoSchema,
+  }),
+});
+
+export type ArticlesTagsQuery = z.infer<typeof ArticlesTagsQuerySchema>;
+

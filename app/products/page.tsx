@@ -30,7 +30,7 @@ function ProductsContent() {
     const minPrice = searchParams.get('minPrice');
     const maxPrice = searchParams.get('maxPrice');
     const collection = searchParams.get('collection') || "";
-    
+
     const priceRange: [number, number] = [
       minPrice ? parseInt(minPrice, 10) : MIN_PRICE,
       maxPrice ? parseInt(maxPrice, 10) : MAX_PRICE,
@@ -45,7 +45,7 @@ function ProductsContent() {
 
   const handleFiltersChange = useCallback((newFilters: FilterValues) => {
     const params = new URLSearchParams();
-    
+
     if (newFilters.name) {
       params.set('name', newFilters.name);
     }
@@ -65,24 +65,20 @@ function ProductsContent() {
 
     const newUrl = `${pathname}${params.toString() ? `?${params.toString()}` : ''}`;
     const currentUrl = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
-    
+
     if (newUrl !== currentUrl) {
       router.replace(newUrl, { scroll: false });
     }
   }, [searchParams, router, pathname]);
 
-  // When filtering by collection, we can't use server-side filters for name/price
-  // So we only build the query when NOT filtering by collection
   let shopifyQuery = null;
   if (!filters.collection) {
     const queryParts: string[] = [];
 
-    // Name/description search
     if (filters.name) {
       queryParts.push(`title:*${filters.name}* OR description:*${filters.name}*`);
     }
 
-    // Price range filter
     const [minPrice, maxPrice] = filters.priceRange;
     if (minPrice > 0 || maxPrice < 10000) {
       queryParts.push(`variants.price:>=${minPrice} AND variants.price:<=${maxPrice}`);
@@ -93,22 +89,22 @@ function ProductsContent() {
     }
   }
 
-  const { 
-    data, 
-    isLoading, 
+  const {
+    data,
+    isLoading,
     error,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage
   } = useInfiniteProducts({
-    first: 12, 
+    first: 12,
     query: shopifyQuery,
     collectionHandle: filters.collection || null,
   });
 
   const { ref: loadMoreRef, inView } = useInView({
     threshold: 0,
-    rootMargin: '200px', 
+    rootMargin: '200px',
   });
 
   const isFetchingRef = useRef(false);
@@ -118,7 +114,7 @@ function ProductsContent() {
       isFetchingRef.current = true;
       fetchNextPage();
     }
-    
+
     if (!isFetchingNextPage && isFetchingRef.current) {
       isFetchingRef.current = false;
     }
@@ -129,35 +125,30 @@ function ProductsContent() {
     return (data.pages as ProductsQuery[]).flatMap(page => page.products.edges);
   }, [data]);
 
-  // When using collection filter, apply client-side filters for name and price
   const filteredProducts = useMemo(() => {
     if (!filters.collection) {
-      // When not filtering by collection, server-side filters are applied
       return allProducts;
     }
 
-    // Apply client-side filters for collection filtering
     return allProducts.filter(({ node: product }: ProductsQuery['products']['edges'][0]) => {
-      // Name filter
       if (filters.name) {
         const searchTerm = filters.name.toLowerCase();
-        const matchesName = 
+        const matchesName =
           product.title.toLowerCase().includes(searchTerm) ||
           (product.description && product.description.toLowerCase().includes(searchTerm));
         if (!matchesName) return false;
       }
 
-      // Price range filter
       const [minPrice, maxPrice] = filters.priceRange;
       if (minPrice > 0 || maxPrice < 10000) {
         const productMinPrice = parseFloat(product.priceRange.minVariantPrice.amount);
         const productMaxPrice = parseFloat(product.priceRange.maxVariantPrice.amount);
-        
-        const matchesPrice = 
+
+        const matchesPrice =
           (productMinPrice >= minPrice && productMinPrice <= maxPrice) ||
           (productMaxPrice >= minPrice && productMaxPrice <= maxPrice) ||
           (productMinPrice <= minPrice && productMaxPrice >= maxPrice);
-        
+
         if (!matchesPrice) return false;
       }
 
@@ -185,7 +176,6 @@ function ProductsContent() {
       </h1>
 
       <Filters
-        key={`${filters.name}-${filters.collection}-${filters.priceRange[0]}-${filters.priceRange[1]}`}
         onFiltersChange={handleFiltersChange}
         initialFilters={filters}
       />
@@ -231,11 +221,6 @@ function ProductsContent() {
         </div>
       )}
 
-      {/* {!hasNextPage && filteredProducts.length > 0 && (
-        <div className="mt-8 text-center">
-          <p className="text-muted-foreground">All products loaded</p>
-        </div>
-      )} */}
     </div>
   );
 }

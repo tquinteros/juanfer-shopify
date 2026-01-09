@@ -1,4 +1,4 @@
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery, UseQueryOptions, UseInfiniteQueryOptions } from '@tanstack/react-query';
 import { shopifyFetch } from '@/lib/shopify';
 import {
   GET_BLOGS_QUERY,
@@ -6,6 +6,7 @@ import {
   GET_ARTICLES_QUERY,
   GET_ARTICLE_BY_HANDLE_QUERY,
   GET_ARTICLE_BY_ID_QUERY,
+  GET_ARTICLES_TAGS_QUERY,
 } from '@/lib/queries/blogs';
 import {
   BlogsQuery,
@@ -16,6 +17,8 @@ import {
   ArticleByHandleQuery,
   ArticleByIdQuery,
   ArticleByIdQuerySchema,
+  ArticlesTagsQuery,
+  ArticlesTagsQuerySchema,
 } from '@/lib/types/blogs';
 import { useLanguage } from '@/lib/contexts/language-context';
 
@@ -113,6 +116,46 @@ export function useArticles(
   });
 }
 
+interface UseInfiniteArticlesOptions {
+  first?: number;
+  query?: string | null;
+  language?: string;
+}
+
+export function useInfiniteArticles(
+  options: UseInfiniteArticlesOptions = {},
+  queryOptions?: Omit<UseInfiniteQueryOptions<ArticlesQuery, Error>, 'queryKey' | 'queryFn' | 'getNextPageParam' | 'initialPageParam'>
+) {
+  const { first = 20, query = null, language: languageOverride } = options;
+  const { language: contextLanguage } = useLanguage();
+  const language = languageOverride ?? contextLanguage;
+
+  return useInfiniteQuery({
+    queryKey: ['articles-infinite', first, query, language],
+    queryFn: async ({ pageParam }) => {
+      const data = await shopifyFetch<ArticlesQuery>({
+        query: GET_ARTICLES_QUERY,
+        variables: {
+          first,
+          after: pageParam || null,
+          query
+        },
+        language,
+      });
+
+      const validated = ArticlesQuerySchema.parse(data);
+      return validated;
+    },
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => {
+      const pageInfo = lastPage.articles.pageInfo;
+      return pageInfo.hasNextPage ? pageInfo.endCursor : null;
+    },
+    staleTime: 1000 * 60 * 5,
+    ...queryOptions,
+  });
+}
+
 interface UseArticleByHandleOptions {
   blogHandle: string;
   articleHandle: string;
@@ -153,7 +196,6 @@ export function useArticleById(
   { id, enabled = true, language: languageOverride }: UseArticleByIdOptions,
   queryOptions?: Omit<UseQueryOptions<ArticleByIdQuery>, 'queryKey' | 'queryFn'>
 ) {
-  // Convert numeric ID to Shopify GID format if needed
   const articleId = id.startsWith('gid://')
     ? id
     : `gid://shopify/Article/${id}`;
@@ -173,6 +215,37 @@ export function useArticleById(
     },
     enabled: enabled && !!id,
     staleTime: 1000 * 60 * 5,
+    ...queryOptions,
+  });
+}
+
+interface UseArticlesTagsOptions {
+  first?: number;
+  after?: string | null;
+  language?: string;
+}
+
+export function useArticlesTags(
+  options: UseArticlesTagsOptions = {},
+  queryOptions?: Omit<UseQueryOptions<ArticlesTagsQuery>, 'queryKey' | 'queryFn'>
+) {
+  const { first = 250, after = null, language: languageOverride } = options;
+  const { language: contextLanguage } = useLanguage();
+  const language = languageOverride ?? contextLanguage;
+
+  return useQuery({
+    queryKey: ['articles-tags', first, after, language],
+    queryFn: async () => {
+      const data = await shopifyFetch<ArticlesTagsQuery>({
+        query: GET_ARTICLES_TAGS_QUERY,
+        variables: { first, after },
+        language,
+      });
+
+      const validated = ArticlesTagsQuerySchema.parse(data);
+      return validated;
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
     ...queryOptions,
   });
 }

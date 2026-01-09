@@ -168,3 +168,23 @@ export const GET_ARTICLE_BY_ID_QUERY = `
   }
 `;
 
+export const GET_ARTICLES_TAGS_QUERY = `
+  query GetArticlesTags($first: Int!, $after: String) {
+    articles(first: $first, after: $after) {
+      edges {
+        cursor
+        node {
+          id
+          tags
+        }
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+    }
+  }
+`;
+

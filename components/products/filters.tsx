@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
@@ -34,12 +34,11 @@ const MAX_PRICE = 10000
 export function Filters({ onFiltersChange, initialFilters }: FiltersProps) {
   const { language } = useLanguage()
   const t = translations[language]
-  
+
   // Fetch collections for dropdown
   const { data: collectionsData } = useCollections({ first: 50 })
-  
+
   // Initialize state from initialFilters
-  // When initialFilters changes (from URL), the parent should use a key prop to remount this component
   const [name, setName] = useState(initialFilters?.name || "")
   const [priceRange, setPriceRange] = useState<[number, number]>(
     initialFilters?.priceRange || [MIN_PRICE, MAX_PRICE]
@@ -50,7 +49,30 @@ export function Filters({ onFiltersChange, initialFilters }: FiltersProps) {
     initialFilters?.priceRange || [MIN_PRICE, MAX_PRICE]
   )
 
-  // Debounce name search changes (500ms after user stops typing)
+  const prevInitialFiltersRef = useRef<FilterValues | undefined>(initialFilters)
+
+  useEffect(() => {
+    const prevFilters = prevInitialFiltersRef.current
+    if (initialFilters && prevFilters) {
+      if (initialFilters.name !== prevFilters.name) {
+        // eslint-disable-next-line
+        setName(initialFilters.name)
+        setDebouncedName(initialFilters.name)
+      }
+      if (initialFilters.collection !== prevFilters.collection) {
+        setCollection(initialFilters.collection)
+      }
+      if (
+        initialFilters.priceRange[0] !== prevFilters.priceRange[0] ||
+        initialFilters.priceRange[1] !== prevFilters.priceRange[1]
+      ) {
+        setPriceRange(initialFilters.priceRange)
+        setDebouncedPriceRange(initialFilters.priceRange)
+      }
+    }
+    prevInitialFiltersRef.current = initialFilters
+  }, [initialFilters])
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedName(name)
@@ -58,8 +80,6 @@ export function Filters({ onFiltersChange, initialFilters }: FiltersProps) {
 
     return () => clearTimeout(timer)
   }, [name])
-
-  // Debounce price range changes (500ms after user stops dragging)
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedPriceRange(priceRange)
@@ -68,7 +88,6 @@ export function Filters({ onFiltersChange, initialFilters }: FiltersProps) {
     return () => clearTimeout(timer)
   }, [priceRange])
 
-  // Notify parent of filter changes
   useEffect(() => {
     onFiltersChange({
       name: debouncedName,

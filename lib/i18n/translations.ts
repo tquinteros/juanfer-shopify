@@ -113,6 +113,16 @@ export const translations = {
       articleNotFound: "Article not found",
       noContentAvailable: "No content available",
       tags: "Tags",
+      filters: {
+        title: "Filters",
+        clearAll: "Clear All",
+        searchByName: "Search by Name",
+        searchPlaceholder: "Search articles...",
+        tag: "Tag",
+        allTags: "All Tags",
+        activeFilters: "Active Filters",
+        name: "Name",
+      },
     },
     auth: {
       login: {
@@ -378,6 +388,16 @@ export const translations = {
       articleNotFound: "Artículo no encontrado",
       noContentAvailable: "No hay contenido disponible",
       tags: "Etiquetas",
+      filters: {
+        title: "Filtros",
+        clearAll: "Limpiar Todo",
+        searchByName: "Buscar por Nombre",
+        searchPlaceholder: "Buscar artículos...",
+        tag: "Etiqueta",
+        allTags: "Todas las Etiquetas",
+        activeFilters: "Filtros Activos",
+        name: "Nombre",
+      },
     },
     auth: {
       login: {
@@ -643,6 +663,16 @@ export const translations = {
       articleNotFound: "Article non trouvé",
       noContentAvailable: "Aucun contenu disponible",
       tags: "Mots-clés",
+      filters: {
+        title: "Filtres",
+        clearAll: "Tout Effacer",
+        searchByName: "Rechercher par Nom",
+        searchPlaceholder: "Rechercher des articles...",
+        tag: "Mot-clé",
+        allTags: "Tous les Mots-clés",
+        activeFilters: "Filtres Actifs",
+        name: "Nom",
+      },
     },
     auth: {
       login: {
