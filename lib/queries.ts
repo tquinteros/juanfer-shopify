@@ -419,3 +419,57 @@ export const GET_MENU_BY_HANDLE_QUERY = `
     }
   }
 `;
+
+export const GET_METAOBJECT_QUERY = `
+  query GetMetaobject($handle: String!, $type: String!) {
+    metaobject(handle: { handle: $handle, type: $type }) {
+      id
+      handle
+      type
+      fields {
+        key
+        value
+        type
+        reference {
+          ... on MediaImage {
+            image {
+              url
+              altText
+              width
+              height
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const GET_METAOBJECTS_QUERY = `
+  query GetMetaobjects($type: String!, $first: Int!) {
+    metaobjects(type: $type, first: $first) {
+      edges {
+        node {
+          id
+          handle
+          type
+          fields {
+            key
+            value
+            type
+            reference {
+              ... on MediaImage {
+                image {
+                  url
+                  altText
+                  width
+                  height
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
