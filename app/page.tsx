@@ -21,6 +21,7 @@ import ProductCarousel from "@/components/products/product-carousel"
 import ProductsCollection from "@/components/collections/ProductsCollection"
 import BannersCategories from "@/components/home/BannersCategories"
 import Hero from "@/components/home/Hero"
+import FeatureSection from "@/components/home/FeatureSection"
 
 export default function Home() {
   const { language } = useLanguage()
@@ -32,6 +33,7 @@ export default function Home() {
       <Hero />
       <div className="px-6 flex flex-col gap-20 mt-20">
         <BannersCategories />
+        <FeatureSection />
         <section className="flex flex-col gap-20">
           <div className="">
             <h2 className="text-3xl font-bold mb-8 text-center">{t.home.shopByCategory}</h2>

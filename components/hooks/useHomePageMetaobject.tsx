@@ -110,3 +110,35 @@ export function useHomeBannersCat(
     ...queryOptions,
   });
 }
+
+export function useFeatureSectionMetaobject(
+  options: UseHomePageMetaobjectOptions = {},
+  queryOptions?: Omit<UseQueryOptions<HomePageMetaobjectsQuery>, 'queryKey' | 'queryFn'>
+) {
+  const { language: languageOverride } = options;
+  const { language: contextLanguage } = useLanguage();
+  const language = languageOverride ?? contextLanguage;
+
+  return useQuery<HomePageMetaobjectsQuery>({
+    queryKey: ['feature-section', language],
+    queryFn: async () => {
+      try {
+        const metaobjectData = await shopifyFetch<HomePageMetaobjectsQuery>({
+          query: GET_METAOBJECTS_QUERY,
+          variables: {
+            type: 'feature_section',
+            first: 10,
+          },
+          language,
+        });
+
+        return metaobjectData;
+      } catch (error) {
+        console.error('Error fetching feature section metaobject:', error);
+        throw error;
+      }
+    },
+    staleTime: 1000 * 60 * 5,
+    ...queryOptions,
+  });
+}
