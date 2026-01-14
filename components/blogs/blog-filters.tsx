@@ -5,13 +5,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { X, ChevronDown } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { X } from "lucide-react"
 import { useLanguage } from "@/lib/contexts/language-context"
 import { translations } from "@/lib/i18n/translations"
 
@@ -30,12 +25,10 @@ export function BlogFilters({ onFiltersChange, initialFilters, availableTags = [
   const { language } = useLanguage()
   const t = translations[language]
   
-  // Initialize state from initialFilters
   const [name, setName] = useState(initialFilters?.name || "")
   const [tag, setTag] = useState(initialFilters?.tag || "")
   const [debouncedName, setDebouncedName] = useState(initialFilters?.name || "")
 
-  // Debounce name search changes (500ms after user stops typing)
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedName(name)
@@ -44,7 +37,6 @@ export function BlogFilters({ onFiltersChange, initialFilters, availableTags = [
     return () => clearTimeout(timer)
   }, [name])
 
-  // Notify parent of filter changes
   useEffect(() => {
     onFiltersChange({
       name: debouncedName,
@@ -59,7 +51,6 @@ export function BlogFilters({ onFiltersChange, initialFilters, availableTags = [
 
   const hasActiveFilters = name !== "" || tag !== ""
 
-  // Get unique sorted tags
   const uniqueTags = Array.from(new Set(availableTags)).sort()
 
   return (
@@ -81,8 +72,7 @@ export function BlogFilters({ onFiltersChange, initialFilters, availableTags = [
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Name Filter */}
+          <div className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="name-filter">{t.blogs.filters.searchByName}</Label>
               <Input
@@ -94,42 +84,46 @@ export function BlogFilters({ onFiltersChange, initialFilters, availableTags = [
               />
             </div>
 
-            {/* Tag Filter */}
             <div className="space-y-2">
-              <Label htmlFor="tag-filter">{t.blogs.filters.tag}</Label>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-between"
-                    id="tag-filter"
+              <Label>{t.blogs.filters.tag}</Label>
+              <div className="flex flex-wrap gap-2">
+                <Badge
+                  variant={tag === "" ? "default" : "outline"}
+                  className="cursor-pointer hover:bg-accent transition-colors select-none"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setTag("")}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault()
+                      setTag("")
+                    }
+                  }}
+                >
+                  {t.blogs.filters.allTags}
+                </Badge>
+                {uniqueTags.map((tagOption) => (
+                  <Badge
+                    key={tagOption}
+                    variant={tag === tagOption ? "default" : "outline"}
+                    className="cursor-pointer hover:bg-accent transition-colors select-none"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setTag(tag === tagOption ? "" : tagOption)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault()
+                        setTag(tag === tagOption ? "" : tagOption)
+                      }
+                    }}
                   >
-                    {tag || t.blogs.filters.allTags}
-                    <ChevronDown className="h-4 w-4 opacity-50" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-(--radix-dropdown-menu-trigger-width) max-h-[300px] overflow-y-auto">
-                  <DropdownMenuItem
-                    onClick={() => setTag("")}
-                    className={tag === "" ? "bg-accent" : ""}
-                  >
-                    {t.blogs.filters.allTags}
-                  </DropdownMenuItem>
-                  {uniqueTags.map((tagOption) => (
-                    <DropdownMenuItem
-                      key={tagOption}
-                      onClick={() => setTag(tagOption)}
-                      className={tag === tagOption ? "bg-accent" : ""}
-                    >
-                      {tagOption}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    {tagOption}
+                  </Badge>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Active Filters Summary */}
           {hasActiveFilters && (
             <div className="flex flex-wrap gap-2 pt-2 border-t">
               <span className="text-sm text-muted-foreground">{t.blogs.filters.activeFilters}:</span>
