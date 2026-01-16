@@ -93,12 +93,12 @@ const SpaceCollection2 = () => {
                                                     <span className="text-muted-foreground text-sm">{t.common.noImage}</span>
                                                 </div>
                                             )}
-                                            <div className="absolute inset-0 bg-linear-to-t from-secondary/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                            <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
-                                                <p className="text-sm font-mono text-secondary-foreground/80 mb-1">
+                                            <div className="hidden md:block absolute inset-0 bg-linear-to-t from-secondary/90 to-transparent opacity-0 md:group-hover:opacity-100 transition-opacity duration-500" />
+                                            <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-0 md:translate-y-full md:group-hover:translate-y-0 transition-transform duration-500">
+                                                <p className="text-sm font-mono text-white/90 md:text-secondary-foreground/80 mb-1 drop-shadow-md">
                                                     {t.home.shopBySpace}
                                                 </p>
-                                                <h3 className="text-2xl md:text-3xl font-light text-secondary-foreground">
+                                                <h3 className="text-2xl md:text-3xl font-light text-white md:text-secondary-foreground drop-shadow-md">
                                                     {collection.title}
                                                 </h3>
                                             </div>

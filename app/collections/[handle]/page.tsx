@@ -23,9 +23,9 @@ export default function CollectionPage({ params }: CollectionPageProps) {
   const t = translations[language]
   const { handle } = use(params)
 
-  const { data, isLoading, error } = useCollectionByHandle({ 
-    handle, 
-    first: 50 
+  const { data, isLoading, error } = useCollectionByHandle({
+    handle,
+    first: 50
   })
 
   if (error) {
@@ -77,7 +77,6 @@ export default function CollectionPage({ params }: CollectionPageProps) {
 
   return (
     <div className="container mx-auto py-8">
-      {/* Back Button */}
       <Link href="/">
         <Button variant="ghost" className="mb-6">
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -85,10 +84,9 @@ export default function CollectionPage({ params }: CollectionPageProps) {
         </Button>
       </Link>
 
-      {/* Collection Header */}
       <div className="mb-8">
         {collection.image && (
-          <div className="relative w-full h-[300px] rounded-lg overflow-hidden mb-6">
+          <div className="relative w-full h-[300px] overflow-hidden mb-6">
             <Image
               src={collection.image.url}
               alt={collection.image.altText || collection.title}
@@ -98,17 +96,19 @@ export default function CollectionPage({ params }: CollectionPageProps) {
             />
           </div>
         )}
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">{collection.title}</h1>
-        {collection.description && (
-          <p className="text-lg text-muted-foreground max-w-3xl">
-            {collection.description}
-          </p>
-        )}
+        <div className="px-6 lg:px-0">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">{collection.title}</h1>
+          {collection.description && (
+            <p className="text-lg text-muted-foreground">
+              {collection.description}
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Products Grid */}
       {products.length > 0 ? (
-        <div>
+        <div className="px-6 lg:px-0">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-semibold">
               {products.length} {products.length === 1 ? t.common.product : t.common.products}
