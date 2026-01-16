@@ -35,7 +35,6 @@ export function Header() {
     const { cart, openCart } = useCart()
     const cartQuantity = cart?.totalQuantity || 0
 
-    // Debounce search query (desktop)
     useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedQuery(searchQuery)
@@ -44,7 +43,6 @@ export function Header() {
         return () => clearTimeout(timer)
     }, [searchQuery])
 
-    // Debounce mobile search query
     useEffect(() => {
         const timer = setTimeout(() => {
             setMobileDebouncedQuery(mobileSearchQuery)
@@ -53,7 +51,6 @@ export function Header() {
         return () => clearTimeout(timer)
     }, [mobileSearchQuery])
 
-    // Close search results when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
@@ -65,7 +62,6 @@ export function Header() {
         return () => document.removeEventListener("mousedown", handleClickOutside)
     }, [])
 
-    // Search products (desktop)
     const { data: searchData, isLoading: isSearching } = useProductSearch({
         query: debouncedQuery,
         first: 5,
@@ -73,7 +69,6 @@ export function Header() {
         language,
     })
 
-    // Search products (mobile)
     const { data: mobileSearchData, isLoading: isMobileSearching } = useProductSearch({
         query: mobileDebouncedQuery,
         first: 10,
