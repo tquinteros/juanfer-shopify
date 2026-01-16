@@ -166,7 +166,7 @@ const Hero = () => {
                     ) : (
                         <div className="absolute inset-0 bg-muted" />
                     )}
-                    <div className="absolute inset-0 bg-foreground/40" />
+                    {/* <div className="absolute inset-0 bg-foreground/40" /> */}
 
                     <div className="relative h-full container mx-auto px-4 lg:px-8 flex items-center">
                         <div className="max-w-3xl text-background">
@@ -204,7 +204,7 @@ const Hero = () => {
                 className="hidden md:block absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-10 bg-background/20 hover:bg-background/40 backdrop-blur-sm p-3 rounded-full transition-colors"
                 aria-label="Previous slide"
             >
-                <ChevronLeft className="h-6 w-6 text-background" />
+                <ChevronLeft className="h-6 w-6 text-white" />
             </button>
 
             <button
@@ -212,7 +212,7 @@ const Hero = () => {
                 className="hidden md:block absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-10 bg-background/20 hover:bg-background/40 backdrop-blur-sm p-3 rounded-full transition-colors"
                 aria-label="Next slide"
             >
-                <ChevronRight className="h-6 w-6 text-background" />
+                <ChevronRight className="h-6 w-6 text-white" />
             </button>
 
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex gap-2">
@@ -220,7 +220,7 @@ const Hero = () => {
                     <button
                         key={index}
                         onClick={() => goToSlide(index)}
-                        className={`h-1 transition-all ${index === currentSlide ? "w-12 bg-background" : "w-8 bg-background/40"}`}
+                        className={`h-1 transition-all ${index === currentSlide ? "w-12 bg-white" : "w-8 bg-white/40"}`}
                         aria-label={`Go to slide ${index + 1}`}
                     />
                 ))}
