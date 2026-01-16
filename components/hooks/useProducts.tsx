@@ -193,3 +193,22 @@ export function useProductById(
         ...queryOptions,
     });
 }
+
+interface UseFeaturedProductsOptions {
+    first?: number;
+    after?: string | null;
+    language?: string;
+}
+
+export function useFeaturedProducts(
+    options: UseFeaturedProductsOptions = {},
+    queryOptions?: Omit<UseQueryOptions<ProductsQuery>, 'queryKey' | 'queryFn'>
+) {
+    return useProducts(
+        {
+            ...options,
+            collectionHandle: 'home-productos-destacados',
+        },
+        queryOptions
+    );
+}

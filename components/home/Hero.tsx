@@ -30,17 +30,17 @@ const Hero = () => {
     useEffect(() => {
         const header = document.querySelector('header')
         if (!header) return
-      
+
         const observer = new ResizeObserver(entries => {
-          for (const entry of entries) {
-            setHeaderHeight(entry.contentRect.height)
-          }
+            for (const entry of entries) {
+                setHeaderHeight(entry.contentRect.height)
+            }
         })
-      
+
         observer.observe(header)
-      
+
         return () => observer.disconnect()
-      }, [])
+    }, [])
 
     const getFieldValue = (fields: HomePageMetaobject['fields'], key: string): string | null => {
         const field = fields.find(f => f.key === key)
@@ -69,7 +69,6 @@ const Hero = () => {
         }
     })
 
-    // Auto-play slides
     useEffect(() => {
         if (herosData.length <= 1) return
 
@@ -171,7 +170,7 @@ const Hero = () => {
                             <h1 className="text-5xl md:text-7xl lg:text-8xl text-white font-light mb-6 leading-tight text-balance">
                                 {heroData.titulo}
                             </h1>
-                            <p className="text-lg md:text-xl lg:text-2xl mb-8 text-white leading-relaxed max-w-2xl font-mono ">
+                            <p className="text-lg md:text-xl lg:text-2xl mb-8 text-white leading-relaxed max-w-3xl font-mono ">
                                 {heroData.descripcion}
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4">
@@ -187,7 +186,7 @@ const Hero = () => {
                                     asChild
                                     size="lg"
                                     variant="outline"
-                                    className="hover:opacity-80 text-white font-mono uppercase tracking-wider hover:bg-transparent bg-transparent"
+                                    className="hover:opacity-80 text-white font-mono hover:text-white uppercase tracking-wider hover:bg-transparent bg-transparent"
                                 >
                                     <Link href={heroData.linkBotonSecundario}>{heroData.textoBotonSecundario}</Link>
                                 </Button>
@@ -199,7 +198,7 @@ const Hero = () => {
 
             <button
                 onClick={prevSlide}
-                className="hidden md:block absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-10 bg-background/20 hover:bg-background/40 backdrop-blur-sm p-3 rounded-full transition-colors"
+                className="hidden md:block cursor-pointer absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-10 bg-background/20 hover:bg-background/40 backdrop-blur-sm p-3 rounded-full transition-colors"
                 aria-label="Previous slide"
             >
                 <ChevronLeft className="h-6 w-6 text-white" />
@@ -207,7 +206,7 @@ const Hero = () => {
 
             <button
                 onClick={nextSlide}
-                className="hidden md:block absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-10 bg-background/20 hover:bg-background/40 backdrop-blur-sm p-3 rounded-full transition-colors"
+                className="hidden md:block cursor-pointer absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-10 bg-background/20 hover:bg-background/40 backdrop-blur-sm p-3 rounded-full transition-colors"
                 aria-label="Next slide"
             >
                 <ChevronRight className="h-6 w-6 text-white" />

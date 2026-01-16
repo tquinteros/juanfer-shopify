@@ -9,7 +9,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import { Button } from "@/components/ui/button"
-import { useProducts } from "@/components/hooks/useProducts"
+import { useFeaturedProducts } from "@/components/hooks/useProducts"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import Link from "next/link"
@@ -20,7 +20,7 @@ import { ProductCard } from "@/components/product/product-card"
 const ProductCarousel = () => {
   const { language } = useLanguage()
   const t = translations[language]
-  const { data: productsData, isLoading: productsLoading } = useProducts({ first: 6 })
+  const { data: productsData, isLoading: productsLoading } = useFeaturedProducts({ first: 6 })
 
   return (
     <section className="w-full">

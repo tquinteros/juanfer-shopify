@@ -13,7 +13,7 @@ const categories = [
 
 export function InfiniteCategories() {
   return (
-    <section className="py-12 mt-20 border-y border-border overflow-hidden">
+    <section className=" py-12 mt-20 border-y border-border overflow-hidden -mx-6">
       <div className="flex animate-infinite-scroll">
         {[...categories, ...categories].map((category, index) => (
           <div key={index} className="shrink-0 px-8 py-4">

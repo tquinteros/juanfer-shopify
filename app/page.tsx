@@ -1,5 +1,3 @@
-"use client"
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Carousel,
@@ -25,22 +23,19 @@ import SpaceCollection2 from "@/components/collections/SpaceCollection2"
 import FeatureSection2 from "@/components/home/FeatureSection2"
 
 export default function Home() {
-  const { language } = useLanguage()
-  const t = translations[language]
-  const { data: collectionsData, isLoading: collectionsLoading } = useCollections({ first: 10 })
 
   return (
     <div className="min-h-screen pb-20">
       <Hero />
-      <InfiniteCategories />
       <div className="px-6 flex flex-col gap-20 mt-20">
         <SpaceCollection2 />
+        <InfiniteCategories />
         <BannersCategories />
         <FeatureSection />
         <ProductCarousel />
         <FeatureSection2 />
         {/* <section className="flex flex-col gap-20"> */}
-          {/* <div className="">
+        {/* <div className="">
             <h2 className="text-3xl font-bold mb-8 text-center">{t.home.shopByCategory}</h2>
             {collectionsLoading ? (
               <div className="flex gap-4 overflow-hidden">
@@ -105,8 +100,8 @@ export default function Home() {
               </div>
             )}
           </div> */}
-          {/* <ProductsCollection /> */}
-          {/* <SpaceCollection /> */}
+        {/* <ProductsCollection /> */}
+        {/* <SpaceCollection /> */}
         {/* </section> */}
 
       </div>

@@ -59,7 +59,7 @@ export function useHomePageMetaobject(
           },
           language,
         });
-
+        console.log(metaobjectsData, "metaobjects data home page server");
         return metaobjectsData;
       } catch (error) {
         console.error('Error fetching metaobjects:', error);
