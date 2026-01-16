@@ -12,7 +12,7 @@ const FeatureSection2 = () => {
         const field = fields.find(f => f.key === key)
         return field?.value || null
     }
-
+    console.log(metaobjectData, "feature section2 data server")
     const getImage = (fields: HomePageMetaobject['fields']) => {
         const imagenField = fields.find(f => f.key === "imagen")
         return imagenField?.reference?.image || null
@@ -28,12 +28,14 @@ const FeatureSection2 = () => {
         descripcion: getFieldValue(featureSectionFields, "descripcion") || "Our 2026 Edit is inspired by colour before the rules. It's about designing your home like no one is watching and letting colour lead the way.",
         textoBoton: getFieldValue(featureSectionFields, "texto_boton") || "Learn more",
         linkBoton: getFieldValue(featureSectionFields, "link_boton") || "/collections/2026-colour-edit",
+        imagenALaDerecha: getFieldValue(featureSectionFields, "imagen_a_la_derecha") === "true",
     }
 
     return (
         <section className="w-full py-16">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                <div className="flex flex-col justify-center space-y-6 px-4 lg:px-8">
+                {/* Text Content */}
+                <div className={`flex flex-col justify-center space-y-6 px-4 lg:px-8 ${featureData.imagenALaDerecha ? 'lg:order-1' : 'lg:order-2'}`}>
                     {metaobjectLoading ? (
                         <>
                             <div className="h-12 bg-muted/50 rounded mb-4 animate-pulse w-3/4" />
@@ -61,7 +63,9 @@ const FeatureSection2 = () => {
                         </>
                     )}
                 </div>
-                <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden rounded">
+
+                {/* Image */}
+                <div className={`relative w-full h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden rounded ${featureData.imagenALaDerecha ? 'lg:order-2' : 'lg:order-1'}`}>
                     {metaobjectLoading ? (
                         <div className="w-full h-full bg-muted/50 animate-pulse" />
                     ) : featureImage ? (

@@ -25,7 +25,6 @@ const Hero = () => {
     const { data: metaobjectData, isLoading: metaobjectLoading } = useHomePageMetaobject()
     const [currentSlide, setCurrentSlide] = useState(0)
     const [headerHeight, setHeaderHeight] = useState(140)
-    console.log(metaobjectData, "hero data")
 
     useEffect(() => {
         const header = document.querySelector('header')
