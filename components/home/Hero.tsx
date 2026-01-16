@@ -1,10 +1,10 @@
 "use client"
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useLanguage } from '@/lib/contexts/language-context'
 import { translations } from '@/lib/i18n/translations'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { useHomePageMetaobject, HomePageMetaobject } from '../hooks/useHomePageMetaobject'
+import { useHomePageMetaobjectServer, HomePageMetaobject } from '../hooks/useHomePageMetaobject'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
@@ -22,9 +22,10 @@ interface HeroData {
 const Hero = () => {
     const { language } = useLanguage()
     const t = translations[language]
-    const { data: metaobjectData, isLoading: metaobjectLoading } = useHomePageMetaobject()
+    const { data: metaobjectData, isLoading: metaobjectLoading } = useHomePageMetaobjectServer()
     const [currentSlide, setCurrentSlide] = useState(0)
     const [headerHeight, setHeaderHeight] = useState(140)
+    const autoplayTimerRef = useRef<NodeJS.Timeout | null>(null)
 
     useEffect(() => {
         const header = document.querySelector('header')
@@ -68,26 +69,41 @@ const Hero = () => {
         }
     })
 
-    useEffect(() => {
+    const startAutoplay = useCallback(() => {
+        if (autoplayTimerRef.current) {
+            clearInterval(autoplayTimerRef.current)
+        }
+
         if (herosData.length <= 1) return
 
-        const timer = setInterval(() => {
+        autoplayTimerRef.current = setInterval(() => {
             setCurrentSlide((prev) => (prev + 1) % herosData.length)
         }, 6000)
-
-        return () => clearInterval(timer)
     }, [herosData.length])
+
+    useEffect(() => {
+        startAutoplay()
+
+        return () => {
+            if (autoplayTimerRef.current) {
+                clearInterval(autoplayTimerRef.current)
+            }
+        }
+    }, [startAutoplay])
 
     const goToSlide = (index: number) => {
         setCurrentSlide(index)
+        startAutoplay()
     }
 
     const nextSlide = () => {
         setCurrentSlide((prev) => (prev + 1) % herosData.length)
+        startAutoplay()
     }
 
     const prevSlide = () => {
         setCurrentSlide((prev) => (prev - 1 + herosData.length) % herosData.length)
+        startAutoplay()
     }
 
     if (metaobjectLoading) {

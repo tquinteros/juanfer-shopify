@@ -53,17 +53,23 @@ interface ProductsMegaMenuProps {
     productCollections?: SimplifiedCollectionsResponse
     spaceCollections?: SimplifiedCollectionsResponse
     isLoading: boolean
+    onClose?: () => void
 }
 
-const ProductsMegaMenu = ({ productCollections, spaceCollections, isLoading }: ProductsMegaMenuProps) => {
+const ProductsMegaMenu = ({ productCollections, spaceCollections, isLoading, onClose }: ProductsMegaMenuProps) => {
     const { language } = useLanguage()
     const t = translations[language]
+
+    const handleLinkClick = () => {
+        if (onClose) {
+            onClose()
+        }
+    }
 
     if (isLoading) {
         return (
             <div className="w-[800px] p-6 bg-background border border-border rounded-md shadow-lg">
                 <div className="grid grid-cols-2 gap-8">
-                    {/* Product Collections Skeleton */}
                     <div>
                         <Skeleton className="h-6 w-32 mb-4" />
                         <div className="space-y-3">
@@ -75,7 +81,6 @@ const ProductsMegaMenu = ({ productCollections, spaceCollections, isLoading }: P
                             ))}
                         </div>
                     </div>
-                    {/* Space Collections Skeleton */}
                     <div>
                         <Skeleton className="h-6 w-32 mb-4" />
                         <div className="space-y-3">
@@ -95,7 +100,6 @@ const ProductsMegaMenu = ({ productCollections, spaceCollections, isLoading }: P
     return (
         <div className="w-[800px] p-6 bg-background border border-border rounded-md shadow-lg">
             <div className="grid grid-cols-2 gap-8">
-                {/* Product Collections */}
                 <div>
                     <h3 className="text-lg font-semibold mb-4">{t.home.shopByProduct}</h3>
                     <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
@@ -103,6 +107,7 @@ const ProductsMegaMenu = ({ productCollections, spaceCollections, isLoading }: P
                             <Link
                                 key={collection.id}
                                 href={`/collections/${collection.handle}`}
+                                onClick={handleLinkClick}
                                 className="flex items-center gap-3 p-2 rounded-md hover:bg-accent transition-colors group"
                             >
                                 {collection.image ? (
@@ -126,7 +131,6 @@ const ProductsMegaMenu = ({ productCollections, spaceCollections, isLoading }: P
                     </div>
                 </div>
 
-                {/* Space Collections */}
                 <div>
                     <h3 className="text-lg font-semibold mb-4">{t.home.shopBySpace}</h3>
                     <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
@@ -134,6 +138,7 @@ const ProductsMegaMenu = ({ productCollections, spaceCollections, isLoading }: P
                             <Link
                                 key={collection.id}
                                 href={`/collections/${collection.handle}`}
+                                onClick={handleLinkClick}
                                 className="flex items-center gap-3 p-2 rounded-md hover:bg-accent transition-colors group"
                             >
                                 {collection.image ? (
@@ -242,6 +247,14 @@ const SubHeader = () => {
         setMegaMenuTimeoutId(timeoutId);
     };
 
+    const handleMegaMenuClose = () => {
+        if (megaMenuTimeoutId) {
+            clearTimeout(megaMenuTimeoutId);
+            setMegaMenuTimeoutId(null);
+        }
+        setMegaMenuOpen(false);
+    };
+
     const renderMenuItems = (menuItems: MenuItem[]) => {
         return menuItems.map((item) => {
             if (item.title === "Productos" || item.title === "Products") {
@@ -294,6 +307,7 @@ const SubHeader = () => {
                                         productCollections={productCollections}
                                         spaceCollections={spaceCollections}
                                         isLoading={collectionsLoading}
+                                        onClose={handleMegaMenuClose}
                                     />
                                 </motion.div>
                             )}
