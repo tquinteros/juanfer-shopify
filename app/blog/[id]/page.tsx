@@ -23,7 +23,6 @@ export default function BlogPage({ params }: BlogPageProps) {
   const t = translations[language]
   const { id } = use(params)
 
-  // Convert numeric ID to Shopify GID format if needed
   const articleId = id.startsWith('gid://')
     ? id
     : `gid://shopify/Article/${id}`

@@ -1,19 +1,19 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
-import { shopifyFetch } from '@/lib/shopify'
 import { getCustomerToken } from '@/lib/auth'
 import { useLanguage } from '@/lib/contexts/language-context'
 import { translations } from '@/lib/i18n/translations'
-import { CREATE_CART, GET_CART, ADD_TO_CART, REMOVE_FROM_CART, UPDATE_CART_LINES, UPDATE_CART_BUYER_IDENTITY } from '@/lib/queries/cart'
+import {
+  createCartAction,
+  getCartAction,
+  addToCartAction,
+  removeFromCartAction,
+  updateCartLinesAction,
+  updateCartBuyerIdentityAction,
+} from '@/lib/server/cart'
 import type {
   Cart,
-  CartCreateResponse,
-  CartLinesAddResponse,
-  CartLinesRemoveResponse,
-  CartLinesUpdateResponse,
-  CartBuyerIdentityUpdateResponse,
-  GetCartResponse,
   CartLineInput,
   CartLineUpdateInput,
 } from '@/lib/types/cart'
@@ -69,19 +69,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (!customerToken) return
 
     try {
-      const data = await shopifyFetch<CartBuyerIdentityUpdateResponse>({
-        query: UPDATE_CART_BUYER_IDENTITY,
-        variables: {
-          cartId,
-          buyerIdentity: {
-            customerAccessToken: customerToken,
-          },
-        },
+      const cart = await updateCartBuyerIdentityAction({
+        cartId,
+        customerAccessToken: customerToken,
         language,
       })
 
-      if (data.cartBuyerIdentityUpdate.cart) {
-        setCart(data.cartBuyerIdentityUpdate.cart)
+      if (cart) {
+        setCart(cart)
       }
     } catch (error) {
       console.error('Error associating cart with customer:', error)
@@ -91,21 +86,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // Create new cart
   const createNewCart = useCallback(async () => {
     try {
-      const data = await shopifyFetch<CartCreateResponse>({
-        query: CREATE_CART,
-        variables: {
-          input: {
-            lines: [],
-          },
-        },
+      const customerToken = getCustomerToken()
+      const cart = await createCartAction({
+        lines: [],
+        customerAccessToken: customerToken || undefined,
         language,
       })
 
-      if (data.cartCreate.cart) {
-        setCart(data.cartCreate.cart)
-        saveCartId(data.cartCreate.cart.id)
-        // Associate cart with customer if logged in
-        await associateCartWithCustomer(data.cartCreate.cart.id)
+      if (cart) {
+        setCart(cart)
+        saveCartId(cart.id)
+        // Associate cart with customer if logged in (if not already associated)
+        if (customerToken) {
+          await associateCartWithCustomer(cart.id)
+        }
       }
     } catch (error) {
       console.error(t.cart.errorUpdatingCart || 'Error creating cart:', error)
@@ -120,16 +114,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       if (existingCartId) {
         // Try to fetch existing cart
-        const data = await shopifyFetch<GetCartResponse>({
-          query: GET_CART,
-          variables: { id: existingCartId },
+        const cart = await getCartAction({
+          cartId: existingCartId,
           language,
         })
 
-        if (data.cart) {
-          setCart(data.cart)
+        if (cart) {
+          setCart(cart)
           // Associate cart with customer if logged in
-          await associateCartWithCustomer(data.cart.id)
+          await associateCartWithCustomer(cart.id)
         } else {
           // Cart not found, create new one
           clearCartId()
@@ -158,14 +151,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (cart?.id && !isLoading) {
       const existingCartId = getCartId()
       if (existingCartId) {
-        shopifyFetch<GetCartResponse>({
-          query: GET_CART,
-          variables: { id: existingCartId },
+        getCartAction({
+          cartId: existingCartId,
           language,
         })
-          .then((data) => {
-            if (data.cart) {
-              setCart(data.cart)
+          .then((cart) => {
+            if (cart) {
+              setCart(cart)
             }
           })
           .catch((error) => {
@@ -209,23 +201,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
         },
       ]
 
-      const data = await shopifyFetch<CartLinesAddResponse>({
-        query: ADD_TO_CART,
-        variables: {
-          cartId: currentCartId,
-          lines,
-        },
+      const updatedCart = await addToCartAction({
+        cartId: currentCartId,
+        lines,
         language,
       })
 
-      if (data.cartLinesAdd.userErrors.length > 0) {
-        throw new Error(data.cartLinesAdd.userErrors[0].message)
-      }
-
-      if (data.cartLinesAdd.cart) {
-        setCart(data.cartLinesAdd.cart)
+      if (updatedCart) {
+        setCart(updatedCart)
         // Associate cart with customer if logged in
-        await associateCartWithCustomer(data.cartLinesAdd.cart.id)
+        await associateCartWithCustomer(updatedCart.id)
         setIsOpen(true) // Open cart drawer after adding item
       }
     } catch (error) {
@@ -239,21 +224,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (!cart?.id) return
 
     try {
-      const data = await shopifyFetch<CartLinesRemoveResponse>({
-        query: REMOVE_FROM_CART,
-        variables: {
-          cartId: cart.id,
-          lineIds: [lineId],
-        },
+      const updatedCart = await removeFromCartAction({
+        cartId: cart.id,
+        lineIds: [lineId],
         language,
       })
 
-      if (data.cartLinesRemove.userErrors.length > 0) {
-        throw new Error(data.cartLinesRemove.userErrors[0].message)
-      }
-
-      if (data.cartLinesRemove.cart) {
-        setCart(data.cartLinesRemove.cart)
+      if (updatedCart) {
+        setCart(updatedCart)
       }
     } catch (error) {
       console.error(t.cart.errorRemovingFromCart || 'Error removing from cart:', error)
@@ -279,21 +257,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
         },
       ]
 
-      const data = await shopifyFetch<CartLinesUpdateResponse>({
-        query: UPDATE_CART_LINES,
-        variables: {
-          cartId: cart.id,
-          lines,
-        },
+      const updatedCart = await updateCartLinesAction({
+        cartId: cart.id,
+        lines,
         language,
       })
 
-      if (data.cartLinesUpdate.userErrors.length > 0) {
-        throw new Error(data.cartLinesUpdate.userErrors[0].message)
-      }
-
-      if (data.cartLinesUpdate.cart) {
-        setCart(data.cartLinesUpdate.cart)
+      if (updatedCart) {
+        setCart(updatedCart)
       }
     } catch (error) {
       console.error(t.cart.errorUpdatingCart || 'Error updating cart line:', error)

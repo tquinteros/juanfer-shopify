@@ -65,7 +65,7 @@ export async function getArticleByIdAction(
       variables: { id: articleId },
       language,
     })
-
+    console.log(data, "blog data server")
     return ArticleByIdQuerySchema.parse(data)
   } catch (error) {
     console.error('Error fetching article by id:', error)

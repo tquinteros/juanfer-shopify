@@ -109,12 +109,15 @@ const Hero = () => {
     if (metaobjectLoading) {
         return (
             <section className="relative w-full overflow-hidden" style={{ height: `calc(100vh - ${headerHeight}px)` }}>
-                <div className="absolute inset-0 bg-muted" />
+                <div className="absolute inset-0 bg-[#E5E5E5]" />
                 <div className="relative h-full container mx-auto px-4 lg:px-8 flex items-center">
-                    <div className="max-w-3xl">
+                    <div className="max-w-3xl w-full">
                         <Skeleton className="h-16 md:h-20 lg:h-24 mb-6 w-3/4" />
-                        <Skeleton className="h-6 mb-4 w-full max-w-2xl" />
-                        <Skeleton className="h-6 mb-8 w-11/12 max-w-2xl" />
+                        <div className="space-y-3 mb-8">
+                            <Skeleton className="h-6 w-full max-w-2xl" />
+                            <Skeleton className="h-6 w-11/12 max-w-2xl" />
+                            <Skeleton className="h-6 w-10/12 max-w-2xl" />
+                        </div>
                         <div className="flex flex-col sm:flex-row gap-4">
                             <Skeleton className="h-12 w-40" />
                             <Skeleton className="h-12 w-40" />
