@@ -8,7 +8,7 @@ interface UseProductSearchOptions {
     query: string;
     first?: number;
     enabled?: boolean;
-    language?: string; // Optional override - if not provided, uses store language
+    language?: string;
 }
 
 export function useProductSearch(
@@ -34,7 +34,7 @@ export function useProductSearch(
             return validated;
         },
         enabled: enabled && query.length >= 2,
-        staleTime: 1000 * 30, // 30 seconds for search results
+        staleTime: 1000 * 30,
         ...queryOptions,
     });
 }

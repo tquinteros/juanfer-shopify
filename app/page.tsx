@@ -22,6 +22,7 @@ import Hero from "@/components/home/Hero"
 import FeatureSection from "@/components/home/FeatureSection"
 import { InfiniteCategories } from "@/components/home/InfiniteCategories"
 import SpaceCollection2 from "@/components/collections/SpaceCollection2"
+import FeatureSection2 from "@/components/home/FeatureSection2"
 
 export default function Home() {
   const { language } = useLanguage()
@@ -36,10 +37,9 @@ export default function Home() {
         <SpaceCollection2 />
         <BannersCategories />
         <FeatureSection />
-        <section className="">
-          <ProductCarousel />
-        </section>
-        <section className="flex flex-col gap-20">
+        <ProductCarousel />
+        <FeatureSection2 />
+        {/* <section className="flex flex-col gap-20"> */}
           {/* <div className="">
             <h2 className="text-3xl font-bold mb-8 text-center">{t.home.shopByCategory}</h2>
             {collectionsLoading ? (
@@ -107,7 +107,7 @@ export default function Home() {
           </div> */}
           {/* <ProductsCollection /> */}
           {/* <SpaceCollection /> */}
-        </section>
+        {/* </section> */}
 
       </div>
     </div>

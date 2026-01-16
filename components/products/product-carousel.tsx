@@ -23,7 +23,7 @@ const ProductCarousel = () => {
   const { data: productsData, isLoading: productsLoading } = useProducts({ first: 6 })
 
   return (
-    <div className="w-full">
+    <section className="w-full">
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-3xl font-bold">{t.home.bestsellers}</h2>
         <Button asChild variant="outline">
@@ -97,7 +97,7 @@ const ProductCarousel = () => {
           {t.home.noCollectionsAvailable || "No products available"}
         </div>
       )}
-    </div>
+    </section>
   )
 }
 

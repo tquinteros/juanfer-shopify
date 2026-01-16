@@ -131,7 +131,6 @@ export function useFeatureSectionMetaobject(
           },
           language,
         });
-
         return metaobjectData;
       } catch (error) {
         console.error('Error fetching feature section metaobject:', error);
