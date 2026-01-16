@@ -63,7 +63,7 @@ export function ProductCard({
     : t.products.outOfStock
 
   return (
-    <Card className={`overflow-hidden hover:shadow-lg transition-shadow ${className}`}>
+    <Card className={`overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-full ${className}`}>
       <CardHeader className="p-0">
         <Link href={`/product/${product.handle}`} className="block cursor-pointer">
           {firstImage ? (
@@ -81,43 +81,49 @@ export function ProductCard({
           )}
         </Link>
       </CardHeader>
-      <CardContent className="p-4">
+      <CardContent className="p-4 flex flex-col h-full">
         <Link href={`/product/${product.handle}`}>
-          <CardTitle className="text-lg mb-2 line-clamp-2 hover:underline">
+          <CardTitle className="text-lg mb-2 line-clamp-2 hover:underline min-h-14">
             {product.title}
           </CardTitle>
         </Link>
-        {product.description && (
-          <CardDescription className="line-clamp-2 mb-4">
-            {product.description}
-          </CardDescription>
-        )}
-        <div className="flex justify-between items-center">
-          <span className={`${priceSizeClasses[priceSize]} font-bold`}>
-            ${parseFloat(price.amount).toFixed(2)} {price.currencyCode}
-          </span>
-          <span
-            className={`text-sm font-medium ${
-              product.availableForSale
-                ? "text-green-600"
-                : "text-red-600"
-            }`}
-          >
-            {stockStatus}
-          </span>
+        <div className="min-h-12 mb-4">
+          {product.description ? (
+            <CardDescription className="line-clamp-2">
+              {product.description}
+            </CardDescription>
+          ) : (
+            <div className="h-12"></div>
+          )}
         </div>
-        {showTags && product.tags && product.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-3">
-            {product.tags.slice(0, 3).map((tag) => (
-              <span
-                key={tag}
-                className="text-xs bg-gray-100 px-2 py-1 rounded"
-              >
-                {tag}
-              </span>
-            ))}
+        <div className="mt-auto">
+          <div className="flex justify-between items-center">
+            <span className={`${priceSizeClasses[priceSize]} font-bold`}>
+              ${parseFloat(price.amount).toFixed(2)} {price.currencyCode}
+            </span>
+            <span
+              className={`text-sm font-medium ${
+                product.availableForSale
+                  ? "text-green-600"
+                  : "text-red-600"
+              }`}
+            >
+              {stockStatus}
+            </span>
           </div>
-        )}
+          {showTags && product.tags && product.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-3">
+              {product.tags.slice(0, 3).map((tag) => (
+                <span
+                  key={tag}
+                  className="text-xs bg-gray-100 px-2 py-1 rounded"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
       </CardContent>
     </Card>
   )

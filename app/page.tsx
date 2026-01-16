@@ -1,20 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
-import { useCollections } from "@/components/hooks/useCollections"
-import { Skeleton } from "@/components/ui/skeleton"
-import Link from "next/link"
-import Image from "next/image"
-import { useLanguage } from "@/lib/contexts/language-context"
-import { translations } from "@/lib/i18n/translations"
-import SpaceCollection from "@/components/collections/SpaceCollection"
 import ProductCarousel from "@/components/products/product-carousel"
-import ProductsCollection from "@/components/collections/ProductsCollection"
 import BannersCategories from "@/components/home/BannersCategories"
 import Hero from "@/components/home/Hero"
 import FeatureSection from "@/components/home/FeatureSection"

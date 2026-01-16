@@ -4,6 +4,7 @@ import { ProductsQuery, ProductsQuerySchema, ProductByIdQuery, ProductByHandleQu
 import { shopifyFetch } from '@/lib/shopify';
 import { GET_PRODUCTS_QUERY, GET_PRODUCTS_BY_COLLECTION_QUERY, GET_PRODUCT_BY_HANDLE_QUERY, GET_PRODUCT_BY_ID_QUERY } from '@/lib/queries';
 import { useLanguage } from '@/lib/contexts/language-context';
+import { getFeaturedProductsAction } from '@/lib/server/products';
 
 interface UseProductsOptions {
     first?: number;
@@ -89,10 +90,10 @@ export function useInfiniteProducts(
                     };
                 }>({
                     query: GET_PRODUCTS_BY_COLLECTION_QUERY,
-                    variables: { 
-                        collectionHandle, 
-                        first, 
-                        after: pageParam || null 
+                    variables: {
+                        collectionHandle,
+                        first,
+                        after: pageParam || null
                     },
                     language,
                 });
@@ -114,10 +115,10 @@ export function useInfiniteProducts(
 
             const data = await shopifyFetch<ProductsQuery>({
                 query: GET_PRODUCTS_QUERY,
-                variables: { 
-                    first, 
-                    after: pageParam || null, 
-                    query 
+                variables: {
+                    first,
+                    after: pageParam || null,
+                    query
                 },
                 language,
             });
@@ -211,4 +212,24 @@ export function useFeaturedProducts(
         },
         queryOptions
     );
+}
+
+
+export function useFeaturedProductsServer(
+    options: UseFeaturedProductsOptions = {},
+    queryOptions?: Omit<UseQueryOptions<ProductsQuery, Error>, 'queryKey' | 'queryFn'>
+) {
+    const { first = 8, language: languageOverride } = options
+    const { language: contextLanguage } = useLanguage()
+    const language = languageOverride ?? contextLanguage
+
+    return useQuery({
+        queryKey: ['featured-products', first, language],
+        queryFn: async () => {
+            return await getFeaturedProductsAction({ first, language })
+        },
+        staleTime: 1000 * 60 * 5,
+        gcTime: 1000 * 60 * 10,
+        ...queryOptions,
+    })
 }
