@@ -3,6 +3,7 @@ import { shopifyFetch } from '@/lib/shopify';
 import { GET_MENU_BY_HANDLE_QUERY } from '@/lib/queries';
 import { MenuByHandleQuery, MenuByHandleQuerySchema } from '@/lib/types/shopify';
 import { useLanguage } from '@/lib/contexts/language-context';
+import { getMenuByHandleAction } from '@/lib/server/header';
 
 interface UseMenuByHandleOptions {
   handle: string;
@@ -31,6 +32,25 @@ export function useMenuByHandle(
     },
     enabled: enabled && !!handle,
     staleTime: 1000 * 60 * 5, 
+    ...queryOptions,
+  });
+}
+
+export function useMenuByHandleServer(
+  { handle, enabled = true, language: languageOverride }: UseMenuByHandleOptions,
+  queryOptions?: Omit<UseQueryOptions<MenuByHandleQuery, Error>, 'queryKey' | 'queryFn'>
+) {
+  const { language: contextLanguage } = useLanguage();
+  const language = languageOverride ?? contextLanguage;
+
+  return useQuery({
+    queryKey: ['menu', handle, language],
+    queryFn: async () => {
+      return await getMenuByHandleAction({ handle, language });
+    },
+    enabled: enabled && !!handle,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
     ...queryOptions,
   });
 }

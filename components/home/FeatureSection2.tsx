@@ -3,10 +3,10 @@ import React from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { useFeatureSectionMetaobject, HomePageMetaobject } from '../hooks/useHomePageMetaobject'
+import { useFeatureSectionMetaobjectServer, HomePageMetaobject } from '../hooks/useHomePageMetaobject'
 
 const FeatureSection2 = () => {
-    const { data: metaobjectData, isLoading: metaobjectLoading } = useFeatureSectionMetaobject()
+    const { data: metaobjectData, isLoading: metaobjectLoading } = useFeatureSectionMetaobjectServer()
     console.log(metaobjectData, "feature section data")
     const getFieldValue = (fields: HomePageMetaobject['fields'], key: string): string | null => {
         const field = fields.find(f => f.key === key)

@@ -3,6 +3,11 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { shopifyFetch } from '@/lib/shopify';
 import { GET_METAOBJECTS_QUERY } from '@/lib/queries';
 import { useLanguage } from '@/lib/contexts/language-context';
+import { 
+  getHomeBannersCategoriesAction, 
+  getFeatureSectionAction, 
+  getHomePageMetaobjectAction 
+} from '@/lib/server/home';
 
 export interface HomePageMetaobject {
   id: string;
@@ -138,6 +143,64 @@ export function useFeatureSectionMetaobject(
       }
     },
     staleTime: 1000 * 60 * 5,
+    ...queryOptions,
+  });
+}
+
+// Server versions
+export function useHomeBannersCatServer(
+  options: UseHomePageMetaobjectOptions = {},
+  queryOptions?: Omit<UseQueryOptions<HomePageMetaobjectsQuery, Error>, 'queryKey' | 'queryFn'>
+) {
+  const { language: languageOverride } = options;
+  const { language: contextLanguage } = useLanguage();
+  const language = languageOverride ?? contextLanguage;
+
+  return useQuery<HomePageMetaobjectsQuery>({
+    queryKey: ['home-banners-categories', language],
+    queryFn: async () => {
+      return await getHomeBannersCategoriesAction({ language });
+    },
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
+    ...queryOptions,
+  });
+}
+
+export function useFeatureSectionMetaobjectServer(
+  options: UseHomePageMetaobjectOptions = {},
+  queryOptions?: Omit<UseQueryOptions<HomePageMetaobjectsQuery, Error>, 'queryKey' | 'queryFn'>
+) {
+  const { language: languageOverride } = options;
+  const { language: contextLanguage } = useLanguage();
+  const language = languageOverride ?? contextLanguage;
+
+  return useQuery<HomePageMetaobjectsQuery>({
+    queryKey: ['feature-section', language],
+    queryFn: async () => {
+      return await getFeatureSectionAction({ language });
+    },
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
+    ...queryOptions,
+  });
+}
+
+export function useHomePageMetaobjectServer(
+  options: UseHomePageMetaobjectOptions = {},
+  queryOptions?: Omit<UseQueryOptions<HomePageMetaobjectsQuery, Error>, 'queryKey' | 'queryFn'>
+) {
+  const { language: languageOverride } = options;
+  const { language: contextLanguage } = useLanguage();
+  const language = languageOverride ?? contextLanguage;
+
+  return useQuery<HomePageMetaobjectsQuery>({
+    queryKey: ['home-page-metaobject', language],
+    queryFn: async () => {
+      return await getHomePageMetaobjectAction({ language });
+    },
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
     ...queryOptions,
   });
 }

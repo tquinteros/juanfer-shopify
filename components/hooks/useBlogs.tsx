@@ -21,6 +21,11 @@ import {
   ArticlesTagsQuerySchema,
 } from '@/lib/types/blogs';
 import { useLanguage } from '@/lib/contexts/language-context';
+import { 
+  getArticlesAction, 
+  getArticleByIdAction, 
+  getArticlesTagsAction 
+} from '@/lib/server/blog';
 
 interface UseBlogsOptions {
   first?: number;
@@ -246,6 +251,77 @@ export function useArticlesTags(
       return validated;
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
+    ...queryOptions,
+  });
+}
+
+// Server versions
+export function useInfiniteArticlesServer(
+  options: UseInfiniteArticlesOptions = {},
+  queryOptions?: Omit<UseInfiniteQueryOptions<ArticlesQuery, Error>, 'queryKey' | 'queryFn' | 'getNextPageParam' | 'initialPageParam'>
+) {
+  const { first = 20, query = null, language: languageOverride } = options;
+  const { language: contextLanguage } = useLanguage();
+  const language = languageOverride ?? contextLanguage;
+
+  return useInfiniteQuery({
+    queryKey: ['articles-infinite', first, query, language],
+    queryFn: async ({ pageParam }) => {
+      return await getArticlesAction({
+        first,
+        after: (pageParam as string | null) || null,
+        query,
+        language
+      });
+    },
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => {
+      const pageInfo = lastPage.articles.pageInfo;
+      return pageInfo.hasNextPage ? pageInfo.endCursor : null;
+    },
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
+    ...queryOptions,
+  });
+}
+
+export function useArticleByIdServer(
+  { id, enabled = true, language: languageOverride }: UseArticleByIdOptions,
+  queryOptions?: Omit<UseQueryOptions<ArticleByIdQuery, Error>, 'queryKey' | 'queryFn'>
+) {
+  const articleId = id.startsWith('gid://')
+    ? id
+    : `gid://shopify/Article/${id}`;
+  const { language: contextLanguage } = useLanguage();
+  const language = languageOverride ?? contextLanguage;
+  
+  return useQuery({
+    queryKey: ['articleById', articleId, language],
+    queryFn: async () => {
+      return await getArticleByIdAction({ id: articleId, language });
+    },
+    enabled: enabled && !!id,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
+    ...queryOptions,
+  });
+}
+
+export function useArticlesTagsServer(
+  options: UseArticlesTagsOptions = {},
+  queryOptions?: Omit<UseQueryOptions<ArticlesTagsQuery, Error>, 'queryKey' | 'queryFn'>
+) {
+  const { first = 250, after = null, language: languageOverride } = options;
+  const { language: contextLanguage } = useLanguage();
+  const language = languageOverride ?? contextLanguage;
+
+  return useQuery({
+    queryKey: ['articles-tags', first, after, language],
+    queryFn: async () => {
+      return await getArticlesTagsAction({ first, after, language });
+    },
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
     ...queryOptions,
   });
 }

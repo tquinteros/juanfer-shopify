@@ -15,6 +15,7 @@ import {
   GET_COLLECTION_BY_ID_QUERY,
 } from '@/lib/queries';
 import { useLanguage } from '@/lib/contexts/language-context';
+import { getCollectionsByMetadataAction } from '@/lib/server/collections';
 
 // Simplified collection type
 export interface SimplifiedCollection {
@@ -207,6 +208,24 @@ export function useCollectionsByMetadata(
       };
     },
     staleTime: 1000 * 60 * 5,
+    ...queryOptions,
+  });
+}
+
+export function useCollectionsByMetadataServer(
+  { metadataValue, first = 50, after = null, language: languageOverride }: UseCollectionsByMetadataOptions,
+  queryOptions?: Omit<UseQueryOptions<SimplifiedCollectionsResponse, Error>, 'queryKey' | 'queryFn'>
+) {
+  const { language: contextLanguage } = useLanguage();
+  const language = languageOverride ?? contextLanguage;
+
+  return useQuery({
+    queryKey: ['collections-by-metadata', metadataValue, first, after, language],
+    queryFn: async () => {
+      return await getCollectionsByMetadataAction({ metadataValue, first, after, language });
+    },
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
     ...queryOptions,
   });
 }

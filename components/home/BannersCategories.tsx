@@ -12,10 +12,10 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
 import Image from "next/image"
-import { useHomeBannersCat, HomePageMetaobject } from "@/components/hooks/useHomePageMetaobject"
+import { useHomeBannersCatServer, HomePageMetaobject } from "@/components/hooks/useHomePageMetaobject"
 
 const BannersCategories = () => {
-    const { data: bannersCategoriesData, isLoading: bannersCategoriesLoading, error: bannersCategoriesError } = useHomeBannersCat()
+    const { data: bannersCategoriesData, isLoading: bannersCategoriesLoading, error: bannersCategoriesError } = useHomeBannersCatServer()
 
     const getFieldValue = (fields: HomePageMetaobject['fields'], key: string): string | null => {
         const field = fields.find(f => f.key === key)
