@@ -159,13 +159,12 @@ const Hero = () => {
                             src={heroData.heroImage.url}
                             alt={heroData.heroImage.altText || heroData.titulo}
                             fill
-                            className="object-cover"
+                            className="object-cover brightness-60"
                             priority={index === 0}
                         />
                     ) : (
                         <div className="absolute inset-0 bg-muted" />
                     )}
-                    {/* <div className="absolute inset-0 bg-foreground/40" /> */}
 
                     <div className="relative h-full container mx-auto px-4 lg:px-8 flex items-center">
                         <div className="max-w-3xl text-background">
