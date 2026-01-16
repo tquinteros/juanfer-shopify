@@ -123,7 +123,7 @@ export function Header() {
 
     return (
         <>
-            <header className="w-full sticky bg-white dark:bg-black top-0 z-50">
+            <header className="w-full sticky bg-white pl-2 md:pl-0 dark:bg-black top-0 z-50">
                 {mobileSearchOpen && (
                     <div className="fixed inset-0 z-60 md:hidden">
                         <div className="p-4">
@@ -399,55 +399,11 @@ export function Header() {
 
                 {/* Desktop Navigation */}
                 <div className="hidden md:block bg-[#EEF0F2] dark:bg-[#1C1B1A]">
-                    <div className="container mx-auto">
+                    <div className="flex justify-center">
                         <div className="flex items-center justify-between">
                             <nav className="flex items-center gap-6 py-3">
-                                {/* <Link href="/products" className="hover:opacity-80 transition-opacity">
-                                    {t.header.nav.shop}
-                                </Link>
-                                <Link href="/blogs" className="hover:opacity-80 transition-opacity">
-                                    {t.header.nav.blogs}
-                                </Link>
-                                <Link href="/microcement-kits" className="hover:opacity-80 transition-opacity">
-                                    {t.header.nav.microcementKits}
-                                </Link>
-                                <Link href="/samples" className="hover:opacity-80 transition-opacity">
-                                    {t.header.nav.samples}
-                                </Link>
-                                <Link href="/colors" className="hover:opacity-80 transition-opacity">
-                                    {t.header.nav.colors}
-                                </Link>
-                                <Link href="/inspirations" className="hover:opacity-80 transition-opacity">
-                                    {t.header.nav.inspirations}
-                                </Link>
-                                <Link href="/knowledge" className="hover:opacity-80 transition-opacity">
-                                    {t.header.nav.knowledge}
-                                </Link>
-                                <Link href="/collaboration" className="hover:opacity-80 transition-opacity">
-                                    {t.header.nav.collaboration}
-                                </Link>
-                                <Link href="/contact" className="hover:opacity-80 transition-opacity">
-                                    {t.header.nav.contact}
-                                </Link> */}
                                 <SubHeader />
                             </nav>
-
-                            <div className="flex items-center gap-6">
-                                <a
-                                    href="tel:+48537991307"
-                                    className="flex items-center gap-2 hover:opacity-80 transition-opacity underline"
-                                >
-                                    <Phone className="h-4 w-4" />
-                                    <span>+48 537 991 307</span>
-                                </a>
-                                <a
-                                    href="mailto:hello@festfloor.com"
-                                    className="flex items-center gap-2 hover:opacity-80 transition-opacity underline"
-                                >
-                                    <Mail className="h-4 w-4" />
-                                    <span>hello@festfloor.com</span>
-                                </a>
-                            </div>
                         </div>
                     </div>
                 </div>

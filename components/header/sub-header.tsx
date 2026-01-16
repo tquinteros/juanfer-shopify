@@ -1,17 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useMenuByHandle } from '@/components/hooks/useMenu';
 import Link from 'next/link';
 import type { MenuItem } from '@/lib/types/shopify';
 import { Skeleton } from '../ui/skeleton';
-import {
-    NavigationMenu,
-    NavigationMenuContent,
-    NavigationMenuItem,
-    NavigationMenuList,
-    NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu"
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown } from 'lucide-react';
 import { useCollectionsByMetadata, SimplifiedCollectionsResponse } from "@/components/hooks/useCollections"
 import { useLanguage } from "@/lib/contexts/language-context"
 import { translations } from "@/lib/i18n/translations"
@@ -66,7 +61,7 @@ const ProductsMegaMenu = ({ productCollections, spaceCollections, isLoading }: P
 
     if (isLoading) {
         return (
-            <div className="w-[800px] p-6">
+            <div className="w-[800px] p-6 bg-background border border-border rounded-md shadow-lg">
                 <div className="grid grid-cols-2 gap-8">
                     {/* Product Collections Skeleton */}
                     <div>
@@ -98,12 +93,12 @@ const ProductsMegaMenu = ({ productCollections, spaceCollections, isLoading }: P
     }
 
     return (
-        <div className="w-[800px] p-6">
+        <div className="w-[800px] p-6 bg-background border border-border rounded-md shadow-lg">
             <div className="grid grid-cols-2 gap-8">
                 {/* Product Collections */}
                 <div>
                     <h3 className="text-lg font-semibold mb-4">{t.home.shopByProduct}</h3>
-                    <div className="space-y-2">
+                    <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
                         {productCollections?.collections.map((collection) => (
                             <Link
                                 key={collection.id}
@@ -134,7 +129,7 @@ const ProductsMegaMenu = ({ productCollections, spaceCollections, isLoading }: P
                 {/* Space Collections */}
                 <div>
                     <h3 className="text-lg font-semibold mb-4">{t.home.shopBySpace}</h3>
-                    <div className="space-y-2">
+                    <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
                         {spaceCollections?.collections.map((collection) => (
                             <Link
                                 key={collection.id}
@@ -167,6 +162,10 @@ const ProductsMegaMenu = ({ productCollections, spaceCollections, isLoading }: P
 }
 
 const SubHeader = () => {
+    // All hooks must be called at the top before any conditional returns
+    const [megaMenuOpen, setMegaMenuOpen] = useState(false);
+    const [megaMenuTimeoutId, setMegaMenuTimeoutId] = useState<NodeJS.Timeout | null>(null);
+
     const { data, isLoading, error } = useMenuByHandle({
         handle: 'sub-menu',
     });
@@ -230,33 +229,81 @@ const SubHeader = () => {
         );
     };
 
-    const renderMenuItems = (menuItems: MenuItem[]) => {
-        const navigationMenuItems: React.ReactElement[] = []
-        const regularItems: React.ReactElement[] = []
+    const handleMegaMenuMouseEnter = () => {
+        if (megaMenuTimeoutId) {
+            clearTimeout(megaMenuTimeoutId);
+            setMegaMenuTimeoutId(null);
+        }
+        setMegaMenuOpen(true);
+    };
 
-        menuItems.forEach((item) => {
-            // Check if this is the "Productos" menu item to render with megamenu
+    const handleMegaMenuMouseLeave = () => {
+        const timeoutId = setTimeout(() => {
+            setMegaMenuOpen(false);
+        }, 150);
+        setMegaMenuTimeoutId(timeoutId);
+    };
+
+    const renderMenuItems = (menuItems: MenuItem[]) => {
+        return menuItems.map((item) => {
             if (item.title === "Productos" || item.title === "Products") {
-                navigationMenuItems.push(
-                    <NavigationMenu key={item.id}>
-                        <NavigationMenuList>
-                            <NavigationMenuItem>
-                                <NavigationMenuTrigger className="hover:opacity-80 transition-opacity bg-transparent hover:bg-accent">
-                                    {item.title}
-                                </NavigationMenuTrigger>
-                                <NavigationMenuContent>
+                const { href, isExternal } = formatUrl(item.url);
+                
+                return (
+                    <div 
+                        key={item.id} 
+                        className="relative"
+                        onMouseEnter={handleMegaMenuMouseEnter}
+                        onMouseLeave={handleMegaMenuMouseLeave}
+                    >
+                        {isExternal ? (
+                            <a
+                                href={href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-1 hover:opacity-80 transition-opacity"
+                            >
+                                {item.title}
+                                <ChevronDown 
+                                    className={`h-3 w-3 transition-transform duration-200 ${megaMenuOpen ? 'rotate-180' : ''}`}
+                                />
+                            </a>
+                        ) : (
+                            <Link
+                                href={href}
+                                className="flex items-center gap-1 hover:opacity-80 transition-opacity"
+                            >
+                                {item.title}
+                                <ChevronDown 
+                                    className={`h-3 w-3 transition-transform duration-200 ${megaMenuOpen ? 'rotate-180' : ''}`}
+                                />
+                            </Link>
+                        )}
+                        
+                        <AnimatePresence>
+                            {megaMenuOpen && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    transition={{ 
+                                        duration: 0.2,
+                                        ease: "easeOut"
+                                    }}
+                                    className="absolute top-full left-0 mt-2 z-50"
+                                >
                                     <ProductsMegaMenu 
                                         productCollections={productCollections}
                                         spaceCollections={spaceCollections}
                                         isLoading={collectionsLoading}
                                     />
-                                </NavigationMenuContent>
-                            </NavigationMenuItem>
-                        </NavigationMenuList>
-                    </NavigationMenu>
-                )
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                );
             } else if (item.items && item.items.length > 0) {
-                regularItems.push(
+                return (
                     <div key={item.id} className="relative group">
                         {renderMenuItem(item)}
                         <div className="absolute top-full left-0 mt-1 bg-background border border-border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 min-w-[200px]">
@@ -289,17 +336,15 @@ const SubHeader = () => {
                             </div>
                         </div>
                     </div>
-                )
-            } else {
-                regularItems.push(
-                    <React.Fragment key={item.id}>
-                        {renderMenuItem(item)}
-                    </React.Fragment>
-                )
+                );
             }
-        })
 
-        return [...navigationMenuItems, ...regularItems]
+            return (
+                <React.Fragment key={item.id}>
+                    {renderMenuItem(item)}
+                </React.Fragment>
+            );
+        });
     };
 
     return (

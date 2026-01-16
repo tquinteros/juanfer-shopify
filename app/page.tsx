@@ -8,20 +8,20 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-import { Button } from "@/components/ui/button"
 import { useCollections } from "@/components/hooks/useCollections"
 import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
 import Image from "next/image"
 import { useLanguage } from "@/lib/contexts/language-context"
 import { translations } from "@/lib/i18n/translations"
-import { useEffect, useState, useRef } from "react"
 import SpaceCollection from "@/components/collections/SpaceCollection"
 import ProductCarousel from "@/components/products/product-carousel"
 import ProductsCollection from "@/components/collections/ProductsCollection"
 import BannersCategories from "@/components/home/BannersCategories"
 import Hero from "@/components/home/Hero"
 import FeatureSection from "@/components/home/FeatureSection"
+import { InfiniteCategories } from "@/components/home/InfiniteCategories"
+import SpaceCollection2 from "@/components/collections/SpaceCollection2"
 
 export default function Home() {
   const { language } = useLanguage()
@@ -31,7 +31,9 @@ export default function Home() {
   return (
     <div className="min-h-screen pb-20">
       <Hero />
+      <InfiniteCategories />
       <div className="px-6 flex flex-col gap-20 mt-20">
+        <SpaceCollection2 />
         <BannersCategories />
         <FeatureSection />
         <section className="flex flex-col gap-20">

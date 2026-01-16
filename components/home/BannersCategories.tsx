@@ -85,7 +85,7 @@ const BannersCategories = () => {
                                 className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/6"
                             >
                                 <Link href={banner.link || "#"}>
-                                    <Card className="overflow-hidden pt-0 gap-0 border-none hover:shadow-lg shadow-none rounded cursor-pointer h-full">
+                                    <Card className="overflow-hidden bg-transparent pt-0 gap-0 border-none hover:shadow-none shadow-none rounded cursor-pointer h-full">
                                         <CardHeader className="p-0">
                                             {banner.image ? (
                                                 <Image
