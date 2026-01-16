@@ -1,6 +1,6 @@
 "use client"
 
-import { useOrders } from "@/components/hooks/useOrders"
+import { useOrdersServer } from "@/components/hooks/useOrders"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
@@ -11,7 +11,7 @@ import { useLanguage } from "@/lib/contexts/language-context"
 import { translations } from "@/lib/i18n/translations"
 
 export function OrdersTab() {
-  const { data, isLoading, error } = useOrders({ first: 20 })
+  const { data, isLoading, error } = useOrdersServer({ first: 20 })
   const { language } = useLanguage()
   const t = translations[language]
 

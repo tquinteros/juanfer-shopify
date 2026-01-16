@@ -1,6 +1,6 @@
 "use client"
 
-import { useArticleById } from "@/components/hooks/useBlogs"
+import { useArticleByIdServer } from "@/components/hooks/useBlogs"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -28,7 +28,7 @@ export default function BlogPage({ params }: BlogPageProps) {
     ? id
     : `gid://shopify/Article/${id}`
 
-  const { data, isLoading, error } = useArticleById({ id: articleId })
+  const { data, isLoading, error } = useArticleByIdServer({ id: articleId })
 
   if (error) {
     return (

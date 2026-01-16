@@ -4,7 +4,7 @@ import { ProductsQuery, ProductsQuerySchema, ProductByIdQuery, ProductByHandleQu
 import { shopifyFetch } from '@/lib/shopify';
 import { GET_PRODUCTS_QUERY, GET_PRODUCTS_BY_COLLECTION_QUERY, GET_PRODUCT_BY_HANDLE_QUERY, GET_PRODUCT_BY_ID_QUERY } from '@/lib/queries';
 import { useLanguage } from '@/lib/contexts/language-context';
-import { getFeaturedProductsAction } from '@/lib/server/products';
+import { getFeaturedProductsAction, getProductsAction, getProductByHandleAction } from '@/lib/server/products';
 
 interface UseProductsOptions {
     first?: number;
@@ -136,6 +136,36 @@ export function useInfiniteProducts(
     });
 }
 
+export function useInfiniteProductsServer(
+    options: UseInfiniteProductsOptions = {},
+    queryOptions?: Omit<UseInfiniteQueryOptions<ProductsQuery, Error>, 'queryKey' | 'queryFn' | 'getNextPageParam' | 'initialPageParam'>
+) {
+    const { first = 20, query = null, collectionHandle = null, language: languageOverride } = options;
+    const { language: contextLanguage } = useLanguage();
+    const language = languageOverride ?? contextLanguage;
+
+    return useInfiniteQuery({
+        queryKey: ['products-infinite', first, query, collectionHandle, language],
+        queryFn: async ({ pageParam }) => {
+            return await getProductsAction({
+                first,
+                after: (pageParam as string | null) || null,
+                query,
+                collectionHandle,
+                language
+            });
+        },
+        initialPageParam: null as string | null,
+        getNextPageParam: (lastPage) => {
+            const pageInfo = lastPage.products.pageInfo;
+            return pageInfo.hasNextPage ? pageInfo.endCursor : null;
+        },
+        staleTime: 1000 * 60 * 5,
+        gcTime: 1000 * 60 * 10,
+        ...queryOptions,
+    });
+}
+
 interface UseProductByHandleOptions {
     handle: string;
     enabled?: boolean;
@@ -162,6 +192,25 @@ export function useProductByHandle(
         },
         enabled: enabled && !!handle,
         staleTime: 1000 * 60 * 5,
+        ...queryOptions,
+    });
+}
+
+export function useProductByHandleServer(
+    { handle, enabled = true, language: languageOverride }: UseProductByHandleOptions,
+    queryOptions?: Omit<UseQueryOptions<ProductByHandleQuery, Error>, 'queryKey' | 'queryFn'>
+) {
+    const { language: contextLanguage } = useLanguage();
+    const language = languageOverride ?? contextLanguage;
+
+    return useQuery({
+        queryKey: ['product', handle, language],
+        queryFn: async () => {
+            return await getProductByHandleAction({ handle, language });
+        },
+        enabled: enabled && !!handle,
+        staleTime: 1000 * 60 * 5,
+        gcTime: 1000 * 60 * 10,
         ...queryOptions,
     });
 }

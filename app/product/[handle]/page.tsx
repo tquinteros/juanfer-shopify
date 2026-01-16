@@ -1,6 +1,6 @@
 "use client"
 
-import { useProductByHandle } from "@/components/hooks/useProducts"
+import { useProductByHandleServer } from "@/components/hooks/useProducts"
 import { useCart } from "@/components/providers/cart-provider"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -29,7 +29,7 @@ interface ProductPageProps {
 export default function ProductPage({ params }: ProductPageProps) {
     const { handle } = use(params)
 
-    const { data, isLoading, error } = useProductByHandle({ handle })
+    const { data, isLoading, error } = useProductByHandleServer({ handle })
     const { addToCart } = useCart()
     const { language } = useLanguage()
     const t = translations[language]

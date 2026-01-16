@@ -4,7 +4,7 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { useInfiniteProducts } from '@/components/hooks/useProducts';
+import { useInfiniteProductsServer } from '@/components/hooks/useProducts';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Suspense, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useLanguage } from '@/lib/contexts/language-context';
@@ -96,7 +96,7 @@ function ProductsContent() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage
-  } = useInfiniteProducts({
+  } = useInfiniteProductsServer({
     first: 12,
     query: shopifyQuery,
     collectionHandle: filters.collection || null,

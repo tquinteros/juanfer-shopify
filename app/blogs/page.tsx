@@ -1,6 +1,6 @@
 "use client"
 
-import { useInfiniteArticles, useArticlesTags } from "@/components/hooks/useBlogs"
+import { useInfiniteArticlesServer, useArticlesTagsServer } from "@/components/hooks/useBlogs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -51,7 +51,7 @@ function BlogsContent() {
     }
   }, [searchParams, router, pathname])
   // Fetch only tags from articles (much more efficient than fetching full articles)
-  const { data: tagsData } = useArticlesTags({
+  const { data: tagsData } = useArticlesTagsServer({
     first: 250, // Adjust based on your expected max articles
   })
 
@@ -89,7 +89,7 @@ function BlogsContent() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage
-  } = useInfiniteArticles({
+  } = useInfiniteArticlesServer({
     first: 12,
     query: shopifyQuery,
   })

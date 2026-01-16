@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useMenuByHandle } from '@/components/hooks/useMenu';
+import { useMenuByHandleServer } from '@/components/hooks/useMenu';
 import Link from 'next/link';
 import type { MenuItem } from '@/lib/types/shopify';
 import { Skeleton } from '../ui/skeleton';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
-import { useCollectionsByMetadata, SimplifiedCollectionsResponse } from "@/components/hooks/useCollections"
+import { useCollectionsByMetadataServer, SimplifiedCollectionsResponse } from "@/components/hooks/useCollections"
 import { useLanguage } from "@/lib/contexts/language-context"
 import { translations } from "@/lib/i18n/translations"
 import Image from "next/image"
@@ -162,21 +162,19 @@ const ProductsMegaMenu = ({ productCollections, spaceCollections, isLoading }: P
 }
 
 const SubHeader = () => {
-    // All hooks must be called at the top before any conditional returns
     const [megaMenuOpen, setMegaMenuOpen] = useState(false);
     const [megaMenuTimeoutId, setMegaMenuTimeoutId] = useState<NodeJS.Timeout | null>(null);
 
-    const { data, isLoading, error } = useMenuByHandle({
+    const { data, isLoading, error } = useMenuByHandleServer({
         handle: 'sub-menu',
     });
-    
-    // Prefetch collections data for megamenu
-    const { data: productCollections, isLoading: productsLoading } = useCollectionsByMetadata({
+
+    const { data: productCollections, isLoading: productsLoading } = useCollectionsByMetadataServer({
         metadataValue: "product",
         first: 50
     })
-    
-    const { data: spaceCollections, isLoading: spacesLoading } = useCollectionsByMetadata({
+
+    const { data: spaceCollections, isLoading: spacesLoading } = useCollectionsByMetadataServer({
         metadataValue: "space",
         first: 50
     })
@@ -248,10 +246,10 @@ const SubHeader = () => {
         return menuItems.map((item) => {
             if (item.title === "Productos" || item.title === "Products") {
                 const { href, isExternal } = formatUrl(item.url);
-                
+
                 return (
-                    <div 
-                        key={item.id} 
+                    <div
+                        key={item.id}
                         className="relative"
                         onMouseEnter={handleMegaMenuMouseEnter}
                         onMouseLeave={handleMegaMenuMouseLeave}
@@ -264,7 +262,7 @@ const SubHeader = () => {
                                 className="flex items-center gap-1 hover:opacity-80 transition-opacity"
                             >
                                 {item.title}
-                                <ChevronDown 
+                                <ChevronDown
                                     className={`h-3 w-3 transition-transform duration-200 ${megaMenuOpen ? 'rotate-180' : ''}`}
                                 />
                             </a>
@@ -274,25 +272,25 @@ const SubHeader = () => {
                                 className="flex items-center gap-1 hover:opacity-80 transition-opacity"
                             >
                                 {item.title}
-                                <ChevronDown 
+                                <ChevronDown
                                     className={`h-3 w-3 transition-transform duration-200 ${megaMenuOpen ? 'rotate-180' : ''}`}
                                 />
                             </Link>
                         )}
-                        
+
                         <AnimatePresence>
                             {megaMenuOpen && (
                                 <motion.div
                                     initial={{ opacity: 0, y: -10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
-                                    transition={{ 
+                                    transition={{
                                         duration: 0.2,
                                         ease: "easeOut"
                                     }}
                                     className="absolute top-full left-0 mt-2 z-50"
                                 >
-                                    <ProductsMegaMenu 
+                                    <ProductsMegaMenu
                                         productCollections={productCollections}
                                         spaceCollections={spaceCollections}
                                         isLoading={collectionsLoading}

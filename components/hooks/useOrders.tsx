@@ -3,6 +3,7 @@ import { shopifyFetch } from '@/lib/shopify';
 import { GET_CUSTOMER_ORDERS } from '@/lib/queries/orders';
 import { CustomerOrdersQuerySchema, type CustomerOrdersQuery } from '@/lib/types/orders';
 import { getCustomerToken } from '@/lib/auth';
+import { getOrdersAction } from '@/lib/server/auth';
 
 interface UseOrdersOptions {
   first?: number;
@@ -39,6 +40,30 @@ export function useOrders(
     },
     enabled: enabled && !!getCustomerToken(),
     staleTime: 1000 * 60 * 5, // 5 minutes
+    ...queryOptions,
+  });
+}
+
+export function useOrdersServer(
+  options: UseOrdersOptions = {},
+  queryOptions?: Omit<UseQueryOptions<CustomerOrdersQuery, Error>, 'queryKey' | 'queryFn'>
+) {
+  const { first = 10, after = null, enabled = true } = options;
+
+  return useQuery({
+    queryKey: ['customer-orders', first, after],
+    queryFn: async () => {
+      const token = getCustomerToken();
+
+      if (!token) {
+        throw new Error('Not authenticated');
+      }
+
+      return await getOrdersAction({ token, first, after });
+    },
+    enabled: enabled && !!getCustomerToken(),
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
     ...queryOptions,
   });
 }

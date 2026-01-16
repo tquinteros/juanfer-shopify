@@ -9,7 +9,7 @@ import {
     CarouselPrevious,
 } from "@/components/ui/carousel"
 import Autoplay from "embla-carousel-autoplay"
-import { useCollectionsByMetadata } from "@/components/hooks/useCollections"
+import { useCollectionsByMetadataServer } from "@/components/hooks/useCollections"
 import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
 import Image from "next/image"
@@ -23,7 +23,7 @@ const SpaceCollection2 = () => {
         Autoplay({ delay: 3500, stopOnInteraction: true })
     )
     
-    const { data: collectionsData, isLoading: collectionsLoading } = useCollectionsByMetadata({
+    const { data: collectionsData, isLoading: collectionsLoading } = useCollectionsByMetadataServer({
         metadataValue: "space",
         first: 50
     })
