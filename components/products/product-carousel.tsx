@@ -37,7 +37,7 @@ const ProductCarousel = () => {
             align: "start",
             loop: true,
           }}
-          className="w-full"
+          className="w-full "
         >
           <CarouselContent className="-ml-2 md:-ml-4">
             {Array.from({ length: 4 }).map((_, i) => (
@@ -70,8 +70,9 @@ const ProductCarousel = () => {
           opts={{
             align: "start",
             loop: true,
+            dragFree: true,
           }}
-          className="w-full"
+          className="w-full cursor-grab"
         >
           <CarouselContent className="-ml-2 md:-ml-4">
             {productsData.products.edges.slice(0, 8).map(({ node: product }) => (

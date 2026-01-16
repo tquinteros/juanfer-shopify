@@ -28,20 +28,19 @@ const Hero = () => {
     console.log(metaobjectData, "hero data")
 
     useEffect(() => {
-        const calculateHeaderHeight = () => {
-            const header = document.querySelector('header')
-            if (header) {
-                setHeaderHeight(header.offsetHeight)
-            }
-        }
-        calculateHeaderHeight()
-        window.addEventListener('resize', calculateHeaderHeight)
-        const timeoutId = setTimeout(calculateHeaderHeight, 100)
-        return () => {
-            window.removeEventListener('resize', calculateHeaderHeight)
-            clearTimeout(timeoutId)
-        }
-    }, [])
+        const header = document.querySelector('header')
+        if (!header) return
+      
+        const observer = new ResizeObserver(entries => {
+          for (const entry of entries) {
+            setHeaderHeight(entry.contentRect.height)
+          }
+        })
+      
+        observer.observe(header)
+      
+        return () => observer.disconnect()
+      }, [])
 
     const getFieldValue = (fields: HomePageMetaobject['fields'], key: string): string | null => {
         const field = fields.find(f => f.key === key)

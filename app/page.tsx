@@ -36,8 +36,11 @@ export default function Home() {
         <SpaceCollection2 />
         <BannersCategories />
         <FeatureSection />
+        <section className="">
+          <ProductCarousel />
+        </section>
         <section className="flex flex-col gap-20">
-          <div className="">
+          {/* <div className="">
             <h2 className="text-3xl font-bold mb-8 text-center">{t.home.shopByCategory}</h2>
             {collectionsLoading ? (
               <div className="flex gap-4 overflow-hidden">
@@ -101,14 +104,11 @@ export default function Home() {
                 {t.home.noCollectionsAvailable}
               </div>
             )}
-          </div>
-          <ProductsCollection />
-          <SpaceCollection />
+          </div> */}
+          {/* <ProductsCollection /> */}
+          {/* <SpaceCollection /> */}
         </section>
 
-        <section className="">
-          <ProductCarousel />
-        </section>
       </div>
     </div>
   )
