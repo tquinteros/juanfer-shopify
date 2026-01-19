@@ -35,7 +35,7 @@ const SpaceCollection2 = () => {
                     <h2 className="text-4xl md:text-6xl lg:text-7xl font-light mb-6 text-balance">
                         {t.home.shopBySpace}
                     </h2>
-                    <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto font-mono">
+                    <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
                         {t.home.shopBySpaceSubTitle}
                     </p>
                 </div>
@@ -95,9 +95,9 @@ const SpaceCollection2 = () => {
                                             )}
                                             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors duration-500" />
                                             <div className="absolute bottom-0 left-0 right-0 p-6">
-                                                <p className="text-sm font-mono text-white/90 mb-1">
+                                                {/* <p className="text-sm text-white/90 mb-1">
                                                     {t.home.shopBySpace}
-                                                </p>
+                                                </p> */}
                                                 <h3 className="text-2xl md:text-3xl font-light text-white">
                                                     {collection.title}
                                                 </h3>
@@ -111,7 +111,7 @@ const SpaceCollection2 = () => {
                         <CarouselNext className="hidden md:flex -right-12" />
                     </Carousel>
                 ) : (
-                    <div className="text-center text-muted-foreground py-8 font-mono">
+                    <div className="text-center text-muted-foreground py-8">
                         {t.home.noCollectionsAvailable}
                     </div>
                 )}

@@ -64,7 +64,7 @@ export function AccountDetailsTab() {
 
           <div>
             <label className="text-sm font-medium text-muted-foreground">{t.account.details.customerId}</label>
-            <p className="text-sm text-muted-foreground font-mono">{customer.id}</p>
+            <p className="text-sm text-muted-foreground ">{customer.id}</p>
           </div>
         </CardContent>
       </Card>

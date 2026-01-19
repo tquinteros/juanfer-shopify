@@ -372,8 +372,10 @@ export default function ProductPage({ params }: ProductPageProps) {
                                                     className={`px-4 py-2 border-2 rounded-lg transition-colors font-medium ${!hasAvailableVariant
                                                         ? "opacity-50 cursor-not-allowed"
                                                         : "cursor-pointer"
-                                                        }`}
-                                                    variant={selectedColor === color ? "default" : "outline"}
+                                                        }
+                                                        ${selectedColor === color && "bg-accent! text-white"}
+                                                        `}
+                                                    variant={selectedColor === color ? "secondary" : "outline"}
                                                 >
                                                     {color}
                                                 </Button>
@@ -394,7 +396,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                                             const isAvailable = variant?.availableForSale ?? false
                                             return (
                                                 <Button
-                                                    variant={selectedSize === size ? "default" : "outline"}
+                                                    variant={selectedSize === size ? "secondary" : "outline"}
                                                     key={size}
                                                     size="lg"
                                                     onClick={() => setSelectedSize(size)}
@@ -402,7 +404,9 @@ export default function ProductPage({ params }: ProductPageProps) {
                                                     className={`px-4 py-2 border-2 rounded-lg transition-colors font-medium min-w-[60px]  ${!isAvailable
                                                         ? "opacity-50 cursor-not-allowed line-through"
                                                         : "cursor-pointer"
-                                                        }`}
+                                                        }
+                                                        ${selectedSize === size && "bg-accent! text-white"}
+                                                        `}
                                                 >
                                                     {size}
                                                 </Button>

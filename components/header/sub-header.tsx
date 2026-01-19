@@ -68,7 +68,7 @@ const ProductsMegaMenu = ({ productCollections, spaceCollections, isLoading, onC
 
     if (isLoading) {
         return (
-            <div className="w-[800px] p-6 bg-background border border-border rounded-md shadow-lg">
+            <div className="w-[800px] p-6 bg-card border border-border rounded-md shadow-lg">
                 <div className="grid grid-cols-2 gap-8">
                     <div>
                         <Skeleton className="h-6 w-32 mb-4" />
@@ -98,7 +98,7 @@ const ProductsMegaMenu = ({ productCollections, spaceCollections, isLoading, onC
     }
 
     return (
-        <div className="w-[800px] p-6 bg-background border border-border rounded-md shadow-lg">
+        <div className="w-[800px] p-6 bg-card border border-border rounded-md shadow-lg">
             <div className="grid grid-cols-2 gap-8">
                 <div>
                     <h3 className="text-lg font-semibold mb-4">{t.home.shopByProduct}</h3>
@@ -125,7 +125,7 @@ const ProductsMegaMenu = ({ productCollections, spaceCollections, isLoading, onC
                                         <span className="text-muted-foreground text-xs">{t.common.noImage}</span>
                                     </div>
                                 )}
-                                <span className="text-sm font-medium group-hover:text-primary transition-colors">
+                                <span className="text-sm font-medium group-hover:text-accent-foreground transition-colors">
                                     {collection.title}
                                 </span>
                             </Link>
@@ -158,7 +158,7 @@ const ProductsMegaMenu = ({ productCollections, spaceCollections, isLoading, onC
                                         <span className="text-muted-foreground text-xs">{t.common.noImage}</span>
                                     </div>
                                 )}
-                                <span className="text-sm font-medium group-hover:text-primary transition-colors">
+                                <span className="text-sm font-medium group-hover:text-accent-foreground transition-colors">
                                     {collection.title}
                                 </span>
                             </Link>
@@ -322,7 +322,7 @@ const SubHeader = () => {
                 return (
                     <div key={item.id} className="relative group">
                         {renderMenuItem(item)}
-                        <div className="absolute top-full left-0 mt-1 bg-background border border-border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 min-w-[200px]">
+                        <div className="absolute top-full left-0 mt-1 bg-card border border-border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 min-w-[200px]">
                             <div className="py-2">
                                 {item.items.map((subItem) => {
                                     const { href, isExternal } = formatUrl(subItem.url);

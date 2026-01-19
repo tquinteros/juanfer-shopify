@@ -109,7 +109,7 @@ const Hero = () => {
     if (metaobjectLoading) {
         return (
             <section className="relative w-full overflow-hidden" style={{ height: `calc(100vh - ${headerHeight}px)` }}>
-                <div className="absolute inset-0 bg-[#E5E5E5]" />
+                <div className="absolute inset-0 bg-background" />
                 <div className="relative h-full container mx-auto px-4 lg:px-8 flex items-center">
                     <div className="max-w-3xl w-full">
                         <Skeleton className="h-16 md:h-20 lg:h-24 mb-6 w-3/4" />
@@ -137,14 +137,14 @@ const Hero = () => {
                         <h1 className="text-5xl md:text-7xl lg:text-8xl font-light mb-6 leading-tight text-balance">
                             {t.home.heroTitle}
                         </h1>
-                        <p className="text-lg md:text-xl lg:text-2xl mb-8 leading-relaxed max-w-2xl font-mono text-background/90">
+                        <p className="text-lg md:text-xl lg:text-2xl mb-8 leading-relaxed max-w-2xl text-background/90">
                             {t.home.heroDescription}
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4">
                             <Button
                                 asChild
                                 size="lg"
-                                className="bg-background text-secondary hover:bg-background/90 font-mono uppercase tracking-wider"
+                                className="bg-background text-secondary hover:bg-background/90 tracking-wider"
                             >
                                 <Link href="/products">{t.home.shopNow}</Link>
                             </Button>
@@ -152,7 +152,7 @@ const Hero = () => {
                                 asChild
                                 size="lg"
                                 variant="outline"
-                                className="border-background text-background hover:bg-background hover:text-secondary font-mono uppercase tracking-wider bg-transparent"
+                                className="border-background text-background hover:bg-background hover:text-secondary tracking-wider bg-transparent"
                             >
                                 <Link href="/samples">{t.home.viewSamples}</Link>
                             </Button>
@@ -188,7 +188,7 @@ const Hero = () => {
                             <h1 className="text-5xl md:text-7xl lg:text-8xl text-white font-light mb-6 leading-tight text-balance">
                                 {heroData.titulo}
                             </h1>
-                            <p className="text-lg md:text-xl lg:text-2xl mb-8 text-white leading-relaxed max-w-3xl font-mono ">
+                            <p className="text-lg md:text-xl lg:text-2xl mb-8 text-white leading-relaxed max-w-3xl ">
                                 {heroData.descripcion}
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4">
@@ -196,7 +196,7 @@ const Hero = () => {
                                     asChild
                                     size="lg"
                                     variant="secondary"
-                                    className="hover:opacity-80 font-mono uppercase tracking-wider"
+                                    className="hover:opacity-80 tracking-wider"
                                 >
                                     <Link href={heroData.linkBotonPrimario}>{heroData.textoBotonPrimario}</Link>
                                 </Button>
@@ -204,7 +204,7 @@ const Hero = () => {
                                     asChild
                                     size="lg"
                                     variant="outline"
-                                    className="hover:opacity-80 text-white font-mono hover:text-white uppercase tracking-wider hover:bg-transparent bg-transparent"
+                                    className="hover:opacity-80 text-white hover:text-white tracking-wider hover:bg-transparent bg-transparent"
                                 >
                                     <Link href={heroData.linkBotonSecundario}>{heroData.textoBotonSecundario}</Link>
                                 </Button>

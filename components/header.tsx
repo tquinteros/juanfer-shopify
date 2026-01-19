@@ -123,7 +123,7 @@ export function Header() {
 
     return (
         <>
-            <header className="w-full sticky bg-white pl-2 md:pl-0 dark:bg-black top-0 z-50">
+            <header className="w-full sticky pl-2 md:pl-0 bg-background/95 top-0 z-50">
                 {mobileSearchOpen && (
                     <div className="fixed inset-0 z-60 md:hidden">
                         <div className="p-4">
@@ -398,7 +398,7 @@ export function Header() {
                 </div>
 
                 {/* Desktop Navigation */}
-                <div className="hidden md:block bg-[#EEF0F2] dark:bg-[#1C1B1A]">
+                <div className="hidden md:block bg-card">
                     <div className="flex justify-center">
                         <div className="flex items-center justify-between">
                             <nav className="flex items-center gap-6 py-3">
