@@ -5,7 +5,7 @@ import { useMenuByHandleServer } from '@/components/hooks/useMenu';
 import Link from 'next/link';
 import type { MenuItem } from '@/lib/types/shopify';
 import { Skeleton } from '../ui/skeleton';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { useCollectionsByMetadataServer, SimplifiedCollectionsResponse } from "@/components/hooks/useCollections"
 import { useLanguage } from "@/lib/contexts/language-context"
@@ -117,6 +117,8 @@ const ProductsMegaMenu = ({ productCollections, spaceCollections, isLoading, onC
                                         width={64}
                                         height={64}
                                         className="h-16 w-16 object-cover rounded"
+                                        loading="lazy"
+                                        unoptimized={collection.image.url.includes('shopify')}
                                     />
                                 ) : (
                                     <div className="h-16 w-16 rounded bg-muted flex items-center justify-center">
@@ -148,6 +150,8 @@ const ProductsMegaMenu = ({ productCollections, spaceCollections, isLoading, onC
                                         width={64}
                                         height={64}
                                         className="h-16 w-16 object-cover rounded"
+                                        loading="lazy"
+                                        unoptimized={collection.image.url.includes('shopify')}
                                     />
                                 ) : (
                                     <div className="h-16 w-16 rounded bg-muted flex items-center justify-center">
@@ -291,27 +295,27 @@ const SubHeader = () => {
                             </Link>
                         )}
 
-                        <AnimatePresence>
-                            {megaMenuOpen && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: -10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    transition={{
-                                        duration: 0.2,
-                                        ease: "easeOut"
-                                    }}
-                                    className="absolute top-full left-0 mt-2 z-50"
-                                >
-                                    <ProductsMegaMenu
-                                        productCollections={productCollections}
-                                        spaceCollections={spaceCollections}
-                                        isLoading={collectionsLoading}
-                                        onClose={handleMegaMenuClose}
-                                    />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+                        <motion.div
+                            initial={false}
+                            animate={{
+                                opacity: megaMenuOpen ? 1 : 0,
+                                y: megaMenuOpen ? 0 : -10,
+                                pointerEvents: megaMenuOpen ? 'auto' : 'none'
+                            }}
+                            transition={{
+                                duration: 0.2,
+                                ease: "easeOut"
+                            }}
+                            className="absolute top-full left-0 mt-2 z-50"
+                            style={{ visibility: megaMenuOpen ? 'visible' : 'hidden' }}
+                        >
+                            <ProductsMegaMenu
+                                productCollections={productCollections}
+                                spaceCollections={spaceCollections}
+                                isLoading={collectionsLoading}
+                                onClose={handleMegaMenuClose}
+                            />
+                        </motion.div>
                     </div>
                 );
             } else if (item.items && item.items.length > 0) {

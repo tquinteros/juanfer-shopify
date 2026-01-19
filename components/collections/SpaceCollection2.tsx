@@ -86,19 +86,19 @@ const SpaceCollection2 = () => {
                                                     alt={collection.image.altText || collection.title}
                                                     width={600}
                                                     height={800}
-                                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                                    className="w-full h-full object-cover"
                                                 />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center">
                                                     <span className="text-muted-foreground text-sm">{t.common.noImage}</span>
                                                 </div>
                                             )}
-                                            <div className="hidden md:block absolute inset-0 bg-linear-to-t from-secondary/90 to-transparent opacity-0 md:group-hover:opacity-100 transition-opacity duration-500" />
-                                            <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-0 md:translate-y-full md:group-hover:translate-y-0 transition-transform duration-500">
-                                                <p className="text-sm font-mono text-white/90 md:text-secondary-foreground/80 mb-1 drop-shadow-md">
+                                            <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors duration-500" />
+                                            <div className="absolute bottom-0 left-0 right-0 p-6">
+                                                <p className="text-sm font-mono text-white/90 mb-1">
                                                     {t.home.shopBySpace}
                                                 </p>
-                                                <h3 className="text-2xl md:text-3xl font-light text-white md:text-secondary-foreground drop-shadow-md">
+                                                <h3 className="text-2xl md:text-3xl font-light text-white">
                                                     {collection.title}
                                                 </h3>
                                             </div>
