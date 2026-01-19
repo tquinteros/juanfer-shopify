@@ -124,7 +124,7 @@ export async function getProductByHandleAction(
             variables: { handle },
             language,
         })
-
+        console.log(data, "product by handle data server")
         return ProductByHandleQuerySchema.parse(data)
     } catch (error) {
         console.error('Error fetching product by handle:', error)

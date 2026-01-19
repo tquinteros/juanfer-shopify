@@ -33,6 +33,13 @@ export const ProductVariantEdgeSchema = z.object({
   node: ProductVariantSchema,
 });
 
+export const MetafieldSchema = z.object({
+  namespace: z.string(),
+  key: z.string(),
+  value: z.string(),
+  type: z.string(),
+}).nullable();
+
 export const ProductSchema = z.object({
   id: z.string(),
   title: z.string(),
@@ -47,6 +54,7 @@ export const ProductSchema = z.object({
     edges: z.array(ProductVariantEdgeSchema),
   }).optional(),
   tags: z.array(z.string()).optional(),
+  metafields: z.array(MetafieldSchema).optional(),
 });
 
 export const ProductEdgeSchema = z.object({
@@ -96,13 +104,6 @@ export const CollectionProductPreviewSchema = z.object({
     edges: z.array(ImageEdgeSchema),
   }),
 });
-
-export const MetafieldSchema = z.object({
-  namespace: z.string(),
-  key: z.string(),
-  value: z.string(),
-  type: z.string(),
-}).nullable();
 
 export const CollectionSchema = z.object({
   id: z.string(),

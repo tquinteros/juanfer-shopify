@@ -254,6 +254,7 @@ export const translations = {
       },
     },
     product: {
+      buildKit: "Build Kit",
       errorLoading: "Error loading product",
       notFound: "Product not found",
       noImage: "No Image",
@@ -530,6 +531,7 @@ export const translations = {
       },
     },
     product: {
+      buildKit: "Construir Kit",
       errorLoading: "Error al cargar el producto",
       notFound: "Producto no encontrado",
       noImage: "Sin Imagen",
@@ -806,6 +808,7 @@ export const translations = {
       },
     },
     product: {
+      buildKit: "Construire Kit",
       errorLoading: "Erreur lors du chargement du produit",
       notFound: "Produit non trouvé",
       noImage: "Pas d'image",

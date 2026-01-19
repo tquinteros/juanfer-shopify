@@ -16,7 +16,8 @@ import {
 } from "@/components/ui/carousel"
 import { ShoppingCart, Check } from "lucide-react"
 import Image from "next/image"
-import { useState, use, useEffect, useMemo } from "react"
+import Link from "next/link"
+import { useState, use, useEffect, useMemo, useCallback } from "react"
 import { useLanguage } from "@/lib/contexts/language-context"
 import { translations } from "@/lib/i18n/translations"
 
@@ -42,8 +43,30 @@ export default function ProductPage({ params }: ProductPageProps) {
     const [isAddingToCart, setIsAddingToCart] = useState(false)
     const [addedToCart, setAddedToCart] = useState(false)
 
-    const images = data?.productByHandle?.images.edges.map((edge) => edge.node) || []
-    const product = data?.productByHandle
+    const images = useMemo(() =>
+        data?.productByHandle?.images.edges.map((edge) => edge.node) || [],
+        [data?.productByHandle?.images.edges]
+    )
+
+    const product = useMemo(() => data?.productByHandle, [data?.productByHandle])
+
+    const getMetafield = useCallback((namespace: string, key: string) => {
+        return product?.metafields?.find(
+            (m) => m?.namespace === namespace && m?.key === key
+        )
+    }, [product?.metafields])
+
+    const hasBuilder = useMemo(() => {
+        const metafield = getMetafield('custom', 'has_builder')
+        return metafield?.value === 'true'
+    }, [getMetafield])
+
+    useEffect(() => {
+        if (product?.metafields) {
+            console.log('Product metafields:', product.metafields)
+            console.log('Has builder:', hasBuilder)
+        }
+    }, [product?.metafields, hasBuilder])
 
     const variantOptions = useMemo(() => {
         if (!product?.variants?.edges) return { colors: [], sizes: [], variantsByOption: {} }
@@ -88,42 +111,55 @@ export default function ProductPage({ params }: ProductPageProps) {
             return []
         }
         return Object.keys(variantOptions.variantsByOption[selectedColor]).sort()
-    }, [selectedColor, variantOptions])
+    }, [selectedColor, variantOptions.variantsByOption])
 
-    const firstAvailableVariant = product?.variants?.edges.find(
-        (edge) => edge.node.availableForSale
-    )?.node
+    const firstAvailableVariant = useMemo(() =>
+        product?.variants?.edges.find((edge) => edge.node.availableForSale)?.node,
+        [product?.variants?.edges]
+    )
+
+    const currentVariant = useMemo(() =>
+        selectedVariant
+            ? product?.variants?.edges.find((edge) => edge.node.id === selectedVariant)?.node
+            : firstAvailableVariant,
+        [selectedVariant, product?.variants?.edges, firstAvailableVariant]
+    )
 
     useEffect(() => {
-        if (selectedColor && selectedSize && variantOptions.variantsByOption[selectedColor]?.[selectedSize]) {
-            const variant = variantOptions.variantsByOption[selectedColor][selectedSize]
+        if (!product?.variants?.edges) return
+
+        const hasSelection = selectedColor || selectedSize || selectedVariant
+        if (hasSelection) return
+
+        const firstVariant = product.variants.edges.find((edge) => edge.node.availableForSale)?.node
+        if (!firstVariant) return
+
+        const parts = firstVariant.title.split(' / ').map(p => p.trim())
+        if (parts.length >= 2) {
+            setSelectedColor(parts[0])
+            setSelectedSize(parts[1])
+        } else if (variantOptions.colors.length > 0) {
+            setSelectedColor(variantOptions.colors[0])
+            if (variantOptions.sizes.length > 0) {
+                setSelectedSize(variantOptions.sizes[0])
+            }
+        } else {
+            setSelectedVariant(firstVariant.id)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [product?.variants?.edges])
+
+    useEffect(() => {
+        if (!selectedColor || !selectedSize) return
+
+        const variant = variantOptions.variantsByOption[selectedColor]?.[selectedSize]
+        if (variant) {
             setSelectedVariant(variant.id)
         }
-    }, [selectedColor, selectedSize, variantOptions])
+    }, [selectedColor, selectedSize, variantOptions.variantsByOption])
 
     useEffect(() => {
-        if (firstAvailableVariant && !selectedColor && !selectedSize) {
-            const parts = firstAvailableVariant.title.split(' / ').map(p => p.trim())
-            if (parts.length >= 2) {
-                setSelectedColor(parts[0])
-                setSelectedSize(parts[1])
-            } else if (variantOptions.colors.length > 0) {
-                setSelectedColor(variantOptions.colors[0])
-                if (variantOptions.sizes.length > 0) {
-                    setSelectedSize(variantOptions.sizes[0])
-                }
-            }
-        }
-    }, [firstAvailableVariant, selectedColor, selectedSize, variantOptions])
-
-    const currentVariant = selectedVariant
-        ? product?.variants?.edges.find((edge) => edge.node.id === selectedVariant)?.node
-        : firstAvailableVariant
-
-    useEffect(() => {
-        if (!api) {
-            return
-        }
+        if (!api) return
 
         const updateCurrent = () => {
             setCurrent(api.selectedScrollSnap())
@@ -137,15 +173,9 @@ export default function ProductPage({ params }: ProductPageProps) {
         }
     }, [api])
 
-    useEffect(() => {
-        if (!selectedVariant && firstAvailableVariant) {
-            setSelectedVariant(firstAvailableVariant.id)
-        }
-    }, [firstAvailableVariant, selectedVariant])
-
-    const scrollTo = (index: number) => {
+    const scrollTo = useCallback((index: number) => {
         api?.scrollTo(index)
-    }
+    }, [api])
 
     const handleAddToCart = async () => {
         if (!currentVariant) return
@@ -220,7 +250,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                 <div>
                     {images.length > 0 ? (
                         <>
-                            <Card className="overflow-hidden mb-4">
+                            <Card className="overflow-hidden py-0 rounded mb-4">
                                 <Carousel setApi={setApi} className="w-full">
                                     <CarouselContent>
                                         {images.map((image, index) => (
@@ -245,7 +275,6 @@ export default function ProductPage({ params }: ProductPageProps) {
                                     )}
                                 </Carousel>
                             </Card>
-
                             {images.length > 1 && (
                                 <div className="flex gap-4 overflow-x-auto">
                                     {images.map((image, index) => (
@@ -455,27 +484,40 @@ export default function ProductPage({ params }: ProductPageProps) {
                         </div>
                     </div>
                     <div className="pt-4 space-y-2">
-                        <Button
-                            size="lg"
-                            className="w-full"
-                            disabled={!currentVariant?.availableForSale || isAddingToCart}
-                            onClick={handleAddToCart}
-                        >
-                            {isAddingToCart ? (
-                                t.product.adding
-                            ) : addedToCart ? (
-                                <>
-                                    <Check className="h-5 w-5 mr-2" />
-                                    {t.product.addedToCart}
-                                </>
-                            ) : (
-                                <>
-                                    <ShoppingCart className="h-5 w-5 mr-2" />
-                                    {currentVariant?.availableForSale ? t.product.addToCart : t.product.outOfStock}
-                                </>
-                            )}
-                        </Button>
-                        {currentVariant && (
+                        {hasBuilder ? (
+                            <Button
+                                size="lg"
+                                className="w-full"
+                                variant="default"
+                                asChild
+                            >
+                                <Link href={`/product/${product.handle}/build`}>
+                                    {t.product.buildKit}
+                                </Link>
+                            </Button>
+                        ) : (
+                            <Button
+                                size="lg"
+                                className="w-full"
+                                disabled={!currentVariant?.availableForSale || isAddingToCart}
+                                onClick={handleAddToCart}
+                            >
+                                {isAddingToCart ? (
+                                    t.product.adding
+                                ) : addedToCart ? (
+                                    <>
+                                        <Check className="h-5 w-5 mr-2" />
+                                        {t.product.addedToCart}
+                                    </>
+                                ) : (
+                                    <>
+                                        <ShoppingCart className="h-5 w-5 mr-2" />
+                                        {currentVariant?.availableForSale ? t.product.addToCart : t.product.outOfStock}
+                                    </>
+                                )}
+                            </Button>
+                        )}
+                        {currentVariant && !hasBuilder && (
                             <p className="text-sm text-center text-muted-foreground">
                                 ${(parseFloat(currentVariant.price.amount) * quantity).toFixed(2)}{" "}
                                 {currentVariant.price.currencyCode} {t.product.total}

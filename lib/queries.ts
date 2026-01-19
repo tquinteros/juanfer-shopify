@@ -159,6 +159,14 @@ export const GET_PRODUCT_BY_HANDLE_QUERY = `
           }
         }
       }
+      metafields(identifiers: [
+        { namespace: "custom", key: "has_builder" }
+      ]) {
+        namespace
+        key
+        value
+        type
+      }
       tags
     }
   }

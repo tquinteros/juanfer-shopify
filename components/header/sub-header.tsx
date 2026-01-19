@@ -186,7 +186,7 @@ const SubHeader = () => {
 
     const collectionsLoading = productsLoading || spacesLoading
 
-    console.log(data, "header-links");
+    // console.log(data, "header-links");
     if (isLoading) {
         return (
             <>
